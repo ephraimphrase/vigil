@@ -8,7 +8,7 @@ from ingestion.security import fetch_security_signals
 from ingestion.news import fetch_news_signals
 from ingestion.social import fetch_social_signals
 from ingestion.snapshot import fetch_governance_risk
-from ingestion.normalizer import normalize_offchain
+from ingestion.normalizer import normalize_offchain, normalize_onchain
 from ingestion.resilient_fetch import safe_fetch
 from scoring.scorer import score_protocol
 from scoring.delta import check_delta
@@ -26,11 +26,12 @@ async def polling_cycle():
         print(f"--- Polling {protocol} ---")
         
         # Onchain signals
-        onchain = {
+        raw_onchain = {
             "tvl":          await safe_fetch(fetch_tvl, protocol, "tvl"),
             "liquidations": await safe_fetch(fetch_liquidations, protocol, "liquidations"),
             "whales":       await safe_fetch(fetch_whale_moves, protocol, "whales"),
         }
+        onchain_normalized = normalize_onchain(raw_onchain)
 
         # Offchain signals
         raw_offchain = {
@@ -46,7 +47,7 @@ async def polling_cycle():
         offchain_normalized = normalize_offchain(raw_offchain, protocol, history)
 
         # Merge signals
-        snapshot = {**onchain, **offchain_normalized, "protocol": protocol}
+        snapshot = {**onchain_normalized, **offchain_normalized, "protocol": protocol}
         
         # Save raw signals to DB for history
         save_signal_history(protocol, offchain_normalized)

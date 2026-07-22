@@ -59,3 +59,36 @@ def normalize_offchain(raw_offchain: dict, protocol: str, history: list[dict]) -
         "news_sentiment":   raw_offchain.get("news", {}).get("news_sentiment", 0.5),
         "social_score":     normalize_social(raw_offchain.get("social", {}), history),
     }
+
+def normalize_onchain(raw_onchain: dict) -> dict:
+    """
+    Takes raw fetched values from onchain sources (tvl, liquidations, whales).
+    Returns a dict of clean 0-1 floats ready for the health scorer.
+    1.0 = highly healthy, 0.0 = critical danger
+    """
+    # 1. TVL
+    tvl_data = raw_onchain.get("tvl", {})
+    tvl_delta_24h = tvl_data.get("tvl_delta_24h", 0.0)
+    # If TVL drops by >20% (-0.20), it's 0.0 health. If it's 0 or positive, 1.0 health.
+    tvl_score = max(0.0, min(1.0, 1.0 + (tvl_delta_24h * 5)))
+
+    # 2. Liquidations
+    liq_data = raw_onchain.get("liquidations", {})
+    liq_vol = liq_data.get("liquidation_volume_24h", 0)
+    # > $100M liquidations is 0.0. $0 is 1.0.
+    liq_score = max(0.0, 1.0 - (liq_vol / 100_000_000.0))
+    
+    # 3. Whales
+    whale_data = raw_onchain.get("whales", {})
+    whale_outflow = whale_data.get("net_outflow_24h", 0)
+    team_transfers = whale_data.get("suspicious_team_transfers", 0)
+    # > $20M outflow is 0.0 health. 
+    base_whale = max(0.0, 1.0 - (whale_outflow / 20_000_000.0))
+    if team_transfers > 0:
+        base_whale = min(base_whale, 0.2) # Hard penalty for team exits
+
+    return {
+        "tvl_trend": round(tvl_score, 4),
+        "liquidation_health": round(liq_score, 4),
+        "whale_activity": round(base_whale, 4)
+    }
