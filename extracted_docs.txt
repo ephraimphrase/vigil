@@ -1,0 +1,1758 @@
+MCP Server - KeeperHub Docs
+Skip to Content
+Docs
+CTRL K
+CTRL K
+Overview
+Introduction
+Introduction
+What is KeeperHub
+Core Concepts
+Platform Benefits
+Hackathon Quickstart
+Getting Started
+Getting Started
+Quick Start Guide
+Nodes
+Nodes
+Node Types
+Node Configuration
+Workflows
+Workflows
+Creating Workflows
+Templating Reference
+Import/Export
+Hub
+Marketplace
+Plugins
+Plugins
+Overview
+Web3
+Code
+Math
+Safe
+Blockscout
+Aave V3
+Aave V4
+Aerodrome
+Ajna
+Chainlink
+Chronicle
+Compound V3
+CoW Swap
+Curve
+Ethena
+Frax Ether V2
+Lido
+Morpho
+Pendle
+Rocket Pool
+Sky
+Spark
+Superfluid
+Uniswap
+Wrapped
+Yearn V3
+Discord
+Slack
+Telegram
+SendGrid
+Webhook
+Hyperliquid
+Keeper Runs
+Keeper Runs
+Understanding Runs
+Status and Logs
+Troubleshooting
+Run Error Codes
+Performance Monitoring
+Notifications
+Notifications
+Connections
+Templates
+Wallet Management
+Wallet Management
+Turnkey Integration
+Safe Smart Accounts
+Gas Management
+Address Book
+Para Wallet Integration (Discontinued)
+Users and Organizations
+Users and Organizations
+User Management
+Team Collaboration
+Organizations
+Access Control
+Best Practices
+Best Practices
+Security
+AI Tools
+AI Tools
+Overview
+Claude Code Plugin
+MCP Server
+MCP Trigger Inputs
+Validate Workflow
+Test Workflow
+Agentic Wallets
+Guides
+Guides
+Migrate from OpenZeppelin Defender
+Migrate from Gelato Functions
+API
+Overview
+Authentication
+Workflows
+Executions
+Direct Execution
+Analytics
+Integrations
+Projects
+Tags
+Chains
+User
+Organizations
+API Keys
+Errors
+CLI
+Overview
+Quickstart
+Concepts
+Commands
+kh
+kh action
+kh action get
+kh action list
+kh auth
+kh auth login
+kh auth logout
+kh auth status
+kh billing
+kh billing status
+kh billing usage
+kh completion
+kh config
+kh config get
+kh config list
+kh config set
+kh doctor
+kh execute
+kh execute contract-call
+kh execute status
+kh execute transfer
+kh org
+kh org list
+kh org members
+kh org switch
+kh project
+kh project create
+kh project delete
+kh project get
+kh project list
+kh protocol
+kh protocol get
+kh protocol list
+kh run
+kh run cancel
+kh run logs
+kh run status
+kh serve
+kh tag
+kh tag create
+kh tag delete
+kh tag get
+kh tag list
+kh template
+kh template deploy
+kh template list
+kh update
+kh version
+kh wallet
+kh wallet balance
+kh wallet tokens
+kh workflow
+kh workflow delete
+kh workflow get
+kh workflow go-live
+kh workflow list
+kh workflow pause
+kh workflow run
+FAQ
+Overview
+Introduction
+Introduction
+What is KeeperHub
+Core Concepts
+Platform Benefits
+Hackathon Quickstart
+Getting Started
+Getting Started
+Quick Start Guide
+Nodes
+Nodes
+Node Types
+Node Configuration
+Workflows
+Workflows
+Creating Workflows
+Templating Reference
+Import/Export
+Hub
+Marketplace
+Plugins
+Plugins
+Overview
+Web3
+Code
+Math
+Safe
+Blockscout
+Aave V3
+Aave V4
+Aerodrome
+Ajna
+Chainlink
+Chronicle
+Compound V3
+CoW Swap
+Curve
+Ethena
+Frax Ether V2
+Lido
+Morpho
+Pendle
+Rocket Pool
+Sky
+Spark
+Superfluid
+Uniswap
+Wrapped
+Yearn V3
+Discord
+Slack
+Telegram
+SendGrid
+Webhook
+Hyperliquid
+Keeper Runs
+Keeper Runs
+Understanding Runs
+Status and Logs
+Troubleshooting
+Run Error Codes
+Performance Monitoring
+Notifications
+Notifications
+Connections
+Templates
+Wallet Management
+Wallet Management
+Turnkey Integration
+Safe Smart Accounts
+Gas Management
+Address Book
+Para Wallet Integration (Discontinued)
+Users and Organizations
+Users and Organizations
+User Management
+Team Collaboration
+Organizations
+Access Control
+Best Practices
+Best Practices
+Security
+AI Tools
+AI Tools
+Overview
+Claude Code Plugin
+MCP Server
+MCP Trigger Inputs
+Validate Workflow
+Test Workflow
+Agentic Wallets
+Guides
+Guides
+Migrate from OpenZeppelin Defender
+Migrate from Gelato Functions
+API
+Overview
+Authentication
+Workflows
+Executions
+Direct Execution
+Analytics
+Integrations
+Projects
+Tags
+Chains
+User
+Organizations
+API Keys
+Errors
+CLI
+Overview
+Quickstart
+Concepts
+Commands
+kh
+kh action
+kh action get
+kh action list
+kh auth
+kh auth login
+kh auth logout
+kh auth status
+kh billing
+kh billing status
+kh billing usage
+kh completion
+kh config
+kh config get
+kh config list
+kh config set
+kh doctor
+kh execute
+kh execute contract-call
+kh execute status
+kh execute transfer
+kh org
+kh org list
+kh org members
+kh org switch
+kh project
+kh project create
+kh project delete
+kh project get
+kh project list
+kh protocol
+kh protocol get
+kh protocol list
+kh run
+kh run cancel
+kh run logs
+kh run status
+kh serve
+kh tag
+kh tag create
+kh tag delete
+kh tag get
+kh tag list
+kh template
+kh template deploy
+kh template list
+kh update
+kh version
+kh wallet
+kh wallet balance
+kh wallet tokens
+kh workflow
+kh workflow delete
+kh workflow get
+kh workflow go-live
+kh workflow list
+kh workflow pause
+kh workflow run
+FAQ
+Edit this page on GitHub
+Scroll to top
+AI Tools
+MCP Server
+Copy page
+MCP Server
+The KeeperHub MCP server exposes tools over the Model Context Protocol, enabling AI agents to create, execute, and monitor blockchain automation workflows.
+Connect to KeeperHub MCP
+Remote (recommended)
+Connect directly to KeeperHub’s hosted MCP server. No local process or CLI installation needed.
+claude
+mcp
+add
+--transport
+http
+keeperhub
+https://app.keeperhub.com/mcp
+Then run
+/mcp
+inside Claude Code to complete the OAuth authorization via browser. KeeperHub will ask you to approve access, and the token is stored automatically.
+For headless or CI environments where browser auth is not available, pass an API key:
+claude
+mcp
+add
+--transport
+http
+keeperhub
+https://app.keeperhub.com/mcp
+\
+--header
+"Authorization: Bearer kh_your_key_here"
+Via Claude Code Plugin
+Install the
+Claude Code Plugin
+for additional skills and slash commands on top of the MCP tools. The plugin connects to the same remote endpoint.
+Local via kh CLI (deprecated)
+The
+kh
+CLI
+can run a local MCP server over stdio via
+kh serve --mcp
+. This is deprecated in favor of the remote endpoint above and will be removed in a future release.
+Per-Workflow MCP Servers
+In addition to the aggregate server at
+/mcp
+, every listed marketplace workflow is also reachable as its own narrow MCP server at
+/mcp/w/<slug>
+. The aggregate server exposes the generic
+call_workflow(slug, inputs)
+dispatcher; the per-workflow form registers a single tool named after the workflow’s listed slug, with the workflow’s actual input schema and description.
+This matters because LLMs select tools from
+tools/list
+in a single decision step. A typed, named tool with a real input schema is picked in one turn. A generic dispatcher requires a multi-turn discover-then-call dance, costs more tokens, and has lower selection accuracy.
+Install
+claude
+mcp
+add
+--transport
+http
+my-workflow
+https://app.keeperhub.com/mcp/w/
+<
+slu
+g
+>
+\
+--header
+"Authorization: Bearer kh_your_key_here"
+Replace
+<slug>
+with the workflow’s listed slug (visible on its marketplace page) and
+my-workflow
+with whatever name you want the server to appear under. The same Bearer-token rules apply — any valid
+kh_
+API key or OAuth token works.
+What the agent sees
+After install, the AI’s tool inventory gains exactly one tool: the workflow itself, with its real name as
+title
+, the workflow’s description, and the listed input schema. There is no
+search_workflows
+step and no
+call_workflow
+indirection. The LLM picks the tool by name and shape.
+Cross-organization calls
+Any valid bearer can call any listed workflow regardless of which organization owns the workflow. Listed workflows are open to all callers by design. Unlisted slugs return 404.
+Paid workflows
+Paid listings return an HTTP 402 with an x402 challenge. The MCP transport surfaces this as a tool error with the full challenge body in the response text. To autopay, install the
+agentic wallet
+— its PreToolUse safety hook intercepts the 402, evaluates the price against your safety thresholds, signs the payment, and retries.
+Compared to the aggregate server
+Aggregate
+keeperhub
+MCP
+Per-workflow MCP
+URL
+https://app.keeperhub.com/mcp
+https://app.keeperhub.com/mcp/w/<slug>
+Tools
+Workflow CRUD, execution, search,
+call_workflow
+, integrations, templates
+Exactly one — the workflow itself
+Input typing
+call_workflow(slug, inputs: object)
+Workflow’s real
+inputSchema
+Best for
+Building, browsing, executing arbitrary workflows in your org
+Calling one specific listed workflow
+Auth
+OAuth or
+kh_
+token
+Same
+Org scoping
+Calls scoped to your org
+Cross-org calls allowed for listed workflows
+Removing
+claude
+mcp
+remove
+my-workflow
+Authentication
+The MCP endpoint supports two authentication methods:
+OAuth 2.1 (browser-based):
+When you add the remote MCP server, Claude Code discovers the OAuth metadata at
+/.well-known/oauth-authorization-server
+and opens a browser for authorization. Tokens are managed automatically (1-hour access tokens, 30-day refresh tokens).
+API keys (headless):
+Pass an organization API key (
+kh_
+prefix) as a Bearer token. Create one at
+app.keeperhub.com
+under Settings > API Keys > Organisation tab.
+Organization Scoping
+Each MCP connection is scoped to a single organization. The org is determined by your authentication method:
+OAuth:
+The org active in your browser session when you approve the authorization request.
+API key:
+The org the key was created in (visible on the API Keys page).
+All tools operate within this org — listing workflows, creating workflows, executing, and viewing integrations. There is no way to access another org’s resources from the same connection.
+Switching Organizations
+To work with a different org, re-authenticate:
+OAuth (Claude Code):
+Switch your active org at
+app.keeperhub.com
+using the org switcher, then reconnect the MCP server. In Claude Code, remove and re-add the server:
+claude
+mcp
+remove
+keeperhub
+claude
+mcp
+add
+--transport
+http
+keeperhub
+https://app.keeperhub.com/mcp
+Complete the OAuth flow again — the new active org will be captured.
+API key:
+Create a separate API key in the target org and update the MCP server configuration with the new key.
+Working with Multiple Organizations
+If you regularly work across multiple orgs, add a separate MCP server entry for each:
+{
+"mcpServers"
+: {
+"keeperhub-acme"
+: {
+"type"
+:
+"http"
+,
+"url"
+:
+"https://app.keeperhub.com/mcp"
+,
+"headers"
+: {
+"Authorization"
+:
+"Bearer kh_acme_key"
+}
+},
+"keeperhub-personal"
+: {
+"type"
+:
+"http"
+,
+"url"
+:
+"https://app.keeperhub.com/mcp"
+,
+"headers"
+: {
+"Authorization"
+:
+"Bearer kh_personal_key"
+}
+}
+}
+}
+Each server entry has its own tool namespace, so the AI agent can distinguish which org to target based on the server name.
+Tools Reference
+The server registers more than 30 tools. Call
+tools_documentation
+(or
+list_action_schemas
+) at runtime for the authoritative, always-current set.
+Workflow Management
+Tool
+Description
+list_workflows
+List all workflows for the organization. Optionally filter by
+projectId
+or
+tagId
+.
+get_workflow
+Get a single workflow by ID, including nodes, edges, and configuration.
+create_workflow
+Create a workflow with nodes and edges. Created disabled by default; pass
+enabled=true
+to make schedule, event, block, or webhook triggers fire immediately.
+update_workflow
+Update a workflow’s name, description, nodes, edges, project/tag assignment, or enabled state. Set
+enabled=false
+to stop triggers without deleting the workflow.
+delete_workflow
+Permanently delete a workflow. This action is irreversible.
+validate_workflow
+Check a workflow’s structural and Web3-specific correctness before creating or executing it.
+prepare_test_pin_data
+Return the JSON Schema each node expects as pin data, so an agent can construct valid test inputs.
+Execution
+Tool
+Description
+execute_workflow
+Trigger a manual execution. Returns an execution ID for status polling.
+get_execution
+Get combined status and step-by-step logs for an execution in one response. Replaces the earlier
+get_execution_status
++
+get_execution_logs
+pair.
+Direct On-Chain Execution
+Tool
+Description
+execute_transfer
+Transfer native or ERC20 tokens to a recipient. Requires a wallet integration.
+execute_contract_call
+Call a smart contract function. Returns the result for view/pure calls, or an execution ID for state-changing calls.
+execute_check_and_execute
+Read a contract value, evaluate a condition, and execute an action if it is met.
+get_direct_execution_status
+Get the status of a direct execution (transfer or contract call), including the transaction hash and result.
+Protocol Actions (DeFi)
+Tool
+Description
+search_protocol_actions
+Search available protocol actions across supported DeFi protocols. Call this first to discover actions and their parameters.
+execute_protocol_action
+Execute a DeFi protocol action. The
+actionType
+follows
+protocol/action-slug
+(for example
+aave-v3/supply
+).
+AI Generation
+Tool
+Description
+ai_generate_workflow
+Generate a complete workflow from a natural language description.
+Action Schemas and Plugins
+Tool
+Description
+list_action_schemas
+List available action schemas, triggers, and supported chains. Each chain includes a
+status
+field (stable, experimental, deprecated).
+get_plugin
+Get schema details for a specific plugin or integration type.
+search_plugins
+Deprecated. Use
+list_action_schemas
+instead.
+Templates
+Tool
+Description
+search_templates
+Search pre-built workflow templates.
+deploy_template
+Clone a public template into the organization as a new workflow.
+get_template
+Deprecated. Use
+get_workflow
+instead.
+Marketplace Listings
+Tool
+Description
+search_workflows
+Search listed workflows callable by external agents. Returns slug, description, input schema, and price.
+call_workflow
+Invoke a listed workflow. Read workflows execute and return a result; write workflows return unsigned calldata. Paid listings return an x402 challenge (this tool does not auto-pay).
+list_workflow
+Publish a workflow to the marketplace catalog. Idempotent.
+unlist_workflow
+Remove a workflow from the catalog. The slug is preserved for re-listing.
+update_workflow_listing
+Edit listing metadata (description, tags, category, chain, schemas).
+get_workflow_listing
+Read a workflow’s public listing metadata by slug. No auth required.
+Integrations
+Tool
+Description
+list_integrations
+List configured integrations (credentials) for the organization.
+get_wallet_integration
+Get details for a wallet integration, required for web3 write actions.
+Documentation
+Tool
+Description
+tools_documentation
+Get documentation for the KeeperHub MCP tools, including examples and best practices.
+Resources
+The server exposes two MCP resources:
+URI
+Description
+keeperhub://workflows
+List of all workflows
+keeperhub://workflows/{id}
+Full workflow configuration
+Creating a Workflow
+A typical workflow creation flow:
+Discover actions
+— call
+list_action_schemas
+with a category to see available action types and their required fields
+Build nodes
+— construct trigger and action nodes with the correct
+actionType
+values
+Connect nodes
+— define edges from trigger to actions in execution order
+Create
+— call
+create_workflow
+with nodes and edges (auto-layouts positions)
+Test
+— call
+execute_workflow
+and poll
+get_execution
+Node Structure
+{
+"id"
+:
+"check-balance"
+,
+"type"
+:
+"action"
+,
+"data"
+: {
+"label"
+:
+"Check Balance"
+,
+"description"
+:
+"Check wallet ETH balance"
+,
+"type"
+:
+"action"
+,
+"config"
+: {
+"actionType"
+:
+"web3/check-balance"
+,
+"network"
+:
+"11155111"
+,
+"address"
+:
+"0x..."
+},
+"status"
+:
+"idle"
+}
+}
+Trigger nodes use
+type: "trigger"
+with a
+triggerType
+in the config (
+Manual
+,
+Schedule
+,
+Webhook
+,
+Event
+,
+Block
+).
+Edge Structure
+Edges connect nodes and define execution flow:
+{
+"id"
+:
+"edge-1"
+,
+"source"
+:
+"trigger-1"
+,
+"target"
+:
+"check-balance"
+}
+For
+Condition nodes
+and
+For Each nodes
+, edges require a
+sourceHandle
+field:
+{
+"id"
+:
+"edge-2"
+,
+"source"
+:
+"condition-1"
+,
+"target"
+:
+"send-alert"
+,
+"sourceHandle"
+:
+"true"
+}
+Source Node Type
+sourceHandle Values
+Condition
+"true"
+or
+"false"
+For Each
+"loop"
+or
+"done"
+Other nodes
+Omit field
+Condition Nodes
+Condition nodes have dual output paths with
+true
+and
+false
+source handles. Connect downstream nodes to the appropriate handle to create if/else logic in a single Condition node.
+Conditions support these operators:
+==
+(soft equals),
+===
+(equals),
+!=
+(soft not equals),
+!==
+(not equals),
+>
+,
+>=
+,
+<
+,
+<=
+,
+contains
+,
+startsWith
+,
+endsWith
+,
+matchesRegex
+,
+isEmpty
+,
+isNotEmpty
+,
+exists
+,
+doesNotExist
+,
+isNull
+,
+isNotNull
+,
+isUndefined
+,
+isNotUndefined
+.
+Conditions reference previous node outputs using template syntax:
+{{@nodeId:Label.field}}
+.
+Web3 Action Reference
+Read Actions (no wallet required)
+Action
+Required Fields
+web3/check-balance
+network
+,
+address
+web3/check-token-balance
+network
+,
+address
+,
+tokenConfig
+web3/read-contract
+network
+,
+contractAddress
+,
+abi
+,
+abiFunction
+Write Actions (require a wallet integration)
+Action
+Required Fields
+web3/transfer-funds
+network
+,
+recipientAddress
+,
+amount
+web3/transfer-token
+network
+,
+recipientAddress
+,
+tokenConfig
+,
+amount
+web3/write-contract
+network
+,
+contractAddress
+,
+abi
+,
+abiFunction
+tokenConfig
+is a token-select value (which token on which network), not a bare address. Write actions require the organization’s wallet integration to be configured; there is no per-action
+walletId
+field. Use
+get_wallet_integration
+to confirm the wallet is set up.
+The
+network
+field accepts chain IDs as strings:
+"1"
+(Ethereum mainnet),
+"11155111"
+(Sepolia),
+"8453"
+(Base),
+"42161"
+(Arbitrum),
+"137"
+(Polygon).
+abiFunction
+field
+For
+web3/read-contract
+and
+web3/write-contract
+, the
+abiFunction
+field is the function as it appears in the contract’s ABI. Pass the plain name for unique functions (
+"balanceOf"
+) or the full signature for overloaded ones (
+"transfer(address,uint256)"
+).
+Error Handling
+All tools return errors in this format:
+{
+"content"
+: [{
+"type"
+:
+"text"
+,
+"text"
+:
+"Error: <message>"
+}],
+"isError"
+:
+true
+}
+Code
+Meaning
+401
+Invalid or missing API key
+404
+Workflow or execution not found
+400
+Invalid parameters
+500
+Server error
+Claude Code Plugin
+MCP Trigger Inputs
+
+Agentic Wallets - KeeperHub Docs
+Skip to Content
+Docs
+CTRL K
+CTRL K
+Overview
+Introduction
+Introduction
+What is KeeperHub
+Core Concepts
+Platform Benefits
+Hackathon Quickstart
+Getting Started
+Getting Started
+Quick Start Guide
+Nodes
+Nodes
+Node Types
+Node Configuration
+Workflows
+Workflows
+Creating Workflows
+Templating Reference
+Import/Export
+Hub
+Marketplace
+Plugins
+Plugins
+Overview
+Web3
+Code
+Math
+Safe
+Blockscout
+Aave V3
+Aave V4
+Aerodrome
+Ajna
+Chainlink
+Chronicle
+Compound V3
+CoW Swap
+Curve
+Ethena
+Frax Ether V2
+Lido
+Morpho
+Pendle
+Rocket Pool
+Sky
+Spark
+Superfluid
+Uniswap
+Wrapped
+Yearn V3
+Discord
+Slack
+Telegram
+SendGrid
+Webhook
+Hyperliquid
+Keeper Runs
+Keeper Runs
+Understanding Runs
+Status and Logs
+Troubleshooting
+Run Error Codes
+Performance Monitoring
+Notifications
+Notifications
+Connections
+Templates
+Wallet Management
+Wallet Management
+Turnkey Integration
+Safe Smart Accounts
+Gas Management
+Address Book
+Para Wallet Integration (Discontinued)
+Users and Organizations
+Users and Organizations
+User Management
+Team Collaboration
+Organizations
+Access Control
+Best Practices
+Best Practices
+Security
+AI Tools
+AI Tools
+Overview
+Claude Code Plugin
+MCP Server
+MCP Trigger Inputs
+Validate Workflow
+Test Workflow
+Agentic Wallets
+Guides
+Guides
+Migrate from OpenZeppelin Defender
+Migrate from Gelato Functions
+API
+Overview
+Authentication
+Workflows
+Executions
+Direct Execution
+Analytics
+Integrations
+Projects
+Tags
+Chains
+User
+Organizations
+API Keys
+Errors
+CLI
+Overview
+Quickstart
+Concepts
+Commands
+kh
+kh action
+kh action get
+kh action list
+kh auth
+kh auth login
+kh auth logout
+kh auth status
+kh billing
+kh billing status
+kh billing usage
+kh completion
+kh config
+kh config get
+kh config list
+kh config set
+kh doctor
+kh execute
+kh execute contract-call
+kh execute status
+kh execute transfer
+kh org
+kh org list
+kh org members
+kh org switch
+kh project
+kh project create
+kh project delete
+kh project get
+kh project list
+kh protocol
+kh protocol get
+kh protocol list
+kh run
+kh run cancel
+kh run logs
+kh run status
+kh serve
+kh tag
+kh tag create
+kh tag delete
+kh tag get
+kh tag list
+kh template
+kh template deploy
+kh template list
+kh update
+kh version
+kh wallet
+kh wallet balance
+kh wallet tokens
+kh workflow
+kh workflow delete
+kh workflow get
+kh workflow go-live
+kh workflow list
+kh workflow pause
+kh workflow run
+FAQ
+Overview
+Introduction
+Introduction
+What is KeeperHub
+Core Concepts
+Platform Benefits
+Hackathon Quickstart
+Getting Started
+Getting Started
+Quick Start Guide
+Nodes
+Nodes
+Node Types
+Node Configuration
+Workflows
+Workflows
+Creating Workflows
+Templating Reference
+Import/Export
+Hub
+Marketplace
+Plugins
+Plugins
+Overview
+Web3
+Code
+Math
+Safe
+Blockscout
+Aave V3
+Aave V4
+Aerodrome
+Ajna
+Chainlink
+Chronicle
+Compound V3
+CoW Swap
+Curve
+Ethena
+Frax Ether V2
+Lido
+Morpho
+Pendle
+Rocket Pool
+Sky
+Spark
+Superfluid
+Uniswap
+Wrapped
+Yearn V3
+Discord
+Slack
+Telegram
+SendGrid
+Webhook
+Hyperliquid
+Keeper Runs
+Keeper Runs
+Understanding Runs
+Status and Logs
+Troubleshooting
+Run Error Codes
+Performance Monitoring
+Notifications
+Notifications
+Connections
+Templates
+Wallet Management
+Wallet Management
+Turnkey Integration
+Safe Smart Accounts
+Gas Management
+Address Book
+Para Wallet Integration (Discontinued)
+Users and Organizations
+Users and Organizations
+User Management
+Team Collaboration
+Organizations
+Access Control
+Best Practices
+Best Practices
+Security
+AI Tools
+AI Tools
+Overview
+Claude Code Plugin
+MCP Server
+MCP Trigger Inputs
+Validate Workflow
+Test Workflow
+Agentic Wallets
+Guides
+Guides
+Migrate from OpenZeppelin Defender
+Migrate from Gelato Functions
+API
+Overview
+Authentication
+Workflows
+Executions
+Direct Execution
+Analytics
+Integrations
+Projects
+Tags
+Chains
+User
+Organizations
+API Keys
+Errors
+CLI
+Overview
+Quickstart
+Concepts
+Commands
+kh
+kh action
+kh action get
+kh action list
+kh auth
+kh auth login
+kh auth logout
+kh auth status
+kh billing
+kh billing status
+kh billing usage
+kh completion
+kh config
+kh config get
+kh config list
+kh config set
+kh doctor
+kh execute
+kh execute contract-call
+kh execute status
+kh execute transfer
+kh org
+kh org list
+kh org members
+kh org switch
+kh project
+kh project create
+kh project delete
+kh project get
+kh project list
+kh protocol
+kh protocol get
+kh protocol list
+kh run
+kh run cancel
+kh run logs
+kh run status
+kh serve
+kh tag
+kh tag create
+kh tag delete
+kh tag get
+kh tag list
+kh template
+kh template deploy
+kh template list
+kh update
+kh version
+kh wallet
+kh wallet balance
+kh wallet tokens
+kh workflow
+kh workflow delete
+kh workflow get
+kh workflow go-live
+kh workflow list
+kh workflow pause
+kh workflow run
+FAQ
+Edit this page on GitHub
+Scroll to top
+AI Tools
+Agentic Wallets
+Copy page
+Agentic Wallets
+KeeperHub paid workflows settle via
+x402
+on Base USDC or MPP on Tempo USDC.e: each call carries a USDC payment, and the server returns a result only after the payment is verified. To call a paid workflow, your agent needs an x402/MPP wallet.
+This page covers the first-party
+KeeperHub agentic wallet
+(skill + npm package, server-side Turnkey custody) and the main third-party alternatives. Every wallet listed works with KeeperHub and with any other x402/MPP-compliant service.
+KeeperHub agentic wallet
+A skill + npm package from KeeperHub. Custody is server-side in a per-wallet
+Turnkey sub-organisation
+, so no private key lands on disk. A
+PreToolUse
+hook gates every signing call against a three-tier (auto / ask / block) policy sourced from
+~/.keeperhub/safety.json
+.
+Install
+Two steps: register the skill + safety hook, then provision a wallet. Run the commands yourself, or have your agent do it for you.
+Manual:
+npx
+-p
+@keeperhub/wallet
+keeperhub-wallet
+skill
+install
+npx
+-p
+@keeperhub/wallet
+keeperhub-wallet
+add
+Have your agent do it:
+paste this prompt:
+Install the KeeperHub agentic wallet: run
+npx -p @keeperhub/wallet keeperhub-wallet skill install
+to register the skill and safety hook, then
+npx -p @keeperhub/wallet keeperhub-wallet add
+to provision a new wallet. Report the subOrgId and wallet address when done.
+The install step writes the skill file into every detected agent skill directory (Claude Code, Cursor, Cline, Windsurf, OpenCode) and registers the
+keeperhub-wallet-hook
+PreToolUse
+safety hook in
+~/.claude/settings.json
+. The
+add
+step provisions a fresh Turnkey sub-organisation and writes
+~/.keeperhub/wallet.json
+(mode
+0600
+). The file contains only your sub-org identifier, your EVM wallet address, and an HMAC shared secret used to authenticate signing requests against KeeperHub —
+no private key
+. The signing key material is generated inside
+Turnkey’s secure enclave
+and never leaves it; nothing in
+wallet.json
+alone is enough to sign a transaction.
+Restart your agent session once after this so it picks up the newly installed skill.
+First payment
+The wallet handles payment; the agent still needs a way to discover and call KeeperHub workflows. That comes from the
+KeeperHub MCP server
+, which exposes the
+search_workflows
+and
+call_workflow
+meta-tools to your agent. You can install the MCP server on its own (see the
+MCP server
+page) or bundled with the
+KeeperHub Claude Code plugin
+, which wires both the MCP server and (soon) the wallet skill in one step.
+With MCP + wallet both installed, ask your agent in plain language:
+Use KeeperHub to check the ETH balance of
+0xAA70fAa583c0889164cFD9b45Aa075F6c4388Fee
+.
+Run the KeeperHub
+mcp-test
+workflow for
+0xAA70...
+.
+The agent discovers available workflows at runtime through the KeeperHub meta-tools (
+search_workflows
++
+call_workflow
+) and picks the best match. When a paid workflow returns a
+402
+, the wallet intercepts the challenge, signs through the server-side proxy (x402 on Base USDC or MPP on Tempo USDC.e), and the call retries transparently. Most KeeperHub paid workflows accept both protocols; today the wallet pays via x402 by default and uses MPP when the workflow is MPP-only. If the amount exceeds your
+auto_approve_max_usd
+the safety hook surfaces an inline permission prompt before any payment is authorised.
+Safety hooks
+Every wallet signing call is gated by a
+PreToolUse
+hook that reads thresholds from
+~/.keeperhub/safety.json
+(never from the transaction payload):
+Tier
+Behaviour
+auto
+Amount at or below
+auto_approve_max_usd
+signs without prompting.
+ask
+Amount above
+auto_approve_max_usd
+and at or below
+block_threshold_usd
+returns
+{decision: "ask"}
+so Claude Code surfaces an inline prompt in the agent chat.
+block
+Amount above
+block_threshold_usd
+, or a contract not in
+allowlisted_contracts
+, is denied without calling
+/sign
+.
+The hook reads only the payment-challenge fields
+amount
+,
+unit
+, and the asset contract address from the tool payload. Forged fields like
+trust-level hint
+or
+admin-override
+are ignored by design.
+Server-side hard limits
+Beyond the client-side hook, a set of Turnkey-enforced policies apply to every wallet and cannot be bypassed by editing
+safety.json
+or changing the agent’s hook. They are created per sub-organisation at provision time and enforced by Turnkey itself on every signing activity:
+Contract allowlist.
+Signing is denied on any call whose target contract is not Base USDC (
+0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+) or Tempo USDC.e (
+0x20C000000000000000000000B9537D11c60E8b50
+). On the EIP-712 (x402) signing path the same restriction is applied against the typed-data domain’s verifying contract.
+Per-transfer cap.
+transfer()
+or
+transferFrom()
+of more than 100 USDC is denied. The same 100 USDC ceiling applies to EIP-3009
+TransferWithAuthorization
+typed-data signing.
+Approval cap.
+approve()
+above 100 USDC is denied. Anything over the same 100 USDC per-transfer ceiling is rejected.
+Chain allowlist.
+EIP-712 signing is denied for any
+domain.chainId
+outside Base (8453), Tempo mainnet (4217), and Tempo testnet (42431).
+Daily spend cap.
+Aggregate signed payments per wallet are bounded at
+200 USDC per UTC day
+by default. Requests that would exceed the cap return
+429 DAILY_CAP_EXCEEDED
+with a
+Retry-After
+header counting down to the next UTC midnight. The cap protects against a compromised HMAC secret being used to drain the wallet faster than an operator can notice and rotate. If a legitimate workflow needs a higher cap, contact KeeperHub support.
+These are defence-in-depth: even if an attacker bypassed the client-side hook entirely, Turnkey rejects the signature. They are also
+not user-configurable today
+. If you have a legitimate need to sign transfers above 100 USDC or to interact with contracts outside the USDC allowlist, contact KeeperHub support — a sub-organisation with a different policy set is possible but requires an operator action. Self-serve higher-cap configuration is on the roadmap.
+Default safety config
+When
+~/.keeperhub/safety.json
+is absent the hook applies these defaults:
+{
+"auto_approve_max_usd"
+:
+5
+,
+"block_threshold_usd"
+:
+100
+,
+"allowlisted_contracts"
+: [
+"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+,
+"0x20C000000000000000000000B9537D11c60E8b50"
+]
+}
+The two allowlisted addresses are the only tokens the client-side hook will authorise out of the box:
+0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+—
+Base USDC
+. Canonical Circle USDC contract on Base mainnet (chain id 8453). Used by x402 challenges from KeeperHub and any other x402-compliant service.
+0x20C000000000000000000000B9537D11c60E8b50
+—
+Tempo USDC.e
+. USDC bridge token on Tempo mainnet (chain id 4217). Used by MPP challenges from KeeperHub paid workflows that settle on Tempo.
+allowlisted_contracts
+in
+safety.json
+is a client-side first-pass filter — the hook rejects signing calls whose target contract is not in this list. You can
+narrow
+it further (for example, remove Tempo USDC.e if your agent only pays on Base). You cannot
+widen
+it: adding a third contract here has no effect because the
+server-side hard limits
+still restrict every signature to Base USDC + Tempo USDC.e. For access to other contracts, contact KeeperHub support so a sub-organisation with a different server-side allowlist can be provisioned.
+Alternatives
+agentcash
+agentcash
+is a CLI + skill bundle from
+agentcash.dev
+. It maintains a local USDC wallet and signs x402 payments on the agent’s behalf.
+npx
+agentcash
+add
+https://app.keeperhub.com
+This walks KeeperHub’s
+/openapi.json
+, generates a
+keeperhub
+skill file, and symlinks it into every detected agent skill directory. After install, agents can call
+search_workflows
+and
+call_workflow
+as first-class tools; payment is routed through the agentcash wallet automatically.
+Supported agents (17 at time of writing): Claude Code, Cursor, Cline, Windsurf, Continue, Roo Code, Kilo Code, Goose, Trae, Junie, Crush, Kiro CLI, Qwen Code, OpenHands, Gemini CLI, Codex, GitHub Copilot.
+Testing only. Do not custody real funds.
+agentcash stores the wallet key as an
+unencrypted plaintext file
+at
+~/.agentcash/wallet.json
+. There is no passphrase, no keychain integration, and no seed-phrase backup: if the file is deleted, lost, or read by any process running as your user, the funds are gone or stolen. This is appropriate for development and automation experiments with small balances (a few dollars of USDC for test calls); it is not a production wallet.
+KeeperHub does not operate agentcash and is not responsible for funds stored in an agentcash wallet. Use it at your own risk and do not top it up beyond what you are willing to lose.
+Coinbase agentic wallet skills
+Coinbase publishes a bundle of 9 general-purpose x402 skills that work with any x402-compliant service, KeeperHub included:
+npx
+skills
+add
+coinbase/agentic-wallet-skills
+This installs skills including
+authenticate-wallet
+,
+fund
+,
+pay-for-service
+,
+search-for-service
+,
+send-usdc
+,
+trade
+,
+query-onchain-data
+, and
+x402
+. The wallet is managed through Coinbase Developer Platform; payment flows route through the CDP infrastructure.
+Full documentation and security risk ratings:
+https://skills.sh/coinbase/agentic-wallet-skills
+Comparison
+Feature
+KeeperHub Agentic Wallet
+agentcash
+Coinbase agentic-wallet-skills
+Key custody
+Server-side Turnkey enclave; agent holds HMAC secret
+Plaintext JSON on disk (
+~/.agentcash/wallet.json
+)
+Coinbase Developer Platform (CDP) managed or self-custody variants
+Private key on disk
+Never
+Yes (unencrypted)
+Depends on variant
+Payment protocols
+x402 (Base USDC) + MPP (Tempo USDC.e)
+x402
+x402 (Coinbase ecosystem)
+PreToolUse safety hook
+Three-tier auto/ask/block built-in
+Not bundled
+Not bundled
+Onboarding
+Zero-registration, under 60 seconds
+Zero-registration
+Requires CDP account for the managed variant
+Install
+npx -p @keeperhub/wallet keeperhub-wallet skill install
+npx agentcash add https://app.keeperhub.com
+npx skills add coinbase/agentic-wallet-skills
+Choosing a wallet
+All three wallets call any x402-compliant service, KeeperHub included. The choice comes down to custody and ecosystem fit rather than anything KeeperHub-specific.
+The KeeperHub agentic wallet is a managed service: KeeperHub runs the Turnkey sub-organisation and proxies signing. You trust KeeperHub to honour the
+server-side hard limits
+and the
+PreToolUse
+hook decision. In return you get no-plaintext-key storage, a three-tier safety hook out of the box, and zero-registration onboarding.
+agentcash is fully self-custodial, with plaintext key material at rest. It fits development and automation experiments with small balances; it is not a production wallet for funds you care about.
+Coinbase agentic wallet skills assume the CDP ecosystem for the managed variant. A good fit if you already run on CDP; otherwise it introduces Coinbase platform lock-in.
+Nothing stops you installing multiple wallets side by side; they do not conflict.
+What KeeperHub exposes to the agent
+Whichever wallet you install, the agent calls KeeperHub through two meta-tools (described in its OpenAPI at
+/openapi.json
+):
+search_workflows
+— find workflows by category, tag, or free text. Returns slug, description, inputSchema, and price for each match.
+call_workflow
+— execute a listed workflow by slug. For read workflows the call executes and returns the result; for write workflows it returns unsigned calldata
+{to, data, value}
+for the caller to submit.
+The meta-tool pattern keeps the agent’s tool list small regardless of how many workflows are listed: the agent discovers available workflows at runtime instead of registering one tool per workflow.
+Paying for calls
+Paid workflows settle in USDC on Base (via x402) or USDC.e on Tempo (via MPP). Most workflows cost under
+$0.05
+per call. See
+Marketplace
+for the creator-side view of the same settlement.
+Known limitations
+Signing is supported on Base (8453), Tempo mainnet (4217), and Tempo testnet (42431) today. Solana, Arbitrum, Optimism and other chains are not yet supported.
+Ask-tier approvals are surfaced inline via the agent’s permission prompt. A browser-based review flow for larger amounts is on the roadmap.
+Workflow discovery via the skill is scoped to KeeperHub’s registry. The wallet auto-pays any x402 or MPP 402 challenge you direct it at, but discovering third-party x402 services from the agent is on the roadmap.
+FAQ
+Who controls my wallet?
+KeeperHub does, today. Each wallet is a
+Turnkey sub-organisation
+where KeeperHub holds the only root user — a server-side API key inside a Turnkey enclave. Your agent does not hold a private key. When your agent needs to pay, it sends a signed request to KeeperHub, KeeperHub checks it against the safety policy engine, and Turnkey produces the signature.
+This is a custodial model. You are trusting KeeperHub to honour the policy limits on every signing call. In exchange you get zero-registration onboarding, no private keys on disk, and no seed phrase to back up.
+What stops KeeperHub signing whatever it wants?
+A set of Turnkey policies, applied per sub-organisation at provision time and enforced by Turnkey itself (not by application code). Full list above under
+Server-side hard limits
+. Briefly: signing only against the Base USDC / Tempo USDC.e contracts, no
+approve()
+above 100 USDC, no
+transfer()
+or
+transferFrom()
+above 100 USDC, and EIP-712 signing restricted to allowlisted chain ids and verifying contracts.
+If KeeperHub’s operator key is compromised, the attacker is still bound by these policies. They cannot drain funds to an arbitrary address or approve an arbitrary contract to spend your balance.
+What happens if I lose
+wallet.json
+?
+Today, the wallet is not recoverable.
+wallet.json
+holds the HMAC secret that authenticates your agent against KeeperHub; without it there is no way to re-authenticate to the same sub-org. Running
+npx -p @keeperhub/wallet keeperhub-wallet add
+again creates a brand new sub-org with a brand new address. Any funds in the old wallet stay there but are unreachable.
+Back up
+wallet.json
+the same way you would back up an SSH key. A passkey-backed recovery path is on the roadmap.
+Can I move the wallet to another machine?
+Yes.
+wallet.json
+is the wallet from your agent’s perspective. Copy it to another machine (under
+~/.keeperhub/wallet.json
+, mode
+0600
+) and that machine speaks for the same wallet. Treat it like any other long-lived credential.
+Does KeeperHub have access to my funds?
+KeeperHub can produce signatures for your wallet, but only within the limits of the
+server-side hard limits
+. KeeperHub never sees a private key — the key material lives inside Turnkey’s secure enclave, and Turnkey is the one that produces signatures after KeeperHub’s API key passes the policy engine.
+Why don’t I have a passkey or 2FA option?
+Passkey-backed sub-orgs are a more secure option Turnkey supports natively, and it’s on the roadmap as an opt-in enrolment. The default today is convenience-first — onboard in under a minute, no ceremony — because that’s what unblocks trying an agent-paid workflow. Users who want a break-glass signing authority and a recovery path will get a
+--with-passkey
+provisioning mode in a future release.
+Can I change the safety thresholds or the allowed contracts?
+You can edit
+~/.keeperhub/safety.json
+(mode
+0644
+) to raise or lower
+auto_approve_max_usd
+and
+block_threshold_usd
+, or to narrow
+allowlisted_contracts
+(for example, drop Tempo USDC.e if your agent only pays on Base). The hook picks up changes on its next invocation.
+Raising thresholds raises your exposure. Widening the contract allowlist past the server-side default (Base USDC + Tempo USDC.e) has no effect on its own — the
+server-side hard limits
+still block signatures against any other contract. If you need access to a different contract, contact KeeperHub support.
+How are signing decisions actually enforced?
+Two layers, and they’re independent:
+Client-side hook
+, running inside your agent (Claude Code, etc.). Reads
+~/.keeperhub/safety.json
+, classifies the amount, and either allows, asks you inline, or denies the call before it ever hits the network. This is what keeps your agent from being manipulated into calling
+/sign
+for amounts you didn’t authorise.
+Server-side Turnkey policies
+, enforced inside Turnkey for every signing activity. See
+Server-side hard limits
+for the full list. They are the hard floor — a misconfigured hook or a compromised agent still cannot sign outside them.
+Either layer alone isn’t enough. The hook stops an agent from asking for a bad signature; the policies stop any signature from being produced outside the rules.
+What’s the difference between my wallet and my KeeperHub creator wallet?
+Two different things:
+The
+agentic wallet
+is what your agent uses to pay for workflows. It’s provisioned per agent install, custodial via Turnkey, not tied to a KeeperHub account.
+A
+creator wallet
+is what a workflow author sets up to receive payouts. It lives on your KeeperHub account, is managed through the dashboard, and is a separate Turnkey sub-org with a different setup.
+Installing an agentic wallet does not touch or affect your creator wallet, and vice versa.
+Can I delete my wallet?
+Not through the CLI today. If you’ve stopped using a wallet and want the sub-org cleaned up, get in touch via the KeeperHub support channel with your
+subOrgId
+(from
+npx -p @keeperhub/wallet keeperhub-wallet info
+) and the operator team can remove it.
+What do I actually pay? Do I need ETH for gas?
+No ETH, no gas out of your wallet for normal agentic wallet use.
+x402 on Base.
+You sign an EIP-3009
+TransferWithAuthorization
+— a pre-signed authorisation that lets the x402 facilitator move USDC on your behalf. The facilitator submits the on-chain transaction and pays the gas. Your wallet only debits the USDC amount.
+MPP on Tempo.
+You sign an authorisation for the MPP facilitator to settle the USDC.e transfer for you. The facilitator pays the Tempo network fees. Your wallet only debits the USDC.e amount.
+So for a
+$0.05
+paid workflow,
+$0.05
+of USDC (or USDC.e) leaves your wallet — nothing else.
+If in future you use the wallet to sign a direct on-chain transaction outside the agentic workflow pattern (e.g. a manual ERC-20 transfer), you’d need native gas for that chain the same way any wallet would.
+Links
+npm:
+@keeperhub/wallet
+Skills registry:
+keeperhub/agentic-wallet-skills
+Source:
+KeeperHub/agentic-wallet
+.
+Test Workflow
+Guides
