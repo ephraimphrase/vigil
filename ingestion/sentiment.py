@@ -1,15 +1,19 @@
 import praw
-import anthropic
 import json
-from config import REDDIT_CLIENT_ID, REDDIT_SECRET, ANTHROPIC_API_KEY
+from openai import AsyncOpenAI
+from config import REDDIT_CLIENT_ID, REDDIT_SECRET, OPENROUTER_API_KEY, OPENROUTER_MODEL
 
 reddit = praw.Reddit(
     client_id=REDDIT_CLIENT_ID,
     client_secret=REDDIT_SECRET,
     user_agent="vigil-health-monitor/1.0"
-) if REDDIT_CLIENT_ID else None
+) if REDDIT_CLIENT_ID and REDDIT_SECRET else None
 
-claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+# Use AsyncOpenAI so sentiment scoring is non-blocking
+llm_client = AsyncOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=OPENROUTER_API_KEY
+) if OPENROUTER_API_KEY else None
 
 PROTOCOL_SUBREDDITS = {
     "aave":     ["Aave", "defi"],
@@ -21,9 +25,12 @@ PROTOCOL_SUBREDDITS = {
     "yearn":    ["defi"],
 }
 
+_EMPTY = {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
+
+
 async def fetch_reddit_sentiment(protocol: str) -> dict:
     if not reddit:
-        return {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
+        return _EMPTY.copy()
 
     subreddits = PROTOCOL_SUBREDDITS.get(protocol, ["defi"])
     posts = []
@@ -38,7 +45,7 @@ async def fetch_reddit_sentiment(protocol: str) -> dict:
             continue
 
     if not posts:
-        return {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
+        return _EMPTY.copy()
 
     samples = []
     for p in posts[:10]:
@@ -47,17 +54,20 @@ async def fetch_reddit_sentiment(protocol: str) -> dict:
             snippet += ". " + p.selftext[:150]
         samples.append(snippet)
 
-    sentiment_data = await _score_sentiment_with_claude(samples, protocol)
+    sentiment_data = await _score_sentiment_with_llm(samples, protocol)
 
+    avg_upvotes = sum(p.score for p in posts) / len(posts) if posts else 0
     return {
         "sentiment_score": sentiment_data.get("sentiment", 0.5),
         "post_count_7d":   len(posts),
-        "avg_upvotes":     sum(p.score for p in posts) / len(posts) if posts else 0,
-        "risk_keywords":   sentiment_data.get("keywords", [])
+        "avg_upvotes":     avg_upvotes,
+        "risk_keywords":   sentiment_data.get("keywords", []),
     }
 
-async def _score_sentiment_with_claude(texts: list[str], protocol: str) -> dict:
-    if not ANTHROPIC_API_KEY:
+
+async def _score_sentiment_with_llm(texts: list[str], protocol: str) -> dict:
+    """Uses OpenRouter LLM to score community sentiment about a DeFi protocol."""
+    if not llm_client:
         return {"sentiment": 0.5, "keywords": []}
 
     joined = "\n".join(f"- {t}" for t in texts)
@@ -78,12 +88,11 @@ Keywords: Extract 2-3 single-word indicators of risk (e.g. "exploit", "rug", "pa
 """
 
     try:
-        response = claude.messages.create(
-            model="claude-3-5-sonnet-20241022",
+        response = await llm_client.chat.completions.create(
+            model=OPENROUTER_MODEL,
             max_tokens=150,
             messages=[{"role": "user", "content": prompt}]
         )
-        result = json.loads(response.content[0].text)
-        return result
+        return json.loads(response.choices[0].message.content)
     except Exception:
         return {"sentiment": 0.5, "keywords": []}
