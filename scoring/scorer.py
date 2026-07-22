@@ -11,9 +11,6 @@ llm_client = AsyncOpenAI(
     api_key=OPENROUTER_API_KEY
 ) if OPENROUTER_API_KEY else None
 
-# Global override for hackathon demo
-DEMO_OVERRIDE_SCORER = False
-
 async def score_protocol(snapshot: dict, avg_24h: float) -> HealthScore:
     """
     Calls OpenRouter (via AsyncOpenAI) to score the protocol based on the signal snapshot.
@@ -21,25 +18,14 @@ async def score_protocol(snapshot: dict, avg_24h: float) -> HealthScore:
     """
     protocol = snapshot.get("protocol", "unknown")
 
-    if DEMO_OVERRIDE_SCORER:
-        print("[WARN] DEMO_OVERRIDE_SCORER is active. Returning forced critical score to trigger execution.")
-        return HealthScore(
-            protocol=protocol,
-            timestamp=datetime.utcnow(),
-            score=25.0, # Forces full exit
-            reasoning="[DEMO MOCK] Massive whale outflows and liquidations detected. Immediate full exit triggered.",
-            risk_flags=["WHALE_EXIT", "LIQUIDATION_CASCADE"],
-            delta_from_24h_avg=(25.0 - avg_24h),
-        )
-
     if not llm_client:
-        print("[WARN] No OpenRouter API key, returning mock health score")
+        print("[WARN] No OpenRouter API key, returning neutral fallback score.")
         return HealthScore(
             protocol=protocol,
             timestamp=datetime.utcnow(),
-            score=100.0,
-            reasoning="Mock score (No API key configured)",
-            risk_flags=[],
+            score=50.0,
+            reasoning="Neutral fallback score (No API key configured for AI scoring)",
+            risk_flags=["NO_AI_AVAILABLE"],
             delta_from_24h_avg=0.0,
         )
 
