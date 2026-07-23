@@ -32,7 +32,7 @@ export function Nav() {
           ))}
         </div>
 
-        <Button href="#">Connect Wallet →</Button>
+        <Button href="#" variant="ghost" icon>Get Started</Button>
       </div>
     </nav>
   );

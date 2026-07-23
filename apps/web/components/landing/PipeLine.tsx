@@ -59,13 +59,13 @@ interface FlowNode {
   
             {/* ── vertical flow diagram ── */}
             <div className="relative pl-9">
-              <div className="absolute bottom-2.5 left-2.5 top-2.5 w-0.5 bg-gradient-to-b from-violet to-indigo opacity-50" />
+              <div className="absolute bottom-2.5 left-2.5 top-2.5 w-0.5 bg-gradient-to-b from-[#E5DBF1] to-[#9B8FAC] opacity-40" />
               {FLOW.map((node) => (
                 <div
                   key={node.title}
-                  className="relative mb-7 rounded-2xl border border-border bg-surface px-5 py-4"
+                  className="relative mb-7 border border-[#CAC0D5]/20 bg-gradient-to-br from-[#B481CD]/20 to-[#C0ABDE]/5 px-5 py-4"
                 >
-                  <span className="absolute -left-9 top-5 h-2.5 w-2.5 rounded-full bg-violet-bright shadow-[0_0_10px_var(--color-violet)]" />
+                  <span className="absolute -left-[1.95rem] top-5 h-2.5 w-2.5 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
                   <div className="font-semibold">{node.title}</div>
                   <div className="mt-0.5 text-sm text-text-muted">{node.desc}</div>
                 </div>
