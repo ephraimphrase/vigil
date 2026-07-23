@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "python3 main.py",
-    "start": "python3 main.py",
-    "lint": "python3 -m compileall -q .",
+    "dev": "DYLD_LIBRARY_PATH=/opt/homebrew/opt/expat/lib venv/bin/python3 main.py",
+    "start": "DYLD_LIBRARY_PATH=/opt/homebrew/opt/expat/lib venv/bin/python3 main.py",
+    "lint": "DYLD_LIBRARY_PATH=/opt/homebrew/opt/expat/lib venv/bin/python3 -m compileall -q .",
     "test": "echo \"no tests configured\""
   }
 }
