@@ -1,50 +1,77 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════
+   ⬢ THEME TOKENS — colors, fonts, custom animations
+   ═══════════════════════════════════════════════ */
+@theme {
+  --color-bg: #0a0712;
+  --color-bg-elevated: #130c22;
+  --color-surface: #170f28;
+  --color-surface-2: #1e1433;
+  --color-border: rgba(167, 139, 250, 0.15);
+  --color-border-strong: rgba(167, 139, 250, 0.34);
+  --color-text: #f3eefc;
+  --color-text-muted: #9d8fb8;
+  --color-text-dim: #6a5c86;
+  --color-violet: #b06ce1;
+  --color-violet-bright: #e5dbf1;
+  --color-violet-deep: #9668b7;
+  --color-indigo: #4b3aa8;
+  --color-healthy: #4ade80;
+  --color-warn: #fbbf24;
+  --color-danger: #fb7185;
+
+  --font-display: "Unbounded", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-ticker: ticker 22s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.imgDark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
+/* ═══════════════════════════════════════════════
+   ⬢ BASE
+   ═══════════════════════════════════════════════ */
+@layer base {
   html {
-    color-scheme: dark;
+    scroll-behavior: smooth;
   }
+  body {
+    @apply bg-bg text-text font-body;
+    position: relative;
+    overflow-x: hidden;
+  }
+  /* ambient violet wash sitting behind all content */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(176, 108, 225, 0.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(75, 58, 168, 0.14), transparent 60%);
+  }
+}
 
-  .imgLight {
-    display: none;
-  }
-  .imgDark {
-    display: unset;
+/* ═══════════════════════════════════════════════
+   ⬢ ACCESSIBILITY
+   ═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
