@@ -1,14 +1,15 @@
 import httpx
 from config import ALCHEMY_API_KEY
 from ingestion.whales import PROTOCOL_TOKENS
+from ingestion.schemas import LiquidationSignal
 
-def _empty_liquidation_signal() -> dict:
+def _empty_liquidation_signal() -> LiquidationSignal:
     return {
         "liquidation_volume_24h": 0,
         "large_liquidations_count": 0
     }
 
-async def fetch_liquidations(protocol: str) -> dict:
+async def fetch_liquidations(protocol: str) -> LiquidationSignal:
     """
     Fetches liquidation signals via Alchemy Logs.
     Returns neutral zeros if the API key is missing or the request fails.

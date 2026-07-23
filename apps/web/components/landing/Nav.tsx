@@ -20,7 +20,6 @@ export function Nav() {
     <nav className="sticky top-0 z-50  backdrop-blur-md">
       <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-5 sm:px-8">
         <div className="flex items-center gap-2.5 font-display text-lg font-extrabold tracking-wide">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-healthy shadow-[0_0_10px_var(--color-healthy)]" />
           VIGIL
         </div>
 
@@ -32,7 +31,7 @@ export function Nav() {
           ))}
         </div>
 
-        <Button href="#" variant="ghost" icon>Get Started</Button>
+        <Button href="#" variant="ghost" className="uppercase " >Get Started</Button>
       </div>
     </nav>
   );

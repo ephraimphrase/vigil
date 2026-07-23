@@ -1,3 +1,6 @@
+from ingestion.schemas import RawOffchainSignals, RawOnchainSignals
+
+
 def normalize_github(raw: dict, protocol: str, history: list[dict]) -> float:
     # We simplified history for the hackathon
     # So we'll do a basic normalization here
@@ -35,8 +38,8 @@ def normalize_social(raw: dict, history: list[dict]) -> float:
     
     volume_ratio = min(current_volume / 1000.0, 1.0) # Assume 1000 mentions is healthy
     
-    sentiment_component = raw.get("lc_sentiment", 0.5)
-    galaxy_component    = raw.get("galaxy_score", 50) / 100.0
+    sentiment_component = raw.get("sentiment_score", 0.5)
+    galaxy_component    = raw.get("influence_score", 50) / 100.0
     
     raw_score = (
         sentiment_component * 0.4
@@ -46,7 +49,7 @@ def normalize_social(raw: dict, history: list[dict]) -> float:
     
     return round(max(0.0, min(1.0, raw_score)), 4)
 
-def normalize_offchain(raw_offchain: dict, protocol: str, history: list[dict]) -> dict:
+def normalize_offchain(raw_offchain: RawOffchainSignals, protocol: str, history: list[dict]) -> dict:
     """
     Takes raw fetched values from all offchain sources.
     Returns a dict of clean 0-1 floats ready for the health scorer.
@@ -60,7 +63,7 @@ def normalize_offchain(raw_offchain: dict, protocol: str, history: list[dict]) -
         "social_score":     normalize_social(raw_offchain.get("social", {}), history),
     }
 
-def normalize_onchain(raw_onchain: dict) -> dict:
+def normalize_onchain(raw_onchain: RawOnchainSignals) -> dict:
     """
     Takes raw fetched values from onchain sources (tvl, liquidations, whales).
     Returns a dict of clean 0-1 floats ready for the health scorer.

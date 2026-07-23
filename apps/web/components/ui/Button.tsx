@@ -14,13 +14,13 @@ interface ButtonProps {
 
 // ─── CONSTANTS ─────────────────────────────────────
 const PRIMARY_CLASSES =
-  "bg-gradient-to-br from-violet-bright to-violet text-bg hover:shadow-[0_8px_28px_rgba(176,108,225,0.35)]";
+  "bg-gradient-to-br from-violet-bright to-violet text-white hover:shadow-[0_8px_28px_rgba(176,108,225,0.35)]";
 
 // ─── SUBCOMPONENTS ─────────────────────────────────
 function ArrowBubble() {
   return (
-    <span className="ml-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-text text-violet transition-transform duration-300 group-hover:rotate-45">
-      <BiRightArrowAlt className="h-4 w-4 -rotate-45" />
+    <span className="ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-text text-violet transition-transform duration-300 group-hover:rotate-45">
+      <BiRightArrowAlt className="h-6 w-6 -rotate-45" />
     </span>
   );
 }
@@ -41,7 +41,7 @@ export function Button({ href, variant = "primary", icon = false, className, chi
         className={`group inline-flex rounded-full p-px transition-transform hover:-translate-y-px [background:linear-gradient(135deg,#D9B2EF,#412D4F)] ${className ?? ""}`}
       >
         <span
-          className={`inline-flex items-center gap-2 rounded-full bg-black py-3.5 pl-6 font-body text-sm font-bold text-text transition-colors group-hover:bg-[rgba(150,104,183,0.16)] ${icon ? "pr-2" : "pr-6"}`}
+          className={`inline-flex items-center gap-2 rounded-full bg-black py-1.5 pl-6 font-body text-sm font-normal uppercase text-text transition-colors group-hover:bg-[rgba(150,104,183,0.16)] ${icon ? "pr-2" : "pr-6"}`}
         >
           {children}
           {icon && <ArrowBubble />}
@@ -53,7 +53,7 @@ export function Button({ href, variant = "primary", icon = false, className, chi
   return (
     <a
       href={href}
-      className={`group inline-flex items-center gap-2 rounded-full py-3.5 pl-6 font-body text-sm font-bold transition-transform hover:-translate-y-px ${icon ? "pr-2" : "pr-6"} ${PRIMARY_CLASSES} ${className ?? ""}`}
+      className={`group inline-flex items-center gap-2 rounded-full py-1.5 pl-6 font-body text-sm font-normal uppercase transition-transform hover:-translate-y-px ${icon ? "pr-2" : "pr-6"} ${PRIMARY_CLASSES} ${className ?? ""}`}
     >
       {children}
       {icon && <ArrowBubble />}

@@ -10,6 +10,7 @@ from ingestion.social import fetch_social_signals
 from ingestion.snapshot import fetch_governance_risk
 from ingestion.normalizer import normalize_offchain, normalize_onchain
 from ingestion.resilient_fetch import safe_fetch
+from ingestion.schemas import RawOffchainSignals, RawOnchainSignals
 from scoring.scorer import score_protocol
 from scoring.delta import check_delta
 from db.queries import get_24h_average, get_signal_history, save_health_score, save_signal_history, save_trigger
@@ -26,7 +27,7 @@ async def polling_cycle():
         print(f"--- Polling {protocol} ---")
         
         # Onchain signals
-        raw_onchain = {
+        raw_onchain: RawOnchainSignals = {
             "tvl":          await safe_fetch(fetch_tvl, protocol, "tvl"),
             "liquidations": await safe_fetch(fetch_liquidations, protocol, "liquidations"),
             "whales":       await safe_fetch(fetch_whale_moves, protocol, "whales"),
@@ -34,7 +35,7 @@ async def polling_cycle():
         onchain_normalized = normalize_onchain(raw_onchain)
 
         # Offchain signals
-        raw_offchain = {
+        raw_offchain: RawOffchainSignals = {
             "github":    await safe_fetch(fetch_github_activity, protocol, "github"),
             "sentiment": await safe_fetch(fetch_reddit_sentiment, protocol, "sentiment"),
             "security":  await safe_fetch(fetch_security_signals, protocol, "security"),

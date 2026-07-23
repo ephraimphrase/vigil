@@ -4,6 +4,7 @@ import feedparser
 from datetime import datetime, timedelta
 from openai import AsyncOpenAI
 from config import NEWS_API_KEY, OPENROUTER_API_KEY, OPENROUTER_MODEL
+from ingestion.schemas import NewsSignal
 
 # Use AsyncOpenAI so news classification is non-blocking
 llm_client = AsyncOpenAI(
@@ -18,7 +19,7 @@ _news_cache: dict[str, dict] = {}
 _CACHE_TTL_SECONDS = 7200  # 2 hours
 
 
-async def fetch_news_signals(protocol: str) -> dict:
+async def fetch_news_signals(protocol: str) -> NewsSignal:
     cached = _news_cache.get(protocol)
     if cached and (datetime.utcnow() - cached["timestamp"]).total_seconds() < _CACHE_TTL_SECONDS:
         return cached["data"]

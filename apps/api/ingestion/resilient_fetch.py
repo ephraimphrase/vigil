@@ -1,9 +1,12 @@
 import sqlite3
 import json
 from datetime import datetime
+from typing import Awaitable, Callable, TypeVar
 from db.models import DB_PATH
 
-async def safe_fetch(fetch_fn, protocol: str, signal_key: str, fallback=None):
+T = TypeVar("T")
+
+async def safe_fetch(fetch_fn: Callable[[str], Awaitable[T]], protocol: str, signal_key: str, fallback: T | None = None) -> T:
     """
     Wraps any fetch function with a fallback to the last known good value.
     This prevents transient API failures from crashing the scoring loop.
@@ -11,7 +14,7 @@ async def safe_fetch(fetch_fn, protocol: str, signal_key: str, fallback=None):
     if fallback is None:
         # Default fallback is typically a neutral dict or float
         fallback = 0.5
-        
+
     try:
         result = await fetch_fn(protocol)
         _store_last_good(protocol, signal_key, result)

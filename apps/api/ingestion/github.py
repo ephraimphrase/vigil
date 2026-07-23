@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 from openai import AsyncOpenAI
 from config import GITHUB_TOKEN, OPENROUTER_API_KEY, OPENROUTER_MODEL
+from ingestion.schemas import GithubSignal
 
 PROTOCOL_REPOS = {
     "aave":      "aave/aave-v3-core",
@@ -24,7 +25,7 @@ llm_client = AsyncOpenAI(
 ) if OPENROUTER_API_KEY else None
 
 
-async def fetch_github_activity(protocol: str) -> dict:
+async def fetch_github_activity(protocol: str) -> GithubSignal:
     repo = PROTOCOL_REPOS.get(protocol)
     if not repo:
         return _empty_github_signal()
@@ -129,7 +130,7 @@ def _days_since_last_release(releases: list) -> float:
         return 365.0
 
 
-def _empty_github_signal() -> dict:
+def _empty_github_signal() -> GithubSignal:
     return {
         "commits_30d": 0,
         "commits_7d": 0,

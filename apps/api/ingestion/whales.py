@@ -1,5 +1,6 @@
 import httpx
 from config import ALCHEMY_API_KEY
+from ingestion.schemas import WhaleSignal
 
 # Known protocol token contracts for Alchemy transfers
 PROTOCOL_TOKENS = {
@@ -11,14 +12,14 @@ PROTOCOL_TOKENS = {
     "lido": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32"
 }
 
-def _empty_whale_signal() -> dict:
+def _empty_whale_signal() -> WhaleSignal:
     return {
         "net_outflow_24h": 0,
         "suspicious_team_transfers": 0,
         "largest_single_transfer": 0
     }
 
-async def fetch_whale_moves(protocol: str) -> dict:
+async def fetch_whale_moves(protocol: str) -> WhaleSignal:
     """
     Fetches large wallet outflows using Alchemy Transfers API.
     Returns neutral zeros if the API key is missing or the request fails.

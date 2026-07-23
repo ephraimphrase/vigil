@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FiPlus } from "react-icons/fi";
 
 // ─── TYPES ─────────────────────────────────────
 interface FaqEntry {
@@ -58,13 +59,12 @@ export function FAQ() {
                   className="flex w-full items-center justify-between gap-5 py-5 text-left font-bold"
                 >
                   <span>{entry.q}</span>
-                  <span
-                    className={`font-mono text-lg text-violet-bright transition-transform ${
+                  <FiPlus
+                    strokeWidth={1.25}
+                    className={`h-7 w-7 shrink-0 text-violet-bright transition-transform ${
                       isOpen ? "rotate-45" : ""
                     }`}
-                  >
-                    +
-                  </span>
+                  />
                 </button>
                 <div
                   className={`overflow-hidden transition-[max-height] duration-300 ${
