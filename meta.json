@@ -1,0 +1,5 @@
+{
+  "name": "Vigil",
+  "description": "Monorepo with Next.js web dashboard and a Python FastAPI backend",
+  "maintainedByCoreTeam": false
+}

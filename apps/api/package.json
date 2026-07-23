@@ -1,0 +1,11 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 main.py",
+    "start": "python3 main.py",
+    "lint": "python3 -m compileall -q .",
+    "test": "echo \"no tests configured\""
+  }
+}

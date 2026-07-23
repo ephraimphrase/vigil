@@ -2,104 +2,99 @@
 
 **An autonomous protocol risk monitoring and consequence execution system.**
 
-Vigil is an intelligent background system designed to monitor decentralized finance (DeFi) protocols across both on-chain and off-chain data sources. It uses Large Language Models (LLMs) as autonomous reasoning agents to score protocol health in real-time. If a catastrophic risk event is detected (e.g., a massive liquidation cascade, a team rug pull, or a smart contract exploit), Vigil autonomously executes defensive actions (like emergency withdrawals) by interfacing with the **KeeperHub MCP Server**.
+This is a Turborepo monorepo containing the Vigil web dashboard and API.
 
-Built for production, Vigil runs as a robust FastAPI backend with asynchronous `APScheduler` polling, a resilient SQLite WAL database, and a professional `unittest.mock` simulation suite for safe testing.
+## What's inside?
 
----
+```shell
+.
+├── apps
+│   ├── api                       # Vigil backend — FastAPI (Python). See apps/api/README.md.
+│   └── web                       # Next.js dashboard (https://nextjs.org).
+└── packages
+    ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
+    ├── @repo/jest-config         # `jest` configurations
+    ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
+    └── @repo/ui                  # Shareable stub React component library.
+```
 
-## 🏗️ Architecture
+`apps/web` and `packages/*` are written in [TypeScript](https://www.typescriptlang.org/). `apps/api` is a standalone Python service — see [apps/api/README.md](apps/api/README.md) for its setup, architecture, and simulation suite.
 
-1. **Ingestion Engine**: Asynchronously polls multiple data sources every 15 minutes.
-   - **On-Chain**: Alchemy (Whale transfers, Liquidation logs), DeFiLlama (TVL metrics).
-   - **Off-Chain**: GitHub activity, Reddit Sentiment, Snapshot Governance Risk, Security Hacks.
-2. **Normalization**: All raw telemetry is parsed and normalized into standardized `0.0 - 1.0` float boundaries.
-3. **AI Health Scorer**: The normalized snapshot is fed to an LLM (via OpenRouter) which acts as the autonomous reasoning agent. It generates a Health Score (0-100) and risk justification.
-4. **Execution Layer**: If the health score drops precipitously below the 24-hour moving average, a trigger is fired. Vigil connects to the **KeeperHub MCP Server** to autonomously execute mitigation workflows (e.g., `emergency-withdraw`), intercepting and handling any x402 payment challenges seamlessly.
+### Utilities
 
----
+This `Turborepo` has some additional tools already set for you:
 
-## 🚀 Quickstart
+- [TypeScript](https://www.typescriptlang.org/) for static type-safety
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
+- [Jest](https://jestjs.io) for testing
 
-### 1. Installation
+## Getting started
 
-Requires Python 3.10+
+### 1. Install JS dependencies
 
 ```bash
-# Clone the repository
-git clone https://github.com/ephraimphrase/vigil.git
-cd vigil
+pnpm install
+```
 
-# Create and activate a virtual environment
+### 2. Set up the Python API
+
+```bash
+cd apps/api
 python -m venv venv
-# Windows:
-.\venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-
-# Install dependencies
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
+cd ../..
 ```
 
-### 2. Environment Configuration
-
-Create a `.env` file in the root directory. You can run Vigil without keys (it will gracefully fall back to neutral zeroes), but to unlock the full AI and on-chain capabilities, add:
-
-```env
-# Required for AI Health Scoring
-OPENROUTER_API_KEY=your_openrouter_api_key
-
-# Required for On-Chain Telemetry (Whales & Liquidations)
-ALCHEMY_API_KEY=your_alchemy_api_key
-
-# Required for Autonomous Execution via KeeperHub MCP
-KEEPERHUB_API_KEY=your_keeperhub_api_key
-USER_WALLET=0xYourWalletAddress
-```
-
-### 3. Run the Production Server
-
-Start the FastAPI application. The `APScheduler` will automatically begin polling protocols in the background.
+### 3. Run everything
 
 ```bash
-python main.py
+pnpm dev
 ```
 
-The REST API will be available at `http://localhost:8000`.
-- **GET `/api/protocols`**: Returns current health scores for all monitored protocols.
-- **GET `/api/triggers`**: Returns recent KeeperHub execution hashes.
+`turbo run dev` starts the Next.js dashboard (`apps/web`, port 3001) and the FastAPI backend (`apps/api`, port 8000 via `python3 main.py`) together. The API must have its virtualenv active on `PATH`, or you can run it separately with `cd apps/api && python main.py`.
 
----
-
-## 🔬 Simulation Suite
-
-To safely test the autonomous execution engine without risking funds or waiting for a real crypto market crash, Vigil includes a production-grade Simulation Suite. 
-
-The suite uses `unittest.mock` to seamlessly intercept network calls from the production pipeline and inject predefined market data dynamically.
-
-Run a simulation from the terminal:
+### Commands
 
 ```bash
-python run_simulation.py --scenario cascade --protocol aave
+pnpm build   # Build all apps & packages with a `build` script
+pnpm dev     # Run dev servers for all apps & packages with a `dev` script
+pnpm test    # Run test suites for all apps & packages with a `test` script
+pnpm lint    # Lint all apps & packages with a `lint` script
+pnpm format  # Format .ts,.js,.json,.tsx,.jsx files
 ```
 
-### Available Scenarios:
-- `nominal`: Healthy TVL, no hacks, positive sentiment, no whale exits.
-- `cascade`: TVL drops 30%, massive on-chain liquidations, negative social sentiment.
-- `exploit`: DeFiLlama hacks API reports a $55M exploit, Reddit sentiment crashes.
-- `rugpull`: Massive whale outflows from team wallets, GitHub repo goes silent, TVL drains.
+Note: `apps/api` has no `build` step (Python isn't compiled), so `pnpm build` only builds `apps/web` and `packages/*`.
 
----
+### Remote Caching
 
-## 🛠️ Tech Stack
+> [!TIP]
+> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
 
-- **Framework**: FastAPI (Python)
-- **Concurrency**: `asyncio`, `APScheduler`
-- **Database**: SQLite (Write-Ahead Logging / WAL mode enabled for concurrent I/O)
-- **AI / LLMs**: OpenRouter (`openai` async client)
-- **Execution**: KeeperHub MCP Server integration (with `tenacity` for resilience)
-- **Testing**: Native `unittest.mock` framework
+Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
 
----
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
 
-*Built for the KeeperHub Agentic Hackathon.*
+```bash
+npx turbo login
+```
+
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+
+```bash
+npx turbo link
+```
+
+## Useful Links
+
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
+- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
