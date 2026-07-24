@@ -1,4 +1,6 @@
 import { Button } from "../ui/Button";
+import { MdOutlineArrowOutward } from "react-icons/md";
+
 
 // ─── TYPES ─────────────────────────────────────
 interface NavLink {
@@ -23,15 +25,15 @@ export function Nav() {
           VIGIL
         </div>
 
-        <div className="hidden gap-9 text-sm text-[#E5DBF1] md:flex">
+        <div className="hidden gap-9 text-sm text-[#E5DBF1] opacity-[80%] md:flex">
           {NAV_LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-text">
+            <a key={l.href} href={l.href} className="hover:text-text font-[300]">
               {l.label}
             </a>
           ))}
         </div>
 
-        <Button href="#" variant="ghost" className="uppercase " >Get Started</Button>
+        <Button href="#" variant="ghost" className="uppercase " >Get Started <MdOutlineArrowOutward size={18} ></MdOutlineArrowOutward></Button>
       </div>
     </nav>
   );

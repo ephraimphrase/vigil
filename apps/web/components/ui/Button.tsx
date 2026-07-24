@@ -41,7 +41,7 @@ export function Button({ href, variant = "primary", icon = false, className, chi
         className={`group inline-flex rounded-full p-px transition-transform hover:-translate-y-px [background:linear-gradient(135deg,#D9B2EF,#412D4F)] ${className ?? ""}`}
       >
         <span
-          className={`inline-flex items-center gap-2 rounded-full bg-black py-1.5 pl-6 font-body text-sm font-normal uppercase text-text transition-colors group-hover:bg-[rgba(150,104,183,0.16)] ${icon ? "pr-2" : "pr-6"}`}
+          className={`inline-flex items-center gap-2 rounded-full bg-[#1e1425] py-1.5 pl-6 font-body text-sm font-normal uppercase text-text transition-colors  ${icon ? "pr-2" : "pr-6"}`}
         >
           {children}
           {icon && <ArrowBubble />}
