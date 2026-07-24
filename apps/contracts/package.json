@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "anvil",
     "build": "forge build",
     "test": "forge test",
-    "lint": "forge fmt --check"
+    "lint": "forge fmt --check",
+    "format": "forge fmt",
+    "explorer": "./blockscout/start.sh",
+    "explorer:stop": "docker compose -f blockscout/anvil.yml down"
   }
 }
