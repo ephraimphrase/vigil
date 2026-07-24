@@ -3,11 +3,7 @@ pragma solidity ^0.8.13;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-/// @title WETH9
-/// @notice Canonical wrapped-ETH pattern: 1:1 backed, deposit ETH to mint WETH,
-/// burn WETH to withdraw ETH. For local/testnet deployment only — mainnet and
-/// most L2s already have a canonical WETH deployed; this won't be recognized as
-/// "the" WETH by any existing protocol, so don't use it to replace that.
+
 contract WETH9 is ERC20 {
     event Deposit(address indexed sender, uint256 amount);
     event Withdrawal(address indexed sender, uint256 amount);

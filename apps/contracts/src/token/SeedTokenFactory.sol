@@ -4,10 +4,6 @@ pragma solidity ^0.8.20;
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
 import {SeedToken} from "./SeedToken.sol";
 
-// Deploys cheap ERC20 clones for locally testing against the DeFi tokens
-// pulled by script/_pull_defi_tokens.sh. Each token is an EIP-1167 minimal
-// proxy pointing at a single SeedToken implementation, keeping per-token
-// deploy cost low enough to mint hundreds of them in one run.
 contract SeedTokenFactory {
     struct TokenInfo {
         address token;
