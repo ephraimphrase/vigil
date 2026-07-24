@@ -1,4 +1,5 @@
 import httpx
+from ingestion.schemas import TvlSignal
 
 # Slugs verified live against https://api.llama.fi/protocols on 2026-07-22
 _SLUG_MAP = {
@@ -15,7 +16,7 @@ _SLUG_MAP = {
 _LARGE_PROTOCOL_SLUGS = {"uniswap-v3"}
 
 
-async def fetch_tvl(protocol: str) -> dict:
+async def fetch_tvl(protocol: str) -> TvlSignal:
     """
     Fetches TVL using DeFiLlama API.
 
@@ -29,7 +30,7 @@ async def fetch_tvl(protocol: str) -> dict:
       api.llama.fi/protocol/uniswap-v3  ~1.6MB TIMEOUT at 10s -> use /tvl instead
     """
     slug = _SLUG_MAP.get(protocol, protocol)
-    empty = {"tvl_current": 0, "tvl_delta_24h": 0.0, "tvl_delta_7d": 0.0}
+    empty: TvlSignal = {"tvl_current": 0, "tvl_delta_24h": 0.0, "tvl_delta_7d": 0.0}
 
     if slug in _LARGE_PROTOCOL_SLUGS:
         return await _fetch_tvl_simple(slug, empty)
@@ -37,7 +38,7 @@ async def fetch_tvl(protocol: str) -> dict:
         return await _fetch_tvl_with_deltas(slug, empty, protocol)
 
 
-async def _fetch_tvl_simple(slug: str, empty: dict) -> dict:
+async def _fetch_tvl_simple(slug: str, empty: TvlSignal) -> TvlSignal:
     """Uses /tvl/{slug} — returns just current TVL, no delta calculation."""
     async with httpx.AsyncClient(timeout=10) as client:
         try:
@@ -55,7 +56,7 @@ async def _fetch_tvl_simple(slug: str, empty: dict) -> dict:
             return empty
 
 
-async def _fetch_tvl_with_deltas(slug: str, empty: dict, protocol: str) -> dict:
+async def _fetch_tvl_with_deltas(slug: str, empty: TvlSignal, protocol: str) -> TvlSignal:
     """Uses /protocol/{slug} — full time-series, calculates real 24h/7d deltas."""
     async with httpx.AsyncClient(timeout=15) as client:
         try:

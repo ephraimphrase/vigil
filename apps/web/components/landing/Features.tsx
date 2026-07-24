@@ -29,17 +29,35 @@ const FEATURES: Feature[] = [
 // ─── COMPONENT ─────────────────────────────────────
 export function Features() {
   return (
-    <section id="features" className="py-24 sm:py-32">
+    <section id="features" className="relative py-24 sm:py-32">
+   
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-0 top-1/2 hidden w-[46vw] max-w-[820px] -translate-y-1/2 md:block"
+      >
+        <Image
+          src="/cylinder2.svg"
+          alt=""
+          width={500}
+          height={439}
+          className="h-auto w-full"
+        />
+      </div>
+
       <div className="mx-auto max-w-[1180px] px-5 sm:px-8">
-        <div className="grid items-center gap-16 md:grid-cols-[0.9fr_1.1fr]">
-          <Image
-            src="/cylinder.svg"
-            alt=""
-            aria-hidden="true"
-            width={500}
-            height={439}
-            className="pointer-events-none mx-auto h-auto w-[220px] sm:w-[420px] md:mx-0 md:w-full"
-          />
+        {/* ⬢ Mobile-only inline orb */}
+        <Image
+          src="/cylinder2.svg"
+          alt=""
+          aria-hidden="true"
+          width={500}
+          height={439}
+          className="pointer-events-none mx-auto mb-10 h-auto w-[260px] sm:w-[460px] md:hidden"
+        />
+
+    
+        <div className="grid items-center gap-0 md:grid-cols-[60fr_40fr]">
+          <div aria-hidden="true" className="hidden md:block" />
 
           <div>
             <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-violet-bright">
@@ -56,7 +74,7 @@ export function Features() {
               {FEATURES.map((f) => (
                 <div
                   key={f.idx}
-                  className="border-b border-border py-7 transition-[padding-left] hover:bg-gradient-to-r hover:from-violet/[0.06] hover:to-transparent hover:pl-2.5"
+                  className="border-b border-border py-7 transition-[padding-left]"
                 >
                   <div className="flex items-baseline justify-between">
                     <h3 className="text-lg font-bold">{f.title}</h3>

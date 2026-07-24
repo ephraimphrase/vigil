@@ -9,11 +9,11 @@ interface DecisionCard {
 }
 
 // ─── CONSTANTS ─────────────────────────────────────
-const BAND_BORDER: Record<Band, string> = {
-  healthy: "border-t-healthy",
-  caution: "border-t-[#a3e635]",
-  warn: "border-t-warn",
-  danger: "border-t-danger",
+const BAND_TEXT: Record<Band, string> = {
+  healthy: "text-healthy",
+  caution: "text-[#a3e635]",
+  warn: "text-warn",
+  danger: "text-danger",
 };
 
 const CARDS: DecisionCard[] = [
@@ -23,7 +23,20 @@ const CARDS: DecisionCard[] = [
   { range: "Below 40", action: "Full exit", desc: "Critical. Position closed entirely.", band: "danger" },
 ];
 
-// ─── COMPONENT ─────────────────────────────────────
+// ─── UTILS ─────────────────────────────────────
+// Four L-shaped bracket marks pinned to a card's corners
+function CornerBrackets() {
+  return (
+    <>
+      <span className="pointer-events-none absolute -top-px -left-px h-3.5 w-3.5 border-l-2 border-t-2 border-[#EEE1FF]/80" />
+      <span className="pointer-events-none absolute -top-px -right-px h-3.5 w-3.5 border-r-2 border-t-2 border-[#EEE1FF]/80" />
+      <span className="pointer-events-none absolute -bottom-px -left-px h-3.5 w-3.5 border-l-2 border-b-2 border-[#EEE1FF]/80" />
+      <span className="pointer-events-none absolute -bottom-px -right-px h-3.5 w-3.5 border-r-2 border-b-2 border-[#EEE1FF]/80" />
+    </>
+  );
+}
+
+// ─── COMPONENTS ─────────────────────────────────────
 export function DecisionLogic() {
   return (
     <section id="decisions" className="py-24 sm:py-32">
@@ -38,11 +51,11 @@ export function DecisionLogic() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CARDS.map((c) => (
-            <div
-              key={c.range}
-              className={`rounded-2xl border border-t-[3px] border-border bg-surface px-5 py-6 ${BAND_BORDER[c.band]}`}
-            >
-              <div className="font-mono text-xs uppercase tracking-wide text-text-dim">{c.range}</div>
+            <div key={c.range} className="relative border border-border px-5 py-6">
+              <CornerBrackets />
+              <div className={`font-mono text-xs uppercase tracking-wide ${BAND_TEXT[c.band]}`}>
+                {c.range}
+              </div>
               <div className="my-2 font-display text-xl font-bold">{c.action}</div>
               <p className="text-sm text-text-muted">{c.desc}</p>
             </div>

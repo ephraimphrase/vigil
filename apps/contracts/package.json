@@ -5,6 +5,13 @@
   "scripts": {
     "build": "forge build",
     "test": "forge test",
-    "lint": "forge fmt --check"
+    "lint": "forge fmt --check",
+    "format": "forge fmt",
+    "deploy": "./deploy.sh",
+    "deploy:fresh": "./deploy.sh --fresh",
+    "explorer": "./blockscout/start.sh",
+    "explorer:fresh": "./blockscout/start.sh --fresh",
+    "explorer:reset": "./blockscout/reset-data.sh",
+    "explorer:stop": "docker compose -f blockscout/anvil.yml down"
   }
 }

@@ -59,7 +59,9 @@ export function Hero() {
             </p>
 
             <div className="mb-11 flex flex-wrap gap-3.5">
-              <Button href="#">Connect Wallet →</Button>
+              <Button href="#" icon>
+                Connect Wallet
+              </Button>
               <Button href="#pipeline" variant="ghost">
                 See how it works
               </Button>

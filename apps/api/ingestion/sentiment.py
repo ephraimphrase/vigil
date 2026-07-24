@@ -2,6 +2,7 @@ import praw
 import json
 from openai import AsyncOpenAI
 from config import REDDIT_CLIENT_ID, REDDIT_SECRET, OPENROUTER_API_KEY, OPENROUTER_MODEL
+from ingestion.schemas import SentimentSignal
 
 reddit = praw.Reddit(
     client_id=REDDIT_CLIENT_ID,
@@ -25,10 +26,10 @@ PROTOCOL_SUBREDDITS = {
     "yearn":    ["defi"],
 }
 
-_EMPTY = {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
+_EMPTY: SentimentSignal = {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
 
 
-async def fetch_reddit_sentiment(protocol: str) -> dict:
+async def fetch_reddit_sentiment(protocol: str) -> SentimentSignal:
     if not reddit:
         return _EMPTY.copy()
 

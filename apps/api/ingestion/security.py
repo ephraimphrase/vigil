@@ -1,5 +1,6 @@
 import httpx
 from datetime import datetime, timedelta
+from ingestion.schemas import SecuritySignal
 
 # Verified working endpoint (defillama.com/api/hacks returns 403 — Cloudflare blocked)
 DEFILLAMA_HACKS_URL = "https://api.llama.fi/hacks"
@@ -9,7 +10,7 @@ _hacks_cache_timestamp: datetime | None = None
 CACHE_TTL_HOURS = 6
 
 
-async def fetch_security_signals(protocol: str) -> dict:
+async def fetch_security_signals(protocol: str) -> SecuritySignal:
     hacks = await _get_hacks_list()
     cutoff_90d  = datetime.utcnow() - timedelta(days=90)
     cutoff_180d = datetime.utcnow() - timedelta(days=180)

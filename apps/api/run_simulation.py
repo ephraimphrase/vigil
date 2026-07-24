@@ -32,7 +32,7 @@ SCENARIOS = {
         "sentiment": {"sentiment_score": 0.85, "post_count_7d": 150, "avg_upvotes": 45},
         "security": {"hack_count_90d": 0, "hack_count_180d": 0, "total_lost_90d": 0},
         "news": {"news_sentiment": 0.75, "article_count_7d": 12},
-        "social": {"social_volume_24h": 2500, "lc_sentiment": 0.8, "galaxy_score": 85},
+        "social": {"social_volume_24h": 2500, "sentiment_score": 0.8, "influence_score": 85},
         "snapshot": {"governance_risk_score": 1.0, "active_proposals": 2},
         # Forced LLM Score (since we mock scorer in simulation)
         "llm_score": 95.0,
@@ -46,7 +46,7 @@ SCENARIOS = {
         "sentiment": {"sentiment_score": 0.2, "post_count_7d": 500, "avg_upvotes": 120},
         "security": {"hack_count_90d": 0, "hack_count_180d": 0, "total_lost_90d": 0},
         "news": {"news_sentiment": 0.3, "article_count_7d": 45},
-        "social": {"social_volume_24h": 12000, "lc_sentiment": 0.15, "galaxy_score": 30},
+        "social": {"social_volume_24h": 12000, "sentiment_score": 0.15, "influence_score": 30},
         "snapshot": {"governance_risk_score": 1.0, "active_proposals": 2},
         "llm_score": 32.0,
         "llm_reasoning": "Severe liquidation cascade triggered a 30% drop in TVL. Social sentiment indicates panic. No hacks detected, but extreme market risk."
@@ -59,7 +59,7 @@ SCENARIOS = {
         "sentiment": {"sentiment_score": 0.05, "post_count_7d": 800, "avg_upvotes": 300},
         "security": {"hack_count_90d": 1, "hack_count_180d": 1, "total_lost_90d": 55_000_000},
         "news": {"news_sentiment": 0.1, "article_count_7d": 85},
-        "social": {"social_volume_24h": 25000, "lc_sentiment": 0.0, "galaxy_score": 10},
+        "social": {"social_volume_24h": 25000, "sentiment_score": 0.0, "influence_score": 10},
         "snapshot": {"governance_risk_score": 1.0, "active_proposals": 2},
         "llm_score": 15.0,
         "llm_reasoning": "CRITICAL: A $55M exploit was just detected by DeFiLlama hacks API. Sentiment has crashed to absolute zero with massive panic volume."
@@ -72,7 +72,7 @@ SCENARIOS = {
         "sentiment": {"sentiment_score": 0.0, "post_count_7d": 2500, "avg_upvotes": 800},
         "security": {"hack_count_90d": 0, "hack_count_180d": 0, "total_lost_90d": 0},
         "news": {"news_sentiment": 0.0, "article_count_7d": 120},
-        "social": {"social_volume_24h": 50000, "lc_sentiment": 0.0, "galaxy_score": 5},
+        "social": {"social_volume_24h": 50000, "sentiment_score": 0.0, "influence_score": 5},
         "snapshot": {"governance_risk_score": 0.0, "active_proposals": 0},
         "llm_score": 0.0,
         "llm_reasoning": "FATAL: Massive team wallet outflows detected, GitHub repo is abandoned, TVL dropped 80%. High probability of a hard rug pull."

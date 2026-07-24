@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════
@@ -11,8 +11,8 @@
   --color-surface-2: #1e1433;
   --color-border: rgba(167, 139, 250, 0.15);
   --color-border-strong: rgba(167, 139, 250, 0.34);
-  --color-text: #f3eefc;
-  --color-text-muted: #9d8fb8;
+  --color-text: #E5DBF1;
+  --color-text-muted: #C9C9C9;
   --color-text-dim: #6a5c86;
   --color-violet: #b06ce1;
   --color-violet-bright: #e5dbf1;
@@ -23,7 +23,7 @@
   --color-danger: #fb7185;
 
   --font-display: "Unbounded", sans-serif;
-  --font-body: "Manrope", sans-serif;
+  --font-body: "Hanken Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
   --animate-float: float 7s ease-in-out infinite;
@@ -64,6 +64,23 @@
       radial-gradient(ellipse 700px 500px at 100% 10%, rgba(75, 58, 168, 0.14), transparent 60%);
   }
 }
+
+/* ═══════════════════════════════════════════════
+   ⬢ COMPONENTS
+   ═══════════════════════════════════════════════ */
+.glass-pill {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  backdrop-filter: url(#glass);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+}
+
 
 /* ═══════════════════════════════════════════════
    ⬢ ACCESSIBILITY

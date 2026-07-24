@@ -1,5 +1,6 @@
 import httpx
 from config import LUNARCRUSH_KEY
+from ingestion.schemas import SocialSignal
 
 LUNARCRUSH_BASE = "https://lunarcrush.com/api4/public/coins"
 
@@ -14,7 +15,7 @@ PROTOCOL_SYMBOLS = {
     "balancer": "BAL",
 }
 
-async def fetch_social_signals(protocol: str) -> dict:
+async def fetch_social_signals(protocol: str) -> SocialSignal:
     symbol = PROTOCOL_SYMBOLS.get(protocol)
     if not symbol or not LUNARCRUSH_KEY:
         return _empty_social()
@@ -33,15 +34,15 @@ async def fetch_social_signals(protocol: str) -> dict:
 
     return {
         "social_volume_24h": data.get("social_volume_24h", 0),
-        "galaxy_score":      data.get("galaxy_score", 50),       # LunarCrush 0-100
-        "lc_sentiment":      data.get("sentiment", 3) / 5,       # normalize 1-5 -> 0-1
+        "influence_score":   data.get("galaxy_score", 50),       # LunarCrush Galaxy Score, 0-100
+        "sentiment_score":   data.get("sentiment", 3) / 5,       # normalize 1-5 -> 0-1
         "social_dominance":  data.get("social_dominance", 0),    # % of total crypto social
     }
 
-def _empty_social() -> dict:
+def _empty_social() -> SocialSignal:
     return {
         "social_volume_24h": 0,
-        "galaxy_score":      50,
-        "lc_sentiment":      0.5,
+        "influence_score":   50,
+        "sentiment_score":   0.5,
         "social_dominance":  0,
     }
