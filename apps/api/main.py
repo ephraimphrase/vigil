@@ -1,20 +1,8 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from scheduler import scheduler
 from db.queries import get_latest_scores, get_score_history, get_recent_triggers
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Manages the APScheduler lifecycle — replaces deprecated on_event handlers."""
-    print("[VIGIL] Starting APScheduler...")
-    scheduler.start()
-    yield
-    print("[VIGIL] Shutting down APScheduler...")
-    scheduler.shutdown(wait=False)
-
+from routers.webhook import router as webhook_router
 
 app = FastAPI(
     title="Vigil - Autonomous Protocol Risk Monitor",
@@ -24,7 +12,6 @@ app = FastAPI(
         "and triggers KeeperHub MCP workflows when critical risk thresholds are breached."
     ),
     version="1.0.0",
-    lifespan=lifespan,
 )
 
 # Allow the frontend / other services to consume the API
@@ -36,14 +23,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(webhook_router)
+
 
 @app.get("/", tags=["Health"])
 def read_root():
-    """Liveness check — also reports whether the background scheduler is running."""
+    """Liveness check."""
     return {
-        "status":           "Vigil is running",
-        "scheduler_active": scheduler.running,
-        "version":          "1.0.0",
+        "status":  "Vigil is running",
+        "version": "1.0.0",
     }
 
 

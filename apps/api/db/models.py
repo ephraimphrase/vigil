@@ -9,19 +9,6 @@ logger = logging.getLogger(__name__)
 DB_PATH = "db/vigil.sqlite"
 
 
-class SignalSnapshot(BaseModel):
-    protocol: str
-    timestamp: datetime
-    tvl_delta_24h: float        # normalized 0-1
-    liquidation_rate: float     # normalized 0-1
-    whale_outflow: float        # normalized 0-1
-    github_velocity: float      # normalized 0-1
-    sentiment_score: float      # normalized 0-1
-    governance_risk: float      # normalized 0-1
-    security_score: float       # normalized 0-1
-    news_sentiment: float       # normalized 0-1
-    social_score: float         # normalized 0-1
-
 
 class HealthScore(BaseModel):
     protocol: str
