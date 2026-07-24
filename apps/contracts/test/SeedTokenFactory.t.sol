@@ -2,22 +2,22 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {DefiTokenFactory} from "../src/DefiTokenFactory.sol";
-import {DefiToken} from "../src/DefiToken.sol";
+import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
+import {SeedToken} from "../src/token/SeedToken.sol";
 
-contract DefiTokenFactoryTest is Test {
-    DefiTokenFactory factory;
+contract SeedTokenFactoryTest is Test {
+    SeedTokenFactory factory;
     address deployer = makeAddr("deployer");
 
     function setUp() public {
-        factory = new DefiTokenFactory();
+        factory = new SeedTokenFactory();
     }
 
     function test_DeployTokenMintsSupplyToCaller() public {
         vm.prank(deployer);
         address token = factory.deployToken("Uniswap", "UNI");
 
-        DefiToken uni = DefiToken(token);
+        SeedToken uni = SeedToken(token);
         assertEq(uni.name(), "Uniswap");
         assertEq(uni.symbol(), "UNI");
         assertEq(uni.balanceOf(deployer), factory.INITIAL_SUPPLY());
@@ -30,7 +30,7 @@ contract DefiTokenFactoryTest is Test {
         assertEq(factory.tokenBySymbol("AAVE"), token);
         assertEq(factory.tokenCount(), 1);
 
-        DefiTokenFactory.TokenInfo[] memory all = factory.allTokens();
+        SeedTokenFactory.TokenInfo[] memory all = factory.allTokens();
         assertEq(all.length, 1);
         assertEq(all[0].token, token);
         assertEq(all[0].symbol, "AAVE");
@@ -44,8 +44,8 @@ contract DefiTokenFactoryTest is Test {
         assertTrue(uni != aave);
         assertEq(factory.tokenCount(), 2);
 
-        DefiToken(uni).transfer(address(0xBEEF), 1 ether);
-        assertEq(DefiToken(aave).balanceOf(address(0xBEEF)), 0);
+        SeedToken(uni).transfer(address(0xBEEF), 1 ether);
+        assertEq(SeedToken(aave).balanceOf(address(0xBEEF)), 0);
     }
 
     function test_RevertWhen_SymbolAlreadyDeployed() public {
@@ -56,7 +56,7 @@ contract DefiTokenFactoryTest is Test {
     }
 
     function test_ImplementationCannotBeReinitialized() public {
-        DefiToken impl = DefiToken(factory.implementation());
+        SeedToken impl = SeedToken(factory.implementation());
 
         vm.expectRevert();
         impl.initialize("Fake", "FAKE", 1 ether, address(this));

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {DefiTokenFactory} from "../src/DefiTokenFactory.sol";
+import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
 
 // ─── TYPES ───
 // Field order here MUST match the key order emitted by _pull_defi_tokens.sh's
@@ -13,7 +13,7 @@ struct TokenData {
     string name;
 }
 
-contract PullDefiTokensScript is Script {
+contract SeedTokensScript is Script {
     // ─── CONSTANTS ───
     // Underscore prefix: this is an FFI helper invoked by run() below, not a
     // standalone entrypoint you'd run directly.
@@ -21,22 +21,22 @@ contract PullDefiTokensScript is Script {
     uint256 constant PRICE_SCALE = 1e6;
 
     // ─── MAIN ───
-    function run() external returns (DefiTokenFactory factory) {
+    function run() external returns (SeedTokenFactory factory) {
         TokenData[] memory tokens = _fetchTokens();
         _logTokens(tokens);
 
         vm.startBroadcast();
-        factory = new DefiTokenFactory();
+        factory = new SeedTokenFactory();
         _deployTokens(factory, tokens);
         vm.stopBroadcast();
 
         console2.log("---");
-        console2.log("DefiTokenFactory deployed at:", address(factory));
+        console2.log("SeedTokenFactory deployed at:", address(factory));
         console2.log("tokens deployed:", factory.tokenCount());
     }
 
     // ─── UTILS ───
-    function _deployTokens(DefiTokenFactory factory, TokenData[] memory tokens) internal {
+    function _deployTokens(SeedTokenFactory factory, TokenData[] memory tokens) internal {
         for (uint256 i = 0; i < tokens.length; i++) {
             // CoinGecko occasionally lists more than one token under the same
             // symbol (wrapped/bridged variants); the factory keys on symbol,

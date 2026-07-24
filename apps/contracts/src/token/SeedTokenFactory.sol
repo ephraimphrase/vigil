@@ -2,13 +2,13 @@
 pragma solidity ^0.8.20;
 
 import {Clones} from "@openzeppelin/contracts/proxy/Clones.sol";
-import {DefiToken} from "./DefiToken.sol";
+import {SeedToken} from "./SeedToken.sol";
 
 // Deploys cheap ERC20 clones for locally testing against the DeFi tokens
 // pulled by script/_pull_defi_tokens.sh. Each token is an EIP-1167 minimal
-// proxy pointing at a single DefiToken implementation, keeping per-token
+// proxy pointing at a single SeedToken implementation, keeping per-token
 // deploy cost low enough to mint hundreds of them in one run.
-contract DefiTokenFactory {
+contract SeedTokenFactory {
     struct TokenInfo {
         address token;
         string symbol;
@@ -25,14 +25,14 @@ contract DefiTokenFactory {
     event TokenDeployed(address indexed token, string symbol, string name);
 
     constructor() {
-        implementation = address(new DefiToken());
+        implementation = address(new SeedToken());
     }
 
     function deployToken(string calldata name_, string calldata symbol_) public returns (address token) {
         require(tokenBySymbol[symbol_] == address(0), "symbol already deployed");
 
         token = Clones.clone(implementation);
-        DefiToken(token).initialize(name_, symbol_, INITIAL_SUPPLY, msg.sender);
+        SeedToken(token).initialize(name_, symbol_, INITIAL_SUPPLY, msg.sender);
 
         tokenBySymbol[symbol_] = token;
         _deployedTokens.push(TokenInfo({token: token, symbol: symbol_, name: name_}));

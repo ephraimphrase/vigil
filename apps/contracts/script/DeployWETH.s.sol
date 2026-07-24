@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {WETH9} from "../src/WETH9.sol";
+import {WETH9} from "../src/token/WETH9.sol";
 
 contract DeployWETHScript is Script {
     function run() external returns (WETH9 weth) {
