@@ -1,100 +1,45 @@
-# Vigil 🛡️
+# Vigil: Autonomous Risk Mitigation System
 
-**An autonomous protocol risk monitoring and consequence execution system.**
+Vigil is an autonomous protocol risk monitoring and consequence execution system. It continuously tracks off-chain and on-chain data to calculate real-time AI-driven health scores for over 1,000 protocols. If a protocol enters critical risk territory (e.g., smart contract exploit, liquidity crisis, or SEC regulatory action), Vigil automatically connects to **KeeperHub** via an MCP Server to execute emergency withdrawal workflows and pull your funds to safety.
 
-This is a Turborepo monorepo containing the Vigil web dashboard and API.
+## 🧠 Architecture: The Global Oracle
+Instead of relying on rigid, monolithic data scrapers and expensive localized LLM calls, Vigil operates as a **Global Oracle**:
+1. **Dynamic Ingestion (The Funnel):** Vigil exposes a schema-less REST endpoint (`/webhook/ingest`). External scripts, KeeperHub workflows, and third-party APIs pump raw metrics (TVL, Twitter Panic, Flashloans) directly into this funnel.
+2. **High-Speed Data Bus:** All ingested data is instantly categorized and mapped into a high-speed Redis database (`domain` -> `category` -> `metric`).
+3. **The AI Score Engine:** Every 15 minutes, Vigil bundles the entire Redis JSON tree for a protocol and passes it to an LLM (Claude/OpenRouter) to produce a single, unified Health Score (0-100).
+4. **Trigger Evaluation:** Users configure Custom Triggers against this Global Score (e.g., *"If Aave drops below 30"*).
 
-## What's inside?
+## 🚀 The Data Pipelines
 
-```shell
-.
-├── apps
-│   ├── api                       # Vigil backend — FastAPI (Python). See apps/api/README.md.
-│   └── web                       # Next.js dashboard (https://nextjs.org).
-└── packages
-    ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
-    ├── @repo/jest-config         # `jest` configurations
-    ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
-    └── @repo/ui                  # Shareable stub React component library.
-```
+### The Fast Lane (Instant)
+Critical on-chain metrics where seconds matter.
+* **Data Sources:** Binance/Pyth Websockets (Price Ticks), Chainlink (Oracles), DeFiLlama.
+* **Mechanism:** Data is streamed instantly into Redis, bypassing the 15-minute cron jobs to provide immediate liquidation and de-peg awareness.
 
-`apps/web` and `packages/*` are written in [TypeScript](https://www.typescriptlang.org/). `apps/api` is a standalone Python service — see [apps/api/README.md](apps/api/README.md) for its setup, architecture, and simulation suite.
+### The Slow Lane (15-Minute Polling)
+Fundamental, social, and governance metrics.
+* **Data Sources:** Snapshot GraphQL (DAO Proposals), Google News RSS (Headlines), LunarCrush/Santiment (Social Sentiment).
+* **Mechanism:** Lightweight Python scripts poll these free APIs and push the data into the Vigil Webhook.
 
-### Utilities
+## ⚡ Execution Engine: KeeperHub MCP
+When Vigil detects severe negative sentiment (Score < 40), the execution engine (`apps/api/execution/keeperhub.py`) fires:
+1. Opens an SSE connection to `https://app.keeperhub.com/mcp`.
+2. Authenticates using the `KEEPERHUB_API_KEY`.
+3. Discovers available user workflows (e.g., `emergency-withdraw`, `reduce-exposure-50`).
+4. Uses an autonomous Agentic Wallet pattern to handle x402 (Payment Challenges) securely and execute the withdrawal on-chain.
+5. Employs positive sentiment detection to trigger `re-enter-position` workflows when the protocol fully recovers.
 
-This `Turborepo` has some additional tools already set for you:
+## 🛠 Tech Stack
+* **Backend:** FastAPI (Python), `asyncio`
+* **State & Caching:** Redis (Real-time data bus), SQLite (Long-term user configurations)
+* **LLM Engine:** OpenRouter API (Claude 3.5 Sonnet)
+* **Execution:** KeeperHub MCP Server
+* **Frontend:** React Dashboard (Work In Progress)
 
-- [TypeScript](https://www.typescriptlang.org/) for static type-safety
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-- [Jest](https://jestjs.io) for testing
-
-## Getting started
-
-### 1. Install JS dependencies
-
-```bash
-pnpm install
-```
-
-### 2. Set up the Python API
-
-```bash
-cd apps/api
-python -m venv venv
-source venv/bin/activate  # Windows: .\venv\Scripts\activate
-pip install -r requirements.txt
-cd ../..
-```
-
-### 3. Run everything
-
-```bash
-pnpm dev
-```
-
-`turbo run dev` starts the Next.js dashboard (`apps/web`, port 3001) and the FastAPI backend (`apps/api`, port 8000 via `python3 main.py`) together. The API must have its virtualenv active on `PATH`, or you can run it separately with `cd apps/api && python main.py`.
-
-### Commands
-
-```bash
-pnpm build   # Build all apps & packages with a `build` script
-pnpm dev     # Run dev servers for all apps & packages with a `dev` script
-pnpm test    # Run test suites for all apps & packages with a `test` script
-pnpm lint    # Lint all apps & packages with a `lint` script
-pnpm format  # Format .ts,.js,.json,.tsx,.jsx files
-```
-
-Note: `apps/api` has no `build` step (Python isn't compiled), so `pnpm build` only builds `apps/web` and `packages/*`.
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```bash
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```bash
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+## 🔑 Getting Started (Free Tier Setup)
+Vigil is designed to scale across 1,000 protocols with **$0 in API data costs**:
+1. Clone the repository.
+2. Create `apps/api/.env` and add your required keys:
+   * `KEEPERHUB_API_KEY=your_key`
+   * `OPENROUTER_API_KEY=your_key`
+3. The default ingestion scrapers use 100% free endpoints (DeFiLlama TVL, Snapshot GraphQL, Google News RSS, CoinGecko Batch Pricing).
