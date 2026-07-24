@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script, console2} from "forge-std/Script.sol";
+import {DefiTokenFactory} from "../src/DefiTokenFactory.sol";
 
 // ─── TYPES ───
 // Field order here MUST match the key order emitted by _pull_defi_tokens.sh's
@@ -20,12 +21,34 @@ contract PullDefiTokensScript is Script {
     uint256 constant PRICE_SCALE = 1e6;
 
     // ─── MAIN ───
-    function run() external {
+    function run() external returns (DefiTokenFactory factory) {
         TokenData[] memory tokens = _fetchTokens();
         _logTokens(tokens);
+
+        vm.startBroadcast();
+        factory = new DefiTokenFactory();
+        _deployTokens(factory, tokens);
+        vm.stopBroadcast();
+
+        console2.log("---");
+        console2.log("DefiTokenFactory deployed at:", address(factory));
+        console2.log("tokens deployed:", factory.tokenCount());
     }
 
     // ─── UTILS ───
+    function _deployTokens(DefiTokenFactory factory, TokenData[] memory tokens) internal {
+        for (uint256 i = 0; i < tokens.length; i++) {
+            // CoinGecko occasionally lists more than one token under the same
+            // symbol (wrapped/bridged variants); the factory keys on symbol,
+            // so keep the first hit and skip the rest instead of reverting.
+            if (factory.tokenBySymbol(tokens[i].symbol) != address(0)) {
+                console2.log("skipping duplicate symbol:", tokens[i].symbol);
+                continue;
+            }
+            factory.deployToken(tokens[i].name, tokens[i].symbol);
+        }
+    }
+
     function _fetchTokens() internal returns (TokenData[] memory) {
         string[] memory inputs = new string[](2);
         inputs[0] = "bash";

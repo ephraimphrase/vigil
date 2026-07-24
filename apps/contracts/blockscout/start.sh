@@ -2,6 +2,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+if [[ "${1:-}" == "--fresh" ]]; then
+  ./reset-data.sh
+fi
+
 docker compose -f anvil.yml up -d
 
 echo "Waiting for backend..."

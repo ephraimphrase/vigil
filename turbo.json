@@ -11,7 +11,12 @@
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**"]
     },
     "lint": {},
+    "check-types": {},
     "test": {},
-    "test:e2e": {}
+    "test:e2e": {},
+    "start": {
+      "cache": false,
+      "persistent": true
+    }
   }
 }
