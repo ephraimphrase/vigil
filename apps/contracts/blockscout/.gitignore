@@ -1,0 +1,6 @@
+# Runtime data volumes created by `docker compose up` — not source, don't commit.
+services/blockscout-db-data/
+services/redis-data/
+services/stats-db-data/
+services/logs/
+services/dets/
