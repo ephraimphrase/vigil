@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import { LiveTicker } from "./LiveTicker";
+import { SplineRobot } from "./SplineRobot";
+
 
 // ─── TYPES ─────────────────────────────────────
 interface Stat {
@@ -31,14 +33,9 @@ export function Hero() {
         {/* copy+illustration share this positioning context, kept separate
             from the stat row below so vertical centering the (desktop-only)
             absolutely-positioned image doesn't reach past this row. */}
-        <div className="relative">
-          {/* ── copy, CTAs, live ticker ──
-              text sits above the image (z-10) so the headline can overlap
-              it once the image is absolutely positioned at lg+. Anchoring
-              the image by `left` (below) in the same coordinate space as
-              this column — rather than `right` — keeps the overlap amount
-              constant as the container grows with viewport width. */}
-          <div className="relative z-10 lg:max-w-[620px]">
+        <div className="relative grid gap-12 lg:grid-cols-[620px_1fr] lg:items-center">
+          {/* ── copy, CTAs, live ticker ── */}
+          <div className="relative z-10">
             <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-violet-bright">
               <span className="h-1.5 w-1.5 rounded-full bg-violet" />
               Protocol risk infrastructure
@@ -70,21 +67,13 @@ export function Hero() {
 {/*             <LiveTicker />
  */}          </div>
 
-          {/* ── hero illustration ──
-              normal flow (stacked below the copy, centered) up through
-              tablet; at lg it's pulled out of flow, vertically centered
-              against the copy column, and left-anchored so the headline's
-              widest line ("Nothing slips") overlaps its left edge. */}
-          <div className="relative z-0 mt-12 flex justify-center lg:absolute lg:inset-y-0 lg:left-[470px] lg:mt-0 lg:block lg:w-[540px]">
-            <Image
-              src="/hero.svg"
-              alt=""
-              aria-hidden="true"
-              width={431}
-              height={395}
-              priority
-              className="pointer-events-none h-auto w-[240px] sm:w-[400px] md:w-[440px] lg:absolute lg:left-0 lg:top-1/2 lg:w-full lg:-translate-y-1/2"
-            />
+          {/* ── hero illustration ── */}
+          <div className="h-12 w-[10rem] bg-black absolute top-[26rem] right-[1rem] z-[99999] flex items-center justify-center">
+            <h2>200</h2>
+          </div>
+
+          <div className="relative z-0 h-75 w-full sm:h-100 lg:h-full border border-[#CAC0D5]/20">
+            <SplineRobot />
           </div>
         </div>
 
