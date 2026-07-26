@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 import {Script, console2} from "forge-std/Script.sol";
 import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
+import {TokenRecord} from "./DeployWETH.s.sol";
 
 // ─── TYPES ───
 // Field order here MUST match the key order emitted by _pull_defi_tokens.sh's
@@ -19,9 +20,15 @@ contract SeedTokensScript is Script {
     // standalone entrypoint you'd run directly.
     string constant FETCH_SCRIPT = "script/_pull_defi_tokens.sh";
     uint256 constant PRICE_SCALE = 1e6;
+    uint256 constant LOCAL_CHAIN_ID = 31337;
 
     // ─── MAIN ───
     function run() external returns (SeedTokenFactory factory) {
+        if (block.chainid != LOCAL_CHAIN_ID) {
+            console2.log("not a local chain, skipping seed tokens");
+            return factory;
+        }
+
         TokenData[] memory tokens = _fetchTokens();
         _logTokens(tokens);
 
@@ -33,9 +40,75 @@ contract SeedTokensScript is Script {
         console2.log("---");
         console2.log("SeedTokenFactory deployed at:", address(factory));
         console2.log("tokens deployed:", factory.tokenCount());
+
+        _writeTokensFile(factory);
     }
 
     // ─── UTILS ───
+    function _writeTokensFile(SeedTokenFactory factory) internal {
+        SeedTokenFactory.TokenInfo[] memory deployed = factory.allTokens();
+        if (deployed.length == 0) return;
+
+        string memory newEntries = "";
+        for (uint256 i = 0; i < deployed.length; i++) {
+            if (i > 0) newEntries = string.concat(newEntries, ",");
+            newEntries = string.concat(
+                newEntries,
+                _tokenRecordJson(
+                    TokenRecord({token: deployed[i].token, symbol: deployed[i].symbol, name: deployed[i].name})
+                )
+            );
+        }
+
+        _appendToTokensFile(newEntries);
+    }
+
+    function _appendToTokensFile(string memory newEntriesJson) internal {
+        string memory dir = string.concat("data/", vm.toString(block.chainid));
+        string memory path = string.concat(dir, "/token.json");
+        vm.createDir(dir, true);
+
+        string memory json;
+        if (vm.exists(path)) {
+            string memory existingInner = _stripArrayBrackets(vm.readFile(path));
+            json = bytes(existingInner).length == 0
+                ? string.concat("[", newEntriesJson, "]")
+                : string.concat("[", existingInner, ",", newEntriesJson, "]");
+        } else {
+            json = string.concat("[", newEntriesJson, "]");
+        }
+
+        vm.writeJson(json, path);
+        console2.log("wrote deployed tokens to", path);
+    }
+
+    function _tokenRecordJson(TokenRecord memory t) internal pure returns (string memory) {
+        return string.concat(
+            "{\"token\":\"", vm.toString(t.token), "\",\"symbol\":\"", t.symbol, "\",\"name\":\"", t.name, "\"}"
+        );
+    }
+
+    // Foundry's vm.parseJson -> abi.decode cannot reliably round-trip a JSON
+    // array with exactly one element (it collapses to the bare element
+    // instead of a length-1 array), so existing entries are carried forward
+    // as raw text rather than parsed back into structs.
+    function _stripArrayBrackets(string memory s) internal pure returns (string memory) {
+        bytes memory b = bytes(s);
+        uint256 start = 0;
+        while (start < b.length && b[start] != "[") start++;
+        uint256 end = b.length;
+        while (end > 0 && b[end - 1] != "]") end--;
+        if (end == 0 || start + 1 >= end - 1) {
+            return "";
+        }
+        uint256 innerLen = (end - 1) - (start + 1);
+        bytes memory inner = new bytes(innerLen);
+        for (uint256 i = 0; i < innerLen; i++) {
+            inner[i] = b[start + 1 + i];
+        }
+        return string(inner);
+    }
+
     function _deployTokens(SeedTokenFactory factory, TokenData[] memory tokens) internal {
         for (uint256 i = 0; i < tokens.length; i++) {
             // CoinGecko occasionally lists more than one token under the same
