@@ -9,9 +9,12 @@ struct TokenRecord {
     string symbol;
     string name;
     uint8 decimals;
+    string logoURI;
 }
 
 contract DeployWETHScript is Script {
+    string constant WETH_LOGO_URI = "https://coin-images.coingecko.com/coins/images/2518/large/weth.png";
+
     function run() external returns (WETH9 weth) {
         vm.startBroadcast();
         weth = new WETH9();
@@ -20,7 +23,15 @@ contract DeployWETHScript is Script {
         console.log("WETH9 deployed at:", address(weth));
 
         _appendToTokensFile(
-            _tokenRecordJson(TokenRecord({token: address(weth), symbol: "WETH", name: "Wrapped Ether", decimals: 18}))
+            _tokenRecordJson(
+                TokenRecord({
+                    token: address(weth),
+                    symbol: "WETH",
+                    name: "Wrapped Ether",
+                    decimals: 18,
+                    logoURI: WETH_LOGO_URI
+                })
+            )
         );
     }
 
@@ -54,7 +65,9 @@ contract DeployWETHScript is Script {
             t.name,
             "\",\"decimals\":",
             vm.toString(t.decimals),
-            "}"
+            ",\"logoURI\":\"",
+            t.logoURI,
+            "\"}"
         );
     }
 
