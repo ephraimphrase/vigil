@@ -49,18 +49,43 @@ contract SeedTokensScript is Script {
         SeedTokenFactory.TokenInfo[] memory deployed = factory.allTokens();
         if (deployed.length == 0) return;
 
-        string memory newEntries = "";
+        string[] memory entries = new string[](deployed.length);
         for (uint256 i = 0; i < deployed.length; i++) {
-            if (i > 0) newEntries = string.concat(newEntries, ",");
-            newEntries = string.concat(
-                newEntries,
-                _tokenRecordJson(
-                    TokenRecord({token: deployed[i].token, symbol: deployed[i].symbol, name: deployed[i].name})
-                )
+            entries[i] = _tokenRecordJson(
+                TokenRecord({
+                    token: deployed[i].token,
+                    symbol: deployed[i].symbol,
+                    name: deployed[i].name,
+                    decimals: 18
+                })
             );
         }
 
-        _appendToTokensFile(newEntries);
+        _appendToTokensFile(_joinWithCommas(entries));
+    }
+
+    // Repeatedly accumulating via string.concat is O(n^2) - each call copies
+    // the entire string built so far - which blows the script memory limit
+    // once there are hundreds of tokens. This joins in a single pre-sized
+    // buffer instead.
+    function _joinWithCommas(string[] memory items) internal pure returns (string memory) {
+        if (items.length == 0) return "";
+
+        uint256 totalLen = items.length - 1; // commas between entries
+        for (uint256 i = 0; i < items.length; i++) {
+            totalLen += bytes(items[i]).length;
+        }
+
+        bytes memory buf = new bytes(totalLen);
+        uint256 pos = 0;
+        for (uint256 i = 0; i < items.length; i++) {
+            if (i > 0) buf[pos++] = ",";
+            bytes memory item = bytes(items[i]);
+            for (uint256 j = 0; j < item.length; j++) {
+                buf[pos++] = item[j];
+            }
+        }
+        return string(buf);
     }
 
     function _appendToTokensFile(string memory newEntriesJson) internal {
@@ -84,7 +109,15 @@ contract SeedTokensScript is Script {
 
     function _tokenRecordJson(TokenRecord memory t) internal pure returns (string memory) {
         return string.concat(
-            "{\"token\":\"", vm.toString(t.token), "\",\"symbol\":\"", t.symbol, "\",\"name\":\"", t.name, "\"}"
+            "{\"token\":\"",
+            vm.toString(t.token),
+            "\",\"symbol\":\"",
+            t.symbol,
+            "\",\"name\":\"",
+            t.name,
+            "\",\"decimals\":",
+            vm.toString(t.decimals),
+            "}"
         );
     }
 

@@ -8,6 +8,7 @@ struct TokenRecord {
     address token;
     string symbol;
     string name;
+    uint8 decimals;
 }
 
 contract DeployWETHScript is Script {
@@ -18,7 +19,9 @@ contract DeployWETHScript is Script {
 
         console.log("WETH9 deployed at:", address(weth));
 
-        _appendToTokensFile(_tokenRecordJson(TokenRecord({token: address(weth), symbol: "WETH", name: "Wrapped Ether"})));
+        _appendToTokensFile(
+            _tokenRecordJson(TokenRecord({token: address(weth), symbol: "WETH", name: "Wrapped Ether", decimals: 18}))
+        );
     }
 
     // ─── UTILS ───
@@ -43,7 +46,15 @@ contract DeployWETHScript is Script {
 
     function _tokenRecordJson(TokenRecord memory t) internal pure returns (string memory) {
         return string.concat(
-            "{\"token\":\"", vm.toString(t.token), "\",\"symbol\":\"", t.symbol, "\",\"name\":\"", t.name, "\"}"
+            "{\"token\":\"",
+            vm.toString(t.token),
+            "\",\"symbol\":\"",
+            t.symbol,
+            "\",\"name\":\"",
+            t.name,
+            "\",\"decimals\":",
+            vm.toString(t.decimals),
+            "}"
         );
     }
 

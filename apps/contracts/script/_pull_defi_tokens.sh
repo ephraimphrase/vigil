@@ -7,8 +7,14 @@ QUERY="vs_currency=usd&category=decentralized-finance-defi&order=market_cap_desc
 
 # ─── FETCH ───
 # CoinGecko caps per_page at 250, so top-500-by-market-cap needs both pages.
-PAGE1="$(curl -s "${BASE}?${QUERY}&page=1")"
-PAGE2="$(curl -s "${BASE}?${QUERY}&page=2")"
+# Pages are fetched to temp files rather than shell variables: passing the
+# full payload to jq via --argjson blows past the shell's argument-length
+# limit once the harness environment adds enough exported vars.
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+curl -s "${BASE}?${QUERY}&page=1" >"$TMP_DIR/page1.json"
+curl -s "${BASE}?${QUERY}&page=2" >"$TMP_DIR/page2.json"
 
 # ─── FILTER + SHAPE ───
 # Filters applied (see conversation for why each one is here):
@@ -20,8 +26,8 @@ PAGE2="$(curl -s "${BASE}?${QUERY}&page=2")"
 #
 # Key order in the object below must match TokenData's struct field order
 # in PullDefiTokens.s.sol exactly - Foundry's JSON decode is positional.
-jq -n --argjson p1 "$PAGE1" --argjson p2 "$PAGE2" '
-  ($p1 + $p2)
+jq -n --slurpfile p1 "$TMP_DIR/page1.json" --slurpfile p2 "$TMP_DIR/page2.json" '
+  ($p1[0] + $p2[0])
   | map(select(
       .market_cap > 1000000
       and .total_volume > 0
