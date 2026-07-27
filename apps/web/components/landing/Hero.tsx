@@ -1,23 +1,19 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { LiveTicker } from "./LiveTicker";
 import { SplineRobot } from "./SplineRobot";
 
 
-// ─── TYPES ─────────────────────────────────────
 interface Stat {
   n: string;
   l: string;
 }
 
-// ─── CONSTANTS ─────────────────────────────────────
 const STATS: Stat[] = [
   { n: "1,240+", l: "Protocols monitored" },
   { n: "<60s", l: "Signal → executed transaction" },
   { n: "100%", l: "Actions logged onchain" },
 ];
 
-// ─── COMPONENT ─────────────────────────────────────
 export function Hero() {
   return (
     <section className="relative overflow-hidden pb-24 pt-16 sm:pb-32 sm:pt-24">
@@ -30,11 +26,8 @@ export function Hero() {
         className="pointer-events-none -z-10 object-cover"
       />
       <div className="mx-auto max-w-[1180px] px-5 sm:px-8">
-        {/* copy+illustration share this positioning context, kept separate
-            from the stat row below so vertical centering the (desktop-only)
-            absolutely-positioned image doesn't reach past this row. */}
+
         <div className="relative grid gap-12 lg:grid-cols-[620px_1fr] lg:items-center">
-          {/* ── copy, CTAs, live ticker ── */}
           <div className="relative z-10">
             <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-violet-bright">
               <span className="h-1.5 w-1.5 rounded-full bg-violet" />
@@ -63,24 +56,23 @@ export function Hero() {
                 See how it works
               </Button>
             </div>
+        </div>
 
-{/*             <LiveTicker />
- */}          </div>
-
-          {/* ── hero illustration ── */}
-          <div className="h-12 w-[10rem] bg-black absolute top-[26rem] right-[1rem] z-[99999] flex items-center justify-center">
-            <h2>200</h2>
+          <div className="h-[110px] w-[250px] border border-[#CAC0D5]/20 rounded-none bg-[#1e1425] absolute top-[24rem] right-[1rem] z-[99999] flex items-center justify-center px-3">
+      <span className="absolute -left-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
+      <span className="absolute -right-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
+      <span className="absolute -bottom-1.5 -left-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
+      <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
+      <p className="bg-linear-to-b from-white to-[#55416E] to-60% bg-clip-text text-transparent">Instant notifications, adaptive controls and AI-powered fraud defense.</p>
           </div>
 
-          <div className="relative z-0 h-75 w-full sm:h-100 lg:h-full border border-[#CAC0D5]/20">
+          <div className="relative z-0 h-75 w-full -translate-y-6 sm:h-100 lg:h-full lg:-translate-y-10">
             <SplineRobot />
           </div>
         </div>
 
-        {/* ── stat row ── */}
-       {/* ── stat row ── */}
+  
        <div className="relative mt-24 grid grid-cols-1 divide-y divide-[#CAC0D5]/20 border border-[#CAC0D5]/20  sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-  {/* corner nodes — only at the four true corners of the merged frame */}
   <span className="absolute -left-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
   <span className="absolute -right-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
   <span className="absolute -bottom-1.5 -left-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
