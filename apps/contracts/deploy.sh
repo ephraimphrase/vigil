@@ -49,4 +49,8 @@ echo "== Pulling and deploying DeFi tokens =="
 forge script script/SeedTokens.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
+echo "== Deploying HealthOracle =="
+forge script script/DeployHealthOracle.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+
+echo
 echo "Done. Chain stays up at $RPC_URL — run 'pnpm explorer' to visualize it."
