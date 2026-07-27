@@ -11,6 +11,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 import { MOCK_PROTOCOLS } from "@/mocks/protocols";
 import { useProtocolsTable } from "@/hooks/useProtocolsTable";
@@ -19,15 +20,15 @@ import { ProtocolsHeader } from "@/components/ProtocolsHeader";
 import { ProtocolsToolbar } from "@/components/ProtocolsToolbar";
 import { ProtocolsTable } from "@/components/ProtocolsTable";
 
-interface ProtocolsPageProps {
-  onOpenProtocol: (id: string) => void; // -> router.push(`/protocol/${id}`)
-  isLoading?: boolean;
-}
+const isLoading = false;
 
-export default function ProtocolsPage({
-  onOpenProtocol,
-  isLoading = false,
-}: ProtocolsPageProps) {
+export default function ProtocolsPage() {
+  const router = useRouter();
+  const onOpenProtocol = useCallback(
+    (id: string) => router.push(`/protocols/${id}`),
+    [router]
+  );
+
   // watchlist — local optimistic state; lift to persistence later
   const [watchlisted, setWatchlisted] = useState<Set<string>>(new Set());
   const toggleWatch = useCallback((id: string) => {

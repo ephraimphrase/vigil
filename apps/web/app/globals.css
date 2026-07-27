@@ -18,6 +18,12 @@
   --color-text: #E5DBF1;
   --color-text-muted: #C9C9C9;
   --color-text-dim: #6a5c86;
+  /* aliases used by the protocol-detail components */
+  --color-base: var(--color-bg);
+  --color-body: var(--color-text);
+  --color-muted: var(--color-text-muted);
+  --color-panel: var(--color-surface);
+  --color-hairline: var(--color-border);
   --color-violet: #b06ce1;
   --color-violet-bright: #e5dbf1;
   --color-violet-deep: #9668b7;
@@ -123,7 +129,6 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
