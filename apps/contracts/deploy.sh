@@ -24,8 +24,15 @@ if [[ "${1:-}" == "--fresh" ]]; then
 fi
 
 if ! curl -s -o /dev/null "$RPC_URL"; then
-  echo "No local chain detected — starting anvil in the background..."
-  nohup anvil > /tmp/vigil-anvil.log 2>&1 &
+  if [[ -n "${BASE_RPC_URL:-}" ]]; then
+    FORK_BLOCK_NUMBER="${FORK_BLOCK_NUMBER:-33000000}"
+    echo "No local chain detected — starting anvil forked from Base ($BASE_RPC_URL) at block $FORK_BLOCK_NUMBER..."
+    nohup anvil --fork-url "$BASE_RPC_URL" --chain-id 8453 --fork-block-number "$FORK_BLOCK_NUMBER" \
+      > /tmp/vigil-anvil.log 2>&1 &
+  else
+    echo "No local chain detected — starting anvil in the background..."
+    nohup anvil > /tmp/vigil-anvil.log 2>&1 &
+  fi
   disown
   until curl -s -o /dev/null "$RPC_URL"; do sleep 0.5; done
   echo "Anvil is up (logs: /tmp/vigil-anvil.log)."
@@ -40,6 +47,10 @@ forge script script/DeployWETH.s.sol --rpc-url "$RPC_URL" --broadcast --private-
 echo
 echo "== Pulling and deploying DeFi tokens =="
 forge script script/SeedTokens.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+
+echo
+echo "== Deploying HealthOracle =="
+forge script script/DeployHealthOracle.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
 echo "Done. Chain stays up at $RPC_URL — run 'pnpm explorer' to visualize it."

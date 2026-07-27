@@ -9,10 +9,22 @@ struct TokenRecord {
     string symbol;
     string name;
     uint8 decimals;
+    string logoURI;
 }
 
 contract DeployWETHScript is Script {
+    string constant WETH_LOGO_URI = "https://coin-images.coingecko.com/coins/images/2518/large/weth.png";
+    uint256 constant LOCAL_CHAIN_ID = 31337;
+
     function run() external returns (WETH9 weth) {
+        // A forked anvil (anvil --fork-url ...) keeps the source chain's
+        // chainid by default, so this also skips deployment on forks - real
+        // WETH already exists there at its real address.
+        if (block.chainid != LOCAL_CHAIN_ID) {
+            console.log("not a local chain, skipping WETH deploy");
+            return weth;
+        }
+
         vm.startBroadcast();
         weth = new WETH9();
         vm.stopBroadcast();
@@ -20,7 +32,15 @@ contract DeployWETHScript is Script {
         console.log("WETH9 deployed at:", address(weth));
 
         _appendToTokensFile(
-            _tokenRecordJson(TokenRecord({token: address(weth), symbol: "WETH", name: "Wrapped Ether", decimals: 18}))
+            _tokenRecordJson(
+                TokenRecord({
+                    token: address(weth),
+                    symbol: "WETH",
+                    name: "Wrapped Ether",
+                    decimals: 18,
+                    logoURI: WETH_LOGO_URI
+                })
+            )
         );
     }
 
@@ -54,7 +74,9 @@ contract DeployWETHScript is Script {
             t.name,
             "\",\"decimals\":",
             vm.toString(t.decimals),
-            "}"
+            ",\"logoURI\":\"",
+            t.logoURI,
+            "\"}"
         );
     }
 

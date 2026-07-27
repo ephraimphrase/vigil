@@ -6,12 +6,14 @@ import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
 import {TokenRecord} from "./DeployWETH.s.sol";
 
 // ─── TYPES ───
-// Field order here MUST match the key order emitted by _pull_defi_tokens.sh's
-// jq object construction. Foundry's parseJson -> abi.decode is order-sensitive,
-// not name-sensitive.
+// Field order here is alphabetical (logo, name, symbol), NOT the order
+// _pull_defi_tokens.sh writes the JSON keys in. Foundry's parseJson ->
+// abi.decode sorts JSON object keys alphabetically before assigning them to
+// struct fields positionally, regardless of source key order.
 struct TokenData {
-    string symbol;
+    string logo;
     string name;
+    string symbol;
 }
 
 contract SeedTokensScript is Script {
@@ -34,31 +36,23 @@ contract SeedTokensScript is Script {
 
         vm.startBroadcast();
         factory = new SeedTokenFactory();
-        _deployTokens(factory, tokens);
+        TokenRecord[] memory deployed = _deployTokens(factory, tokens);
         vm.stopBroadcast();
 
         console2.log("---");
         console2.log("SeedTokenFactory deployed at:", address(factory));
         console2.log("tokens deployed:", factory.tokenCount());
 
-        _writeTokensFile(factory);
+        _writeTokensFile(deployed);
     }
 
     // ─── UTILS ───
-    function _writeTokensFile(SeedTokenFactory factory) internal {
-        SeedTokenFactory.TokenInfo[] memory deployed = factory.allTokens();
+    function _writeTokensFile(TokenRecord[] memory deployed) internal {
         if (deployed.length == 0) return;
 
         string[] memory entries = new string[](deployed.length);
         for (uint256 i = 0; i < deployed.length; i++) {
-            entries[i] = _tokenRecordJson(
-                TokenRecord({
-                    token: deployed[i].token,
-                    symbol: deployed[i].symbol,
-                    name: deployed[i].name,
-                    decimals: 18
-                })
-            );
+            entries[i] = _tokenRecordJson(deployed[i]);
         }
 
         _appendToTokensFile(_joinWithCommas(entries));
@@ -117,7 +111,9 @@ contract SeedTokensScript is Script {
             t.name,
             "\",\"decimals\":",
             vm.toString(t.decimals),
-            "}"
+            ",\"logoURI\":\"",
+            t.logoURI,
+            "\"}"
         );
     }
 
@@ -142,7 +138,12 @@ contract SeedTokensScript is Script {
         return string(inner);
     }
 
-    function _deployTokens(SeedTokenFactory factory, TokenData[] memory tokens) internal {
+    function _deployTokens(SeedTokenFactory factory, TokenData[] memory tokens)
+        internal
+        returns (TokenRecord[] memory deployed)
+    {
+        deployed = new TokenRecord[](tokens.length);
+        uint256 count = 0;
         for (uint256 i = 0; i < tokens.length; i++) {
             // CoinGecko occasionally lists more than one token under the same
             // symbol (wrapped/bridged variants); the factory keys on symbol,
@@ -151,7 +152,18 @@ contract SeedTokensScript is Script {
                 console2.log("skipping duplicate symbol:", tokens[i].symbol);
                 continue;
             }
-            factory.deployToken(tokens[i].name, tokens[i].symbol);
+            address token = factory.deployToken(tokens[i].name, tokens[i].symbol);
+            deployed[count++] = TokenRecord({
+                token: token,
+                symbol: tokens[i].symbol,
+                name: tokens[i].name,
+                decimals: 18,
+                logoURI: tokens[i].logo
+            });
+        }
+        // shrink to the number actually deployed, discarding skipped duplicates
+        assembly {
+            mstore(deployed, count)
         }
     }
 
