@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-interface IVigilAdapter {
+interface IVigilProtocolAdapter {
     function protocolId() external view returns (bytes32);
 
     function asset() external view returns (address);

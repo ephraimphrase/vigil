@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IVigilAdapter } from "../interface/IVigilAdapter.sol";
+import {IVigilProtocolAdapter} from "../interface/IVigilProtocolAdapter.sol";
 
 interface IAavePool {
     function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
@@ -16,7 +16,7 @@ interface IAToken is IERC20 {
     function POOL() external view returns (address);
 }
 
-contract AaveV3Adapter is IVigilAdapter, ReentrancyGuard {
+contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     uint256 private constant AAVE_MAX = type(uint256).max;
