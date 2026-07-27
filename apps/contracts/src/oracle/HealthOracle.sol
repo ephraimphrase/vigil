@@ -2,6 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {IHealthOracle} from "../interface/IHealthOracle.sol";
 
 // A 0-100 health score per protocol, written by an offchain scorer.
 //
@@ -16,7 +17,7 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 //
 // A fully compromised scorer produces a bad allocation across whitelisted
 // adapters. It can never move funds anywhere.
-contract HealthOracle is AccessControl {
+contract HealthOracle is AccessControl, IHealthOracle {
     // The offchain scorer — the least-protected key in the system, and the
     // threat model every bound below is written against.
     bytes32 public constant SCORER_ROLE = keccak256("SCORER_ROLE");
@@ -30,7 +31,7 @@ contract HealthOracle is AccessControl {
     uint256 public constant MIN_INTERVAL = 5 minutes;
 
     // Consumers treat scores older than this as zero.
-    uint256 public immutable stalenessWindow;
+    uint256 public immutable override stalenessWindow;
 
     struct Score {
         uint16 value;      // 0-100
@@ -41,7 +42,7 @@ contract HealthOracle is AccessControl {
     mapping(bytes32 => Score) private _scores;
 
     // For enumeration by dashboards. Small set.
-    bytes32[] public protocolIds;
+    bytes32[] public override protocolIds;
 
     event ProtocolRegistered(bytes32 indexed protocolId, uint16 initialScore);
     event ScoreUpdated(bytes32 indexed protocolId, uint16 oldScore, uint16 newScore);
@@ -74,13 +75,14 @@ contract HealthOracle is AccessControl {
     function scoreOf(bytes32 protocolId)
         external
         view
+        override
         returns (uint16 score, uint40 updatedAt)
     {
         Score storage s = _scores[protocolId];
         return (s.value, s.updatedAt);
     }
 
-    function protocolCount() external view returns (uint256) {
+    function protocolCount() external view override returns (uint256) {
         return protocolIds.length;
     }
 
@@ -88,6 +90,7 @@ contract HealthOracle is AccessControl {
     // already approved — it cannot introduce new ones.
     function registerProtocol(bytes32 protocolId, uint16 initialScore)
         external
+        override
         onlyRole(DEFAULT_ADMIN_ROLE)
     {
         if (_scores[protocolId].registered) revert AlreadyRegistered(protocolId);
@@ -111,7 +114,7 @@ contract HealthOracle is AccessControl {
     ///      so near the bottom of the range a single write CAN zero a
     ///      score outright, same as emergencyZero but scorer-gated instead
     ///      of guardian-gated.
-    function setScore(bytes32 protocolId, uint16 newScore) public onlyRole(SCORER_ROLE) {
+    function setScore(bytes32 protocolId, uint16 newScore) public override onlyRole(SCORER_ROLE) {
         if (newScore > MAX_SCORE) revert ScoreOutOfRange(newScore);
 
         Score storage s = _scores[protocolId];
@@ -132,6 +135,7 @@ contract HealthOracle is AccessControl {
     /// @notice Batch write. Same bounds apply per entry.
     function setScores(bytes32[] calldata ids, uint16[] calldata values)
         external
+        override
         onlyRole(SCORER_ROLE)
     {
         uint256 n = ids.length;
@@ -144,7 +148,7 @@ contract HealthOracle is AccessControl {
     /// @notice Force a score to zero. Bypasses the clamp and the rate
     ///         limit — those exist to slow down a rogue scorer, not a
     ///         human pulling the alarm.
-    function emergencyZero(bytes32 protocolId) external onlyRole(GUARDIAN_ROLE) {
+    function emergencyZero(bytes32 protocolId) external override onlyRole(GUARDIAN_ROLE) {
         Score storage s = _scores[protocolId];
         if (!s.registered) revert NotRegistered(protocolId);
 

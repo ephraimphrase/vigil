@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Initializable} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract SeedToken is Initializable, ERC20 {
+contract SeedToken is Initializable, ERC20{
     string private _tokenName;
     string private _tokenSymbol;
 

@@ -1,34 +1,26 @@
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IVigilProtocolAdapter} from "../interface/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "../IVigilProtocolAdapter.sol";
+import {IMorpho} from "./interface/IMorpho.sol";
+import {IMorphoLens} from "./interface/IMorphoLens.sol";
+import {ICToken} from "../compound/interface/ICToken.sol";
 
-interface IAavePool {
-    function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
-    function withdraw(address asset, uint256 amount, address to) external returns (uint256);
-}
-
-interface IAToken is IERC20 {
-    function UNDERLYING_ASSET_ADDRESS() external view returns (address);
-    function POOL() external view returns (address);
-}
-
-contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
+contract MorphoCompoundAdapter is IVigilProtocolAdapter, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    uint256 private constant AAVE_MAX = type(uint256).max;
-
-    uint16 private constant REFERRAL_CODE = 0;
+    uint256 private constant MORPHO_MAX = type(uint256).max;
 
     address public immutable vault;
 
-    IAavePool public immutable pool;
-    IERC20   public immutable underlying;
-    IERC20   public immutable aToken;
-    bytes32  public immutable override protocolId;
+    IMorpho     public immutable morpho;
+    IMorphoLens public immutable lens;
+    ICToken     public immutable poolToken;
+    IERC20      public immutable underlying;
+    bytes32     public immutable override protocolId;
 
     event Supplied(uint256 amount);
     event Withdrawn(uint256 requested, uint256 actual);
@@ -38,7 +30,6 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
     error ZeroAddress();
     error ZeroAmount();
     error AssetMismatch();
-    error PoolMismatch();
     error CannotRescueCoreAsset();
 
     modifier onlyVault() {
@@ -48,23 +39,25 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
 
     constructor(
         address _vault,
-        IAavePool _pool,
+        IMorpho _morpho,
+        IMorphoLens _lens,
+        ICToken _poolToken,
         IERC20 _underlying,
-        IAToken _aToken,
         bytes32 _protocolId
     ) {
         if (_vault == address(0)) revert ZeroAddress();
-        if (address(_pool) == address(0)) revert ZeroAddress();
+        if (address(_morpho) == address(0)) revert ZeroAddress();
+        if (address(_lens) == address(0)) revert ZeroAddress();
+        if (address(_poolToken) == address(0)) revert ZeroAddress();
         if (address(_underlying) == address(0)) revert ZeroAddress();
-        if (address(_aToken) == address(0)) revert ZeroAddress();
 
-        if (_aToken.UNDERLYING_ASSET_ADDRESS() != address(_underlying)) revert AssetMismatch();
-        if (_aToken.POOL() != address(_pool)) revert PoolMismatch();
+        if (_poolToken.underlying() != address(_underlying)) revert AssetMismatch();
 
         vault      = _vault;
-        pool       = _pool;
+        morpho     = _morpho;
+        lens       = _lens;
+        poolToken  = _poolToken;
         underlying = _underlying;
-        aToken     = IERC20(address(_aToken));
         protocolId = _protocolId;
     }
 
@@ -73,12 +66,13 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
     }
 
     function totalAssets() public view override returns (uint256) {
-        return aToken.balanceOf(address(this));
+        (, , uint256 total) = lens.getCurrentSupplyBalanceInOf(address(poolToken), address(this));
+        return total;
     }
 
     function maxWithdraw() public view override returns (uint256) {
         uint256 position = totalAssets();
-        uint256 available = underlying.balanceOf(address(aToken));
+        uint256 available = poolToken.getCash();
         return position < available ? position : available;
     }
 
@@ -94,9 +88,9 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
         supplied = underlying.balanceOf(address(this));
         if (supplied == 0) revert ZeroAmount();
 
-        underlying.forceApprove(address(pool), supplied);
-        pool.supply(address(underlying), supplied, address(this), REFERRAL_CODE);
-        underlying.forceApprove(address(pool), 0);
+        underlying.forceApprove(address(morpho), supplied);
+        morpho.supply(address(poolToken), address(this), supplied);
+        underlying.forceApprove(address(morpho), 0);
 
         emit Supplied(supplied);
     }
@@ -115,9 +109,10 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
 
         uint256 target = amount < cap ? amount : cap;
 
-        uint256 before = underlying.balanceOf(vault);
-        pool.withdraw(address(underlying), target, vault);
-        withdrawn = underlying.balanceOf(vault) - before;
+        uint256 before = underlying.balanceOf(address(this));
+        morpho.withdraw(address(poolToken), target);
+        withdrawn = underlying.balanceOf(address(this)) - before;
+        underlying.safeTransfer(vault, withdrawn);
 
         emit Withdrawn(amount, withdrawn);
     }
@@ -131,15 +126,16 @@ contract AaveV3Adapter is IVigilProtocolAdapter, ReentrancyGuard {
     {
         if (totalAssets() == 0) return 0;
 
-        uint256 before = underlying.balanceOf(vault);
-        pool.withdraw(address(underlying), AAVE_MAX, vault);
-        withdrawn = underlying.balanceOf(vault) - before;
+        uint256 before = underlying.balanceOf(address(this));
+        morpho.withdraw(address(poolToken), MORPHO_MAX);
+        withdrawn = underlying.balanceOf(address(this)) - before;
+        underlying.safeTransfer(vault, withdrawn);
 
-        emit Withdrawn(AAVE_MAX, withdrawn);
+        emit Withdrawn(MORPHO_MAX, withdrawn);
     }
 
     function rescue(IERC20 token) external onlyVault nonReentrant {
-        if (address(token) == address(underlying) || address(token) == address(aToken)) {
+        if (address(token) == address(underlying)) {
             revert CannotRescueCoreAsset();
         }
         uint256 bal = token.balanceOf(address(this));

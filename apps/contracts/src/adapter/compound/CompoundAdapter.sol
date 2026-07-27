@@ -1,19 +1,11 @@
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IVigilProtocolAdapter} from "../interface/IVigilProtocolAdapter.sol";
-
-interface ICToken is IERC20 {
-    function mint(uint256 mintAmount) external returns (uint256);
-    function redeem(uint256 redeemTokens) external returns (uint256);
-    function redeemUnderlying(uint256 redeemAmount) external returns (uint256);
-    function exchangeRateStored() external view returns (uint256);
-    function getCash() external view returns (uint256);
-    function underlying() external view returns (address);
-}
+import {IVigilProtocolAdapter} from "../IVigilProtocolAdapter.sol";
+import {ICToken} from "./interface/ICToken.sol";
 
 contract CompoundV2Adapter is IVigilProtocolAdapter, ReentrancyGuard {
     using SafeERC20 for IERC20;

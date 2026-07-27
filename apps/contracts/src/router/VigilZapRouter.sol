@@ -7,17 +7,18 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {IERC4626} from "@openzeppelin/contracts/interfaces/IERC4626.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {ISwapRouter02} from "../interface/ISwapRouter02.sol";
+import {IVigilZapRouter} from "../interface/IVigilZapRouter.sol";
 
-contract VigilZapRouter is ReentrancyGuard {
+contract VigilZapRouter is ReentrancyGuard, IVigilZapRouter {
     using SafeERC20 for IERC20;
 
     uint256 private constant ADDR_SIZE = 20;
     uint256 private constant FEE_SIZE = 3;
     uint256 private constant MIN_PATH_LEN = ADDR_SIZE + FEE_SIZE + ADDR_SIZE;
 
-    IERC4626 public immutable vault;
-    IERC20 public immutable weth;
-    ISwapRouter02 public immutable swapRouter;
+    IERC4626 public immutable override vault;
+    IERC20 public immutable override weth;
+    ISwapRouter02 public immutable override swapRouter;
 
     event ZapIn(
         address indexed caller,
@@ -68,7 +69,7 @@ contract VigilZapRouter is ReentrancyGuard {
         uint256 minSharesOut,
         address receiver,
         uint256 deadline
-    ) public nonReentrant notExpired(deadline) returns (uint256 shares) {
+    ) public override nonReentrant notExpired(deadline) returns (uint256 shares) {
         if (amountIn == 0) revert ZeroAmount();
         if (receiver == address(0)) revert ZeroAddress();
         _validatePathIn(path, tokenIn);
@@ -113,7 +114,7 @@ contract VigilZapRouter is ReentrancyGuard {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external returns (uint256 shares) {
+    ) external override returns (uint256 shares) {
         try IERC20Permit(tokenIn).permit(
             msg.sender, address(this), amountIn, deadline, v, r, s
         ) {} catch {}
@@ -130,7 +131,7 @@ contract VigilZapRouter is ReentrancyGuard {
         uint256 minAmountOut,
         address receiver,
         uint256 deadline
-    ) external nonReentrant notExpired(deadline) returns (uint256 amountOut) {
+    ) external override nonReentrant notExpired(deadline) returns (uint256 amountOut) {
         if (shares == 0) revert ZeroAmount();
         if (receiver == address(0)) revert ZeroAddress();
         _validatePathOut(path, tokenOut);
