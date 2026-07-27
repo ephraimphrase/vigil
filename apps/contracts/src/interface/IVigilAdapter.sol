@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.24;
 
 interface IVigilAdapter {
-    function deposit(uint256 amount) external;
+    function protocolId() external view returns (bytes32);
+
+    function asset() external view returns (address);
+
+    function totalAssets() external view returns (uint256);
+
+    function maxWithdraw() external view returns (uint256);
+
+    function deposit(uint256 amount) external returns (uint256 supplied);
 
     function withdraw(uint256 amount) external returns (uint256 withdrawn);
 
-    function valueInBaseAsset() external view returns (uint256);
+    function withdrawAll() external returns (uint256 withdrawn);
 }
