@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// ScoreChart — score history with 24h-avg overlay and trigger markers.
-// Hairline grid, violet series, mono ticks (brief §7b). No gradient fill.
-// ─────────────────────────────────────────────────────────────
 
 import {
     ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid,
@@ -12,12 +8,10 @@ import {
   import { bandColor } from "@/lib/health";
   import type { ScorePoint } from "../types";
   
-  // ─── CONSTANTS ───
   const HAIRLINE = "rgba(202,192,213,0.2)";
   const VIOLET = "#9259DA";
   const MUTED = "#9F95AB";
-  
-  // ─── COMPONENTS ───
+
   function ChartTooltip({ active, payload }: any) {
     if (!active || !payload?.length) return null;
     const p = payload[0].payload as ScorePoint & { label: string };
@@ -31,8 +25,7 @@ import {
     );
   }
   
-  // ─── MAIN ───
-  export function ScoreChart({ history }: { history: ScorePoint[] }) {
+   export function ScoreChart({ history }: { history: ScorePoint[] }) {
     const data = history.map((h) => ({ ...h, label: dateShort(h.ts) }));
     const min = Math.min(...data.map((d) => Math.min(d.score, d.avg24h)));
     const yMin = Math.max(0, Math.floor((min - 5) / 10) * 10);

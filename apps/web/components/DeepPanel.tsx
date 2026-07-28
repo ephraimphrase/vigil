@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// DeepPanel — the DEEP tier. Contracts / Incidents / Dependencies behind
-// tabs so the page stays a glance-first instrument. Renders only tabs
-// that have data (graceful degradation per the schema).
-// ─────────────────────────────────────────────────────────────
 
 import { useState } from "react";
 import { Section } from "./Section";
@@ -10,7 +5,6 @@ import { severityColor } from "@/lib/health";
 import { dateShort } from "@/lib/format";
 import type { ContractRef, Incident, Dependency } from "../types";
 
-// ─── TYPES ───
 interface DeepPanelProps {
   contracts: ContractRef[];
   incidents: Incident[];
@@ -18,7 +12,6 @@ interface DeepPanelProps {
 }
 type TabKey = "contracts" | "incidents" | "dependencies";
 
-// ─── COMPONENTS ───
 const shorten = (a: string) => (a.length > 12 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a);
 
 function Contracts({ rows }: { rows: ContractRef[] }) {

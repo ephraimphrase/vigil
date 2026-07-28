@@ -1,8 +1,4 @@
-// ─────────────────────────────────────────────────────────────
-// HealthAssessment — the synthesized verdict (agent-agnostic; never
-// branded as a specific model). Current summary + risk flags, with a
-// collapsible history of past reads.
-// ─────────────────────────────────────────────────────────────
+
 
 import { useState } from "react";
 import { Section } from "./Section";
@@ -23,7 +19,6 @@ export function HealthAssessment({ health }: { health: Health }) {
         </span>
       }
     >
-      {/* summary — fading annotation treatment */}
       <p className="bg-gradient-to-b from-body to-[#55416E] bg-clip-text text-sm leading-relaxed text-transparent">
         {assessment.summary}
       </p>

@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Protocols · column definitions
-// Headless column defs only — each cell delegates to a cell component.
-// Watchlist column is injected here via factory (needs live state).
-// ─────────────────────────────────────────────────────────────
-
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 
@@ -15,13 +9,11 @@ import { DeltaCell } from "./DeltaCell";
 import { BandLabel } from "./BandLabel";
 import { RiskChips } from "./RiskChips";
 
-// ─── TYPES ───
 interface ColumnDeps {
   isWatched: (id: string) => boolean;
   onToggleWatch: (id: string, e: MouseEvent) => void;
 }
 
-// ─── MAIN ───
 const col = createColumnHelper<ProtocolRow>();
 
 export function buildColumns({

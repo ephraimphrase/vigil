@@ -1,16 +1,9 @@
-// ─────────────────────────────────────────────────────────────
-// SignalBreakdown — the SCAN tier meat. Renders onchain / offchain /
-// typed groups. `typed` is an open map keyed by category, so category
-// polymorphism falls out for free: whatever signals the entity has,
-// render them. SignalRow is inline — it's not reused elsewhere.
-// ─────────────────────────────────────────────────────────────
 
 import { Section } from "./Section";
 import { Chip } from "@/components/ui/Chip";
 import { fmtPct, trendArrow } from "@/lib/format";
 import type { Category, Signal, SignalGroups } from "../types";
 
-// ─── CONSTANTS ───
 const TYPED_LABEL: Record<Category, string> = {
   rollup: "Rollup signals", lending: "Lending signals", dex: "DEX signals",
   lsd: "Staking signals", cdp: "Stablecoin signals",
@@ -19,13 +12,11 @@ const STATUS_DOT: Record<Signal["status"], string | undefined> = {
   live: "#5FD08A", derived: "#B7DE5F", manual: "#9F95AB", unavailable: "#E0607F",
 };
 
-// ─── COMPONENTS ───
 function SignalRow({ s }: { s: Signal }) {
   return (
     <div className="grid grid-cols-[minmax(120px,1.4fr)_minmax(90px,1fr)_80px_44px_auto] items-center gap-3 py-2">
       <span className="truncate text-sm text-body">{s.label}</span>
       <span className="truncate font-mono text-xs text-muted">{s.raw}{s.unit ? "" : ""}</span>
-      {/* normalized bar — violet accent, hairline track (never a status fill) */}
       <div className="h-1 w-full rounded-none bg-hairline/20">
         <div className="h-full bg-violet/70" style={{ width: `${Math.round(s.normalized * 100)}%` }} />
       </div>
@@ -51,7 +42,6 @@ function Group({ label, signals }: { label: string; signals: Record<string, Sign
   );
 }
 
-// ─── MAIN ───
 export function SignalBreakdown({ signals, category }: { signals: SignalGroups; category: Category }) {
   return (
     <Section title="Signal breakdown"

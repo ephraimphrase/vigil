@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// AskPanel — the overload valve. Pre-seeded questions answered from the
-// underlying data; depth lives behind intent, not dumped on the page.
-// onAsk is wired to the LLM Q&A surface later.
-// ─────────────────────────────────────────────────────────────
-
 import { Section } from "./Section";
 
 interface AskPanelProps {
