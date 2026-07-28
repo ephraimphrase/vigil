@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {IWETH} from "../interface/IWETH.sol";
 
-
-contract WETH9 is ERC20 {
+contract WETH9 is ERC20, IWETH {
     event Deposit(address indexed sender, uint256 amount);
     event Withdrawal(address indexed sender, uint256 amount);
 
@@ -14,12 +14,12 @@ contract WETH9 is ERC20 {
         deposit();
     }
 
-    function deposit() public payable {
+    function deposit() public payable override {
         _mint(msg.sender, msg.value);
         emit Deposit(msg.sender, msg.value);
     }
 
-    function withdraw(uint256 amount) external {
+    function withdraw(uint256 amount) external override {
         _burn(msg.sender, amount);
         emit Withdrawal(msg.sender, amount);
         (bool success,) = msg.sender.call{value: amount}("");

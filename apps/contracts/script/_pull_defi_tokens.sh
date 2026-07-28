@@ -24,8 +24,10 @@ curl -s "${BASE}?${QUERY}&page=2" >"$TMP_DIR/page2.json"
 # tokens (stETH, frxETH) get a null rank from CoinGecko on purpose. Add a
 # symbol whitelist if you want rank-based filtering without losing those.
 #
-# Key order in the object below must match TokenData's struct field order
-# in PullDefiTokens.s.sol exactly - Foundry's JSON decode is positional.
+# Object keys below are alphabetical (logo, name, symbol) to match
+# TokenData's struct field order in SeedTokens.s.sol - Foundry's parseJson ->
+# abi.decode sorts JSON object keys alphabetically before assigning them to
+# struct fields positionally, regardless of the order they're written here.
 jq -n --slurpfile p1 "$TMP_DIR/page1.json" --slurpfile p2 "$TMP_DIR/page2.json" '
   ($p1[0] + $p2[0])
   | map(select(
@@ -33,7 +35,8 @@ jq -n --slurpfile p1 "$TMP_DIR/page1.json" --slurpfile p2 "$TMP_DIR/page2.json" 
       and .total_volume > 0
     ))
   | map({
-      symbol: .symbol,
+      logo: .image,
       name: .name,
+      symbol: .symbol,
     })
 '
