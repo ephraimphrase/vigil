@@ -6,7 +6,7 @@ import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol"
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {VigilVault} from "../src/vault/VigilVault.sol";
 import {HealthOracle} from "../src/oracle/HealthOracle.sol";
-import {IVigilProtocolAdapter} from "../src/adapter/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "../src/interface/IVigilProtocolAdapter.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
 import {MockAdapter} from "./mocks/MockAdapter.sol";
 

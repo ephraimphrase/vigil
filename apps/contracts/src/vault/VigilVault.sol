@@ -7,7 +7,7 @@ import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.so
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IVigilProtocolAdapter} from "../adapter/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "../interface/IVigilProtocolAdapter.sol";
 import {IVigilVault} from "../interface/IVigilVault.sol";
 import {HealthOracle} from "../oracle/HealthOracle.sol";
 

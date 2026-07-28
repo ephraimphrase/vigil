@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {IVigilProtocolAdapter} from "../../src/adapter/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "../../src/interface/IVigilProtocolAdapter.sol";
 
 // A trivial "protocol" that just holds the underlying 1:1 - no yield, no
 // external pool. `liquidityCap` lets tests simulate a protocol that can't
