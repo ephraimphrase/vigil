@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// TriggerHistory — this protocol's TriggerEvents. Execution/tx detail
-// lives on Activity; this is the protocol-scoped slice. Empty for most.
-// ─────────────────────────────────────────────────────────────
-
 import { Section } from "./Section";
 import { bandColor } from "@/lib/health";
 import { dateShort, fmtSigned } from "@/lib/format";

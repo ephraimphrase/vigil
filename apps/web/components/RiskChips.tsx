@@ -1,8 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// RiskChips — hairline pills, capped at 2 + overflow count to keep rows
-// single-line (see table.config ROW_HEIGHT note).
-// ─────────────────────────────────────────────────────────────
-
 const MAX_VISIBLE = 2;
 
 export function RiskChips({ flags }: { flags: string[] }) {

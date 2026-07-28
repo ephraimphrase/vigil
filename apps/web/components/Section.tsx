@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Section — consistent chrome for every scan/deep panel: mono eyebrow
-// title + plain hairline body. Tertiary containers stay undecorated so
-// the masthead's corner-node frame reads as the one primary (brief §7a).
-// ─────────────────────────────────────────────────────────────
-
 import type { ReactNode } from "react";
 
 interface SectionProps {

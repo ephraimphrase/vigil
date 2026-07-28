@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// RiskAnalysis — risk rows with severity as a thin left-rule indicator.
-// ─────────────────────────────────────────────────────────────
-
 import { Section } from "./Section";
 import { severityColor } from "@/lib/health";
 import type { RiskRow } from "../types";

@@ -1,7 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// ScoreCell — mono numeral + band-colored 2px rule (thin indicator only).
-// ─────────────────────────────────────────────────────────────
-
 import { resolveBand } from "../config/bands.config";
 import { fmtScore } from "../lib/format";
 

@@ -1,12 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ProtocolsTable — headless table renderer + row virtualization.
-// Native <table> fights the virtualizer, so rows are div-grids aligned
-// by GRID_COLS. Handles loading / empty / populated. Dumb: takes a table
-// instance, renders it.
-// ─────────────────────────────────────────────────────────────
-
 import { useRef } from "react";
 import { flexRender, type Table } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -15,8 +8,6 @@ import type { ProtocolRow } from "../types";
 import { GRID_COLS, ROW_HEIGHT, OVERSCAN } from "../config/table.config";
 import { TableSkeleton } from "./TableSkeleton";
 import { EmptyState } from "./EmptyState";
-
-// ─── COMPONENTS ───
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (
