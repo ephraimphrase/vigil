@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {HealthOracle} from "../oracle/HealthOracle.sol";
-import {IVigilProtocolAdapter} from "../adapter/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "./IVigilProtocolAdapter.sol";
 
 // Covers the Vigil-specific surface only - standard vault accounting
 // (deposit/withdraw/totalAssets/...) already comes from IERC4626 via
