@@ -12,4 +12,8 @@ interface IBeefyStrategyLike {
     function deposit() external;
     function withdraw(uint256 amount) external;
     function retireStrat() external;
+    // Permissionless on every Common/ strategy - anyone can trigger a
+    // compound, which is what funds the `call` fee incentive. No special
+    // trust needed for the adapter to call this on the strategy's behalf.
+    function harvest() external;
 }
