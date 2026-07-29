@@ -8,7 +8,6 @@ interface DecisionCard {
   band: Band;
 }
 
-// ─── CONSTANTS ─────────────────────────────────────
 const BAND_TEXT: Record<Band, string> = {
   healthy: "text-healthy",
   caution: "text-[#a3e635]",
@@ -23,8 +22,7 @@ const CARDS: DecisionCard[] = [
   { range: "Below 40", action: "Full exit", desc: "Critical. Position closed entirely.", band: "danger" },
 ];
 
-// ─── UTILS ─────────────────────────────────────
-// Four L-shaped bracket marks pinned to a card's corners
+
 function CornerBrackets() {
   return (
     <>
@@ -36,7 +34,6 @@ function CornerBrackets() {
   );
 }
 
-// ─── COMPONENTS ─────────────────────────────────────
 export function DecisionLogic() {
   return (
     <section id="decisions" className="py-24 sm:py-32">
