@@ -1,5 +1,8 @@
-import type { SystemState } from "@/components/layout/StatusPill";
+import type { SystemState } from "@/components/Layouts/StatusPill";
 
+/* ╔════════════════════════════════════════════╗
+   ║                Protocols                   ║
+   ╚════════════════════════════════════════════╝ */
 export interface ProtocolRow {
     id: string;          
     name: string;         
@@ -168,7 +171,10 @@ export interface ProtocolDetailDoc {
   protocols: ProtocolDetail[];
 }
 
-//Dashboard
+
+/* ╔════════════════════════════════════════════╗
+   ║          Dashboard Overview                ║
+   ╚════════════════════════════════════════════╝ */
 
 export interface Portfolio {
   totalValue: number;     
@@ -212,8 +218,9 @@ export interface OverviewData {
   pendingApprovals: number;
 }
 
-
-
+/* ╔════════════════════════════════════════════╗
+   ║                Strategy                    ║
+   ╚════════════════════════════════════════════╝ */
 export type StrategyStatus = "active" | "paused" | "exiting";
 
 export interface Strategy {
@@ -241,3 +248,53 @@ export interface StrategiesData {
   vault: VaultBuffer;
   strategies: Strategy[];
 }
+
+/* ╔════════════════════════════════════════════╗
+   ║                Vault                       ║
+   ╚════════════════════════════════════════════╝ */
+export type AutonomyLevel = "watch" | "alert" | "approve" | "auto";
+
+export interface VaultPolicy {
+  name: string;                 
+  maxWeightPerProtocol: number;
+  exitFloorScore: number;      
+  cooldownHours: number;      
+  autonomyDefault: AutonomyLevel;
+  excludedProtocols: string[];
+}
+
+export interface VaultInfo {
+  asset: string;              
+  totalAssets: number;         
+  totalShares: number;
+  sharePrice: number;           
+  idle: number;                
+  tvl: number;                 
+  benchmarkDeltaPct: number;    
+}
+
+export interface UserPosition {
+  shares: number;
+  valueUsd: number;             
+  costBasisUsd: number;         
+  pnlUsd: number;
+  walletUsdc: number;           
+}
+
+export interface AllocationRow {
+  protocolId: string;
+  name: string;
+  category: Category;
+  targetWeight: number;         
+  actualWeight: number;         
+  valueUsd: number;             
+  score: number;
+}
+
+export interface VaultData {
+  info: VaultInfo;
+  policy: VaultPolicy;
+  position: UserPosition | null; 
+  allocation: AllocationRow[];
+}
+

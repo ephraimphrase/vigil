@@ -12,7 +12,7 @@ import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { BAND_META, resolveBand } from "@/lib/health";
 import { fmtUsd } from "@/lib/format";
 import { rebalanceState } from "../lib/rebalance";
-import { WeightBar } from "./WeightBar";
+import { WeightBar } from "./ui/WeightBar";
 import type { Strategy } from "../types";
 
 // ─── UTILS ───

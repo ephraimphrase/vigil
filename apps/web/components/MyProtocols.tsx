@@ -1,11 +1,21 @@
 import type { ComponentType, ReactNode } from "react";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
+import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { BAND_META, resolveBand, deltaColor } from "@/lib/health";
 import { fmtPct, fmtSigned } from "@/lib/format";
 import type { Position } from "../types";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 const DefaultLink: LinkLike = ({ href, className, children }) => <a href={href} className={className}>{children}</a>;
+
+function HeaderTerm({ label, info }: { label: string; info: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1">
+      {label}
+      <InfoTooltip side="bottom">{info}</InfoTooltip>
+    </span>
+  );
+}
 
 export function MyProtocols({ positions, Link = DefaultLink }: { positions: Position[]; Link?: LinkLike }) {
   return (
@@ -14,7 +24,22 @@ export function MyProtocols({ positions, Link = DefaultLink }: { positions: Posi
         <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-violet-bright">
           <span className="h-1.5 w-1.5 rounded-full bg-violet" /> Your protocols
         </span>
-        <span className="font-mono text-xs text-muted/50">weight · apy · health</span>
+        <span className="flex items-center gap-1.5 font-mono text-xs text-muted/50">
+          <HeaderTerm
+            label="weight"
+            info="Share of the deployed pool sitting in that strategy. The number below it is drift — how far actual weight has moved from the policy's target, which is what triggers a rebalance."
+          />
+          <span>·</span>
+          <HeaderTerm
+            label="apy"
+            info="The annualized yield that strategy is currently earning — the reward side of the row."
+          />
+          <span>·</span>
+          <HeaderTerm
+            label="health"
+            info="How safe it is to have money parked here right now — venue solvency and risk, not token price. The risk side of the row."
+          />
+        </span>
       </header>
       <ul className="divide-y divide-hairline/40">
         {positions.map((p) => {
