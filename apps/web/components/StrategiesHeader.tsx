@@ -5,8 +5,8 @@
 // ─────────────────────────────────────────────────────────────
 
 import { ScoreBadge } from "@/components/health/ScoreBadge";
-import { fmtUsd } from "@/lib/format";
-import { aggregate } from "../lib/rebalance";
+import { fmtUsd } from "@/shared/format";
+import { aggregate } from "../shared/rebalance";
 import { useVault } from "../hooks/useVault";
 import type { StrategiesData } from "../types";
 

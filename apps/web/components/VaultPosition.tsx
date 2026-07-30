@@ -4,8 +4,8 @@
 // ─────────────────────────────────────────────────────────────
 
 import { CornerFrame } from "@/components/ui/CornerFrame";
-import { deltaColor } from "@/lib/health";
-import { fmtUsdFull, fmtSigned } from "@/lib/format";
+import { deltaColor } from "@/shared/health";
+import { fmtUsdFull, fmtSigned } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
 
 // ─── UTILS ───

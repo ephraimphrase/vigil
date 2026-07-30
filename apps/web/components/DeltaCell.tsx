@@ -1,6 +1,6 @@
 
 import { deltaColor } from "../config/bands.config";
-import { fmtSigned } from "../lib/format";
+import { fmtSigned } from "../shared/format";
 
 interface DeltaCellProps {
   value: number;

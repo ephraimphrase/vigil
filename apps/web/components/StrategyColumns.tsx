@@ -2,7 +2,7 @@ import moment from "moment";
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
 import type { Strategy } from "../types";
-import { fmtUsd, fmtFeePct } from "../lib/format";
+import { fmtUsd, fmtFeePct } from "../shared/format";
 import { ScoreCell } from "./ScoreCell";
 import { WeightBar } from "./ui/WeightBar";
 import { Chip } from "./ui/Chip";

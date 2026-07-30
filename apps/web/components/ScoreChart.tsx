@@ -4,8 +4,8 @@ import {
     Tooltip, ReferenceDot,
   } from "recharts";
   import { Section } from "./Section";
-  import { dateShort } from "@/lib/format";
-  import { bandColor } from "@/lib/health";
+  import { dateShort } from "@/shared/format";
+  import { bandColor } from "@/shared/health";
   import type { ScorePoint } from "../types";
   
   const HAIRLINE = "rgba(202,192,213,0.2)";

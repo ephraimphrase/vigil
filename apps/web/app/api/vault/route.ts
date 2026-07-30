@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { MOCK_VAULT } from "@/mocks/vault.mock";
+import { SEED } from "@/seed";
 
 export function GET() {
-  return NextResponse.json(MOCK_VAULT);
+  return NextResponse.json(SEED.vault);
 }

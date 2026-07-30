@@ -150,5 +150,5 @@ export interface ProtocolDetail {
 }
 
 // The old single-file {meta, protocols} wrapper is gone - each protocol is
-// its own file under mocks/protocol-detail/ now (see _meta.json for the
+// its own file under seed/protocol-detail/ now (see _meta.json for the
 // shared meta block, kept for reference but not currently served).

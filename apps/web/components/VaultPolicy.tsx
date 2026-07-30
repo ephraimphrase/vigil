@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { Chip } from "@/components/ui/Chip";
-import { fmtPct } from "@/lib/format";
+import { fmtPct } from "@/shared/format";
 import type { VaultPolicy as Policy } from "@/types";
 
 // ─── UTILS ───

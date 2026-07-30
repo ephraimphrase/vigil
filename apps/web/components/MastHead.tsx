@@ -1,7 +1,7 @@
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
-import { bandColor, BAND_META, resolveBand, deltaColor } from "@/lib/health";
-import { fmtScore, fmtSigned } from "@/lib/format";
+import { bandColor, BAND_META, resolveBand, deltaColor } from "@/shared/health";
+import { fmtScore, fmtSigned } from "@/shared/format";
 import type { Identity, Health } from "../types";
 
 const LINK_LABELS: Record<string, string> = {

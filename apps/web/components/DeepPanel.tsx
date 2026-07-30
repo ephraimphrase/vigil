@@ -1,8 +1,8 @@
 
 import { useState } from "react";
 import { Section } from "./Section";
-import { severityColor } from "@/lib/health";
-import { dateShort } from "@/lib/format";
+import { severityColor } from "@/shared/health";
+import { dateShort } from "@/shared/format";
 import type { ContractRef, Incident, Dependency } from "../types";
 
 interface DeepPanelProps {

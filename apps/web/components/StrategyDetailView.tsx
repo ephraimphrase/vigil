@@ -14,8 +14,8 @@ import { useStrategies } from "@/hooks/useStrategies";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
 import { WeightBar } from "@/components/ui/WeightBar";
-import { BAND_META, resolveBand, bandColor } from "@/lib/health";
-import { fmtUsd, fmtFeePct, fmtScore, fmtAddress } from "@/lib/format";
+import { BAND_META, resolveBand, bandColor } from "@/shared/health";
+import { fmtUsd, fmtFeePct, fmtScore, fmtAddress } from "@/shared/format";
 import type { Strategy } from "@/types";
 
 function Stat({ label, value }: { label: string; value: string }) {

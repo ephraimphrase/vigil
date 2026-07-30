@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 
 import { useStrategies } from "../../../hooks/useStrategies";
-import { aggregate } from "../../../lib/rebalance";
+import { aggregate } from "../../../shared/rebalance";
 import { StrategiesHeader } from "../../../components/StrategiesHeader";
 import { StrategiesTable } from "../../../components/StrategiesTable";
 import { buildStrategyColumns } from "../../../components/StrategyColumns";

@@ -6,7 +6,7 @@
 // rebalanceState combines them into what the engine will do next.
 // ─────────────────────────────────────────────────────────────
 
-import { resolveBand, BAND_META, type Band } from "@/lib/health";
+import { resolveBand, BAND_META, type Band } from "@/shared/health";
 import type { Strategy } from "../types";
 
 // ─── CONSTANTS ───
