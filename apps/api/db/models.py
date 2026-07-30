@@ -99,12 +99,18 @@ CREATE TABLE IF NOT EXISTS protocols (
     updated_at     TIMESTAMP NOT NULL DEFAULT now()
 );
 
--- One row per protocol's vault strategy (see BeefyStrategyAdapter /
--- IVigilProtocolAdapter in apps/contracts). All fields are scalar except
+-- One row per deployed strategy contract (see BeefyStrategyAdapter /
+-- IVigilProtocolAdapter in apps/contracts). A protocol can have more than
+-- one strategy variant (e.g. Curve has 9 separate Convex/StakeDAO/Fx
+-- strategy contracts), so `id` - not protocol_id - is the primary key;
+-- protocol_id is a plain indexed column. All fields are scalar except
 -- `rewards`, a short list of reward token symbols with no query need of
--- its own.
+-- its own. No `score` column - a strategy's score IS its protocol's score
+-- (health_scores, keyed by protocol_id), never a second copy that can
+-- drift from it. /api/strategies joins health_scores at read time instead.
 CREATE TABLE IF NOT EXISTS strategies (
-    protocol_id        TEXT PRIMARY KEY,
+    id                  TEXT PRIMARY KEY,
+    protocol_id         TEXT NOT NULL,
     name                TEXT NOT NULL,
     category            TEXT NOT NULL,
     description         TEXT NOT NULL,
@@ -119,7 +125,6 @@ CREATE TABLE IF NOT EXISTS strategies (
     allocated            DOUBLE PRECISION NOT NULL,
     target_weight        DOUBLE PRECISION NOT NULL,
     actual_weight        DOUBLE PRECISION NOT NULL,
-    score                DOUBLE PRECISION NOT NULL,
     apy                  DOUBLE PRECISION NOT NULL,
     last_rebalance       TIMESTAMP NOT NULL,
     paused               BOOLEAN NOT NULL,
@@ -131,6 +136,8 @@ CREATE TABLE IF NOT EXISTS strategies (
     deposit_fee            DOUBLE PRECISION NOT NULL,
     withdraw_fee            DOUBLE PRECISION NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_strategies_protocol_id ON strategies (protocol_id);
 """
 
 

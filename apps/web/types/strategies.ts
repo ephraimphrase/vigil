@@ -7,7 +7,8 @@ import type { Category } from "./shared";
 // `status` field - paused/retired already fully represent lifecycle state,
 // and a third redundant field just risks drifting out of sync with them.
 export interface Strategy {
-  protocolId: string;
+  id: string;           // unique per strategy contract - a protocol can have several (e.g. Curve has 9)
+  protocolId: string;   // links to the protocol page; not unique across strategies
   name: string;
   category: Category;
   description: string;       // what the strategy actually does with the deposited asset
@@ -22,7 +23,7 @@ export interface Strategy {
   allocated: number;
   targetWeight: number;
   actualWeight: number;
-  score: number;
+  score: number;   // the protocol's own health score - never stored per-strategy, always joined live off health_scores
   apy: number;
   lastRebalance: string;
   paused: boolean;

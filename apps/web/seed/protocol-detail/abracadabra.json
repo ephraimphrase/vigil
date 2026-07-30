@@ -1,0 +1,223 @@
+{
+  "identity": {
+    "id": "abracadabra",
+    "name": "Abracadabra",
+    "ticker": "SPELL",
+    "aliases": [
+      "Abracadabra Money",
+      "MIM"
+    ],
+    "category": "cdp",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "CDP stablecoin issuer (MIM)",
+    "description": "Issues MIM (Magic Internet Money), a stablecoin minted against yield-bearing collateral (interest-bearing tokens, LP positions) through isolated 'Cauldron' markets. Has a real, repeated history of depeg events and a March 2025 exploit, making its risk profile materially different from more conservative CDP issuers.",
+    "launchDate": "2021-05-01",
+    "ageDays": 1916,
+    "links": {
+      "website": "https://abracadabra.money",
+      "docs": "https://docs.abracadabra.money",
+      "github": "https://github.com/Abracadabra-money",
+      "twitter": "https://x.com/MIM_Spell",
+      "defillama": "https://defillama.com/protocol/abracadabra"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "MIM has depegged multiple times, most notably during the May 2022 Terra/UST contagion when CRV-collateral exposure raised solvency concerns, and a March 2025 exploit drained roughly $13M via price manipulation of a specific Cauldron. Each isolated Cauldron carries its own collateral-specific risk, but the protocol's overall track record is the weakest of the CDP-style protocols in this set.",
+      "riskFlags": [
+        "past depeg events",
+        "leveraged position risk"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.0004,
+    "marketCap": 24000000,
+    "fdv": 24000000,
+    "priceChange24h": -2.1,
+    "priceChange7d": -7.5,
+    "priceChange30d": -20,
+    "circulating": 60000000000,
+    "maxSupply": 60000000000,
+    "rank": 480,
+    "athMultiple": "-99.98% from ATH ($15.79, Apr 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$150M",
+        "normalized": 0.42,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-4.2%",
+        "normalized": 0.35,
+        "trend": "down",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "elevated",
+        "normalized": 0.4,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Cauldron liquidations 24h",
+        "raw": "elevated",
+        "normalized": 0.45,
+        "trend": "down",
+        "weight": 0.08,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "negative",
+        "normalized": 0.35,
+        "trend": "down",
+        "weight": 0.05,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "recent exploit history",
+        "normalized": 0.4,
+        "trend": "down",
+        "weight": 0.09,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "pegDeviation": {
+        "label": "MIM / USD peg",
+        "raw": "~0.98, historically volatile",
+        "normalized": 0.55,
+        "trend": "down",
+        "weight": 0.13,
+        "source": "oracle",
+        "status": "live"
+      },
+      "depegHistory": {
+        "label": "Prior depeg events",
+        "raw": "multiple (2022, 2023)",
+        "normalized": 0.35,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "exploitHistory": {
+        "label": "Prior exploit loss",
+        "raw": "~$13M (Mar 2025)",
+        "normalized": 0.35,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "collateralQuality": {
+        "label": "Cauldron collateral risk",
+        "raw": "mixed, some illiquid/volatile",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Peg",
+      "severity": "high",
+      "title": "Repeated depeg history",
+      "note": "MIM has depegged multiple times, most notably during the May 2022 Terra/UST contagion when CRV-collateral solvency concerns spread.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "high",
+      "title": "March 2025 Cauldron exploit",
+      "note": "A specific Cauldron market was drained for roughly $13M via price manipulation of its collateral oracle.",
+      "source": "manual"
+    },
+    {
+      "category": "Collateral",
+      "severity": "medium",
+      "title": "Leveraged/illiquid collateral",
+      "note": "Some Cauldrons accept volatile or thinly-liquid collateral, increasing liquidation-cascade risk under stress.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "MIM Token",
+      "address": "0x99D8a9C45b2ecA8864373A26D1459e3Dff1e17F3",
+      "kind": "token"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2022-05-12",
+      "type": "depeg",
+      "severity": "high",
+      "title": "MIM depeg during Terra/UST contagion",
+      "note": "CRV-collateral solvency fears during the broader Terra collapse pushed MIM meaningfully off peg for several days."
+    },
+    {
+      "ts": "2025-03-25",
+      "type": "exploit",
+      "severity": "high",
+      "title": "Cauldron exploit - ~$13M",
+      "note": "Price manipulation of a specific Cauldron's collateral valuation allowed over-minting of MIM against undercollateralized positions."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "collateral",
+      "target": "various",
+      "note": "Each Cauldron accepts a specific yield-bearing or LP collateral type, with risk varying market-to-market."
+    }
+  ],
+  "askSuggestions": [
+    "Given the depeg and exploit history, is MIM meaningfully riskier than other CDP stablecoins today?",
+    "What collateral backs the specific Cauldron I'd be exposed to?"
+  ]
+}

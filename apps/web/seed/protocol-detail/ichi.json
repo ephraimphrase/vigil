@@ -1,0 +1,189 @@
+{
+  "identity": {
+    "id": "ichi",
+    "name": "ICHI",
+    "ticker": "ICHI",
+    "aliases": [
+      "ICHI Vaults"
+    ],
+    "category": "dex",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Single-sided concentrated liquidity vaults",
+    "description": "ICHI Vaults let projects and users provide single-sided concentrated liquidity (deposit only one token) into a Uniswap V3-style range that's automatically managed. Niche relative to major DEXs, with TVL concentrated in a smaller set of partner-token vaults.",
+    "launchDate": "2020-11-01",
+    "ageDays": 2097,
+    "links": {
+      "website": "https://ichi.org",
+      "docs": "https://docs.ichi.org",
+      "github": "https://github.com/ichifarm",
+      "twitter": "https://x.com/ichifarm",
+      "defillama": "https://defillama.com/protocol/ichi-vaults"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "A niche, smaller-TVL single-sided liquidity primitive. Structurally sound (built on audited Uniswap V3 mechanics), but low liquidity, thin trading volume in the ICHI token itself, and concentration in a handful of partner vaults mean the practical downside is more about scale and exit liquidity than a specific known exploit.",
+      "riskFlags": [
+        "single-sided IL exposure",
+        "smaller protocol"
+      ],
+      "confidence": "low",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 12.8,
+    "marketCap": 3800000,
+    "fdv": 12800000,
+    "priceChange24h": 0.6,
+    "priceChange7d": -3,
+    "priceChange30d": -18,
+    "circulating": 297000,
+    "maxSupply": 1000000,
+    "rank": 1650,
+    "athMultiple": "-99% from ATH ($3,313, Feb 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$40M",
+        "normalized": 0.4,
+        "trend": "up",
+        "weight": 0.12,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+0.9%",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Vault rebalance volume 24h",
+        "raw": "low",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "low",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "vaultConcentration": {
+        "label": "TVL in top-3 vaults",
+        "raw": "high",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "exitLiquidity": {
+        "label": "ICHI token trading depth",
+        "raw": "thin",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Concentration",
+      "severity": "medium",
+      "title": "Vault TVL concentration",
+      "note": "A large share of TVL sits in a small number of partner-token vaults.",
+      "source": "DeFiLlama"
+    },
+    {
+      "category": "Liquidity",
+      "severity": "medium",
+      "title": "Thin exit liquidity",
+      "note": "Small market cap and trading volume make large position exits costly.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "low",
+      "title": "Single-sided IL exposure",
+      "note": "Depositing one token into a managed range still carries standard concentrated-liquidity IL as the range moves.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "ICHI Vault Factory",
+      "address": "0x2d2c72C4dC71AA32D66D9e9385D3c1F6a9F5CaAa",
+      "kind": "factory"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "protocol",
+      "target": "uniswap-v3",
+      "note": "Vaults manage positions directly on Uniswap V3 pools."
+    }
+  ],
+  "askSuggestions": [
+    "What's the actual exit liquidity like if I need to withdraw a large position?",
+    "How concentrated is ICHI's TVL in a small number of vaults?"
+  ]
+}

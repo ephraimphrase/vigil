@@ -1,0 +1,195 @@
+{
+  "identity": {
+    "id": "velodrome",
+    "name": "Velodrome",
+    "ticker": "VELO",
+    "aliases": [
+      "Velodrome Finance"
+    ],
+    "category": "dex",
+    "chain": "optimism",
+    "settlementLayer": "ethereum",
+    "kind": "ve(3,3) automated market maker",
+    "description": "The dominant native DEX on the OP Superchain, combining Solidly's ve(3,3) design (vote-locked emissions directing liquidity) with both stable and volatile pool types. Deeply embedded in Optimism ecosystem incentive programs.",
+    "launchDate": "2022-06-01",
+    "ageDays": 1520,
+    "links": {
+      "website": "https://velodrome.finance",
+      "docs": "https://docs.velodrome.finance",
+      "github": "https://github.com/velodrome-finance",
+      "twitter": "https://x.com/VelodromeFi",
+      "defillama": "https://defillama.com/protocol/velodrome-finance",
+      "audits": [
+        "Spearbit",
+        "Trail of Bits"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Velodrome has been the OP Superchain's dominant liquidity venue for multiple years with a clean security record and deep integration into Optimism's own incentive programs - a genuine strength, but also a real concentration: its fortunes are tied closely to Optimism/OP-Stack chain health specifically.",
+      "riskFlags": [
+        "emissions dilution",
+        "op chain concentration"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.062,
+    "marketCap": 88000000,
+    "fdv": 124000000,
+    "priceChange24h": 0.7,
+    "priceChange7d": 3.5,
+    "priceChange30d": 8,
+    "circulating": 1420000000,
+    "maxSupply": 2000000000,
+    "rank": 220,
+    "athMultiple": "-88% from ATH ($0.52, Jun 2022)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$400M",
+        "normalized": 0.72,
+        "trend": "up",
+        "weight": 0.1,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+2.6%",
+        "normalized": 0.78,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "high",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.93,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity (ve gauge votes)",
+        "raw": "very active",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "opChainConcentration": {
+        "label": "OP Superchain TVL share",
+        "raw": "dominant",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "emissionInflation": {
+        "label": "VELO emission dilution rate",
+        "raw": "moderate, decaying schedule",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "manual",
+        "status": "manual"
+      },
+      "veLockedShare": {
+        "label": "Supply locked as veVELO",
+        "raw": "high",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Concentration",
+      "severity": "medium",
+      "title": "OP Superchain concentration",
+      "note": "Velodrome's fortunes are closely tied to Optimism/OP-Stack chain health and incentive programs specifically.",
+      "source": "manual"
+    },
+    {
+      "category": "Tokenomics",
+      "severity": "low",
+      "title": "Emission dilution",
+      "note": "Continuous VELO emissions to liquidity providers dilute non-staking holders over time, on a decaying schedule.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Velodrome V2 Router",
+      "address": "0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858",
+      "kind": "router"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "optimism",
+      "note": "Primary and dominant deployment on the OP Superchain."
+    }
+  ],
+  "askSuggestions": [
+    "How exposed is Velodrome specifically to Optimism chain-level issues versus general DEX risk?",
+    "How fast does VELO emission dilution actually run?"
+  ]
+}

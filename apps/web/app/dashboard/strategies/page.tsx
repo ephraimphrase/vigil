@@ -49,7 +49,7 @@ export default function StrategiesPage() {
         <StrategiesTable
           table={table}
           isLoading={false}
-          onOpenStrategy={(protocolId) => router.push(`/dashboard/strategies/${protocolId}`)}
+          onOpenStrategy={(id) => router.push(`/dashboard/strategies/${id}`)}
         />
       </div>
     </div>

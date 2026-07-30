@@ -1,0 +1,225 @@
+{
+  "identity": {
+    "id": "gmx",
+    "name": "GMX",
+    "ticker": "GMX",
+    "aliases": [
+      "GMX V2",
+      "GM Pools"
+    ],
+    "category": "dex",
+    "chain": "arbitrum",
+    "settlementLayer": "ethereum",
+    "kind": "Decentralized perpetuals exchange",
+    "description": "Leading on-chain perpetuals venue. Liquidity providers (GM pools in V2, GLP in V1) act as the counterparty to all trader positions, earning fees but also absorbing net trader PnL. V2 moved to isolated per-market GM pools instead of V1's single shared GLP pool.",
+    "launchDate": "2021-09-01",
+    "ageDays": 1793,
+    "links": {
+      "website": "https://gmx.io",
+      "docs": "https://docs.gmx.io",
+      "github": "https://github.com/gmx-io",
+      "twitter": "https://x.com/GMX_IO",
+      "defillama": "https://defillama.com/protocol/gmx",
+      "audits": [
+        "ABDK",
+        "Guardian Audits"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "GMX pioneered the LP-as-counterparty perp model and has run through multiple market cycles, but that counterparty structure means GM/GLP holders can lose money in strongly trending markets even with zero smart-contract bugs - it's an inherent design tradeoff, not a defect. A December 2022 oracle-spread manipulation on GMX V1 also cost the protocol ~$565K.",
+      "riskFlags": [
+        "glp pool counterparty risk",
+        "oracle manipulation surface"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 24.5,
+    "marketCap": 245000000,
+    "fdv": 245000000,
+    "priceChange24h": -0.4,
+    "priceChange7d": 1.2,
+    "priceChange30d": -9,
+    "circulating": 10000000,
+    "maxSupply": 10000000,
+    "rank": 145,
+    "athMultiple": "-51% from ATH ($90.85, Jan 2024)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$500M",
+        "normalized": 0.72,
+        "trend": "down",
+        "weight": 0.1,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-0.8%",
+        "normalized": 0.65,
+        "trend": "down",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Perp trading volume 24h",
+        "raw": "high",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral-positive",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 new incidents",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "moderate",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "counterpartyExposure": {
+        "label": "LP net-PnL exposure to traders",
+        "raw": "structural, ongoing",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.12,
+        "source": "manual",
+        "status": "manual"
+      },
+      "oracleManipHistory": {
+        "label": "Prior oracle-spread exploit",
+        "raw": "~$565K (Dec 2022)",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "manual",
+        "status": "manual"
+      },
+      "marketIsolation": {
+        "label": "V2 isolated GM pools",
+        "raw": "yes, per-market",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      },
+      "openInterestSkew": {
+        "label": "Long/short OI skew",
+        "raw": "moderate",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Market design",
+      "severity": "medium",
+      "title": "LP-as-counterparty structure",
+      "note": "GM/GLP liquidity providers take the opposite side of every trader's position - in a strongly trending market, LPs can lose money even with flawless code.",
+      "source": "manual"
+    },
+    {
+      "category": "Oracle",
+      "severity": "medium",
+      "title": "Prior oracle-spread manipulation",
+      "note": "December 2022: a trader exploited GMX V1's oracle spread mechanics for ~$565K; V2's design narrows but doesn't eliminate this surface.",
+      "source": "manual"
+    },
+    {
+      "category": "Concentration",
+      "severity": "low",
+      "title": "Open interest skew",
+      "note": "One-sided positioning in a market increases the LP pool's directional exposure.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "GMX V2 Exchange Router",
+      "address": "0x7C68C7866A64FA2160F78EEaE12217FFbf871fa8",
+      "kind": "router"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2022-12-27",
+      "type": "exploit",
+      "severity": "medium",
+      "title": "Oracle spread manipulation - ~$565K",
+      "note": "A trader exploited AVAX price-spread mechanics on GMX V1 to extract profit from the GLP pool."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "arbitrum",
+      "note": "Primary deployment; also live on Avalanche."
+    },
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Low-latency price feeds for perp mark prices."
+    }
+  ],
+  "askSuggestions": [
+    "Can GM pool liquidity providers actually lose money even if nothing gets hacked?",
+    "How did V2's isolated pools change risk versus V1's single GLP pool?"
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "identity": {
+    "id": "kodiak",
+    "name": "Kodiak",
+    "ticker": "KDK",
+    "aliases": [
+      "Kodiak Islands"
+    ],
+    "category": "dex",
+    "chain": "berachain",
+    "settlementLayer": null,
+    "kind": "Concentrated liquidity AMM + auto-managed vaults",
+    "description": "Berachain's flagship native DEX. Kodiak Islands are auto-managed concentrated liquidity vaults (Uniswap V3-style ranges, automatically rebalanced). Deeply tied to Berachain's Proof-of-Liquidity consensus design, which is itself a new, unproven mechanism.",
+    "launchDate": "2025-02-01",
+    "ageDays": 544,
+    "links": {
+      "website": "https://kodiak.finance",
+      "docs": "https://docs.kodiak.finance",
+      "twitter": "https://x.com/KodiakFi",
+      "defillama": "https://defillama.com/protocol/kodiak"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Kodiak is the largest DEX on a chain that itself launched mainnet only months ago. Berachain's Proof-of-Liquidity consensus is a genuinely novel design with no multi-year track record, and Kodiak's own TVL and token price have been volatile since launch - this is early-stage-chain risk layered on top of ordinary DEX risk.",
+      "riskFlags": [
+        "new chain risk (berachain)",
+        "low liquidity"
+      ],
+      "confidence": "low",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.045,
+    "marketCap": 9000000,
+    "fdv": 45000000,
+    "priceChange24h": -1.5,
+    "priceChange7d": -6.8,
+    "priceChange30d": -22,
+    "circulating": 200000000,
+    "maxSupply": 1000000000
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$180M",
+        "normalized": 0.45,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-5.5%",
+        "normalized": 0.35,
+        "trend": "down",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "elevated",
+        "normalized": 0.45,
+        "trend": "down",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "moderate",
+        "normalized": 0.55,
+        "trend": "down",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "mixed",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low (young protocol)",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "chainMaturity": {
+        "label": "Berachain mainnet age",
+        "raw": "~5 months",
+        "normalized": 0.25,
+        "trend": "up",
+        "weight": 0.14,
+        "source": "manual",
+        "status": "manual"
+      },
+      "polConsensusRisk": {
+        "label": "Proof-of-Liquidity track record",
+        "raw": "novel, unproven",
+        "normalized": 0.3,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "rangeManagerRisk": {
+        "label": "Auto-range-manager complexity",
+        "raw": "moderate",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Chain",
+      "severity": "high",
+      "title": "New chain risk (Berachain)",
+      "note": "Berachain's Proof-of-Liquidity consensus mechanism has no multi-year track record; chain-level failure modes are still being discovered.",
+      "source": "manual"
+    },
+    {
+      "category": "Liquidity",
+      "severity": "medium",
+      "title": "Low liquidity / high volatility",
+      "note": "TVL and token price have both been volatile since the chain's launch.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "low",
+      "title": "Auto-range-manager risk",
+      "note": "Islands vaults algorithmically rebalance concentrated liquidity ranges - a manager bug affects every position in that vault.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Kodiak Islands Factory",
+      "address": "0x0Da8AA98e73dBa0f4B96a91B29E8dbA34fBB40FC",
+      "kind": "factory"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "berachain",
+      "note": "Single-chain deployment on a mainnet that launched in Feb 2025."
+    }
+  ],
+  "askSuggestions": [
+    "What specifically is unproven about Berachain's Proof-of-Liquidity consensus?",
+    "How does an auto-managed Island vault differ from managing a Uniswap V3 range myself?"
+  ]
+}

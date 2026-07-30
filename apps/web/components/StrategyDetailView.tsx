@@ -92,15 +92,15 @@ function Masthead({ s }: { s: Strategy }) {
   );
 }
 
-export function StrategyDetailView({ protocolId }: { protocolId: string }) {
+export function StrategyDetailView({ id }: { id: string }) {
   const data = useStrategies();
-  const s = data.strategies.find((x) => x.protocolId === protocolId);
+  const s = data.strategies.find((x) => x.id === id);
 
   if (!s) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-1 bg-base">
         <span className="font-mono text-xs uppercase tracking-wider text-muted">Not found</span>
-        <span className="text-sm text-muted/60">No strategy matches "{protocolId}".</span>
+        <span className="text-sm text-muted/60">No strategy matches "{id}".</span>
       </div>
     );
   }

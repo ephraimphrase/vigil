@@ -1,0 +1,203 @@
+{
+  "identity": {
+    "id": "silo",
+    "name": "Silo Finance",
+    "ticker": "SILO",
+    "aliases": [
+      "Silo V2"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Isolated-pair lending markets",
+    "description": "Every asset gets its own isolated lending market (\"silo\") paired against a bridge asset, so a bad listing or oracle failure in one silo can't directly cause bad debt in another - a similar isolation philosophy to Morpho Blue, arrived at independently and earlier.",
+    "launchDate": "2021-09-01",
+    "ageDays": 1793,
+    "links": {
+      "website": "https://silo.finance",
+      "docs": "https://docs.silo.finance",
+      "github": "https://github.com/silo-finance",
+      "twitter": "https://x.com/SiloFinance",
+      "defillama": "https://defillama.com/protocol/silo-v2",
+      "audits": [
+        "ABDK",
+        "Sigma Prime",
+        "Trail of Bits"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Silo's isolated-market design directly targets DeFi lending's classic contagion problem, and the protocol has run for several years without a direct exploit. TVL is modest relative to Aave/Compound, and per-silo oracle quality varies, since anyone can permissionlessly create a new silo - the isolation protects other silos, not necessarily depositors in a poorly configured one.",
+      "riskFlags": [
+        "isolated market risk",
+        "oracle dependency"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.065,
+    "marketCap": 45000000,
+    "fdv": 65000000,
+    "priceChange24h": 0.3,
+    "priceChange7d": 1,
+    "priceChange30d": -4,
+    "circulating": 692000000,
+    "maxSupply": 1000000000,
+    "rank": 380,
+    "athMultiple": "-92% from ATH ($0.82, Sep 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$280M",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+1.6%",
+        "normalized": 0.7,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Liquidation rate 24h",
+        "raw": "$0.3M (normal)",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "moderate",
+        "normalized": 0.62,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "marketIsolation": {
+        "label": "Cross-silo contagion protection",
+        "raw": "structural",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "permissionlessListing": {
+        "label": "Silo creation permission",
+        "raw": "permissionless",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "manual",
+        "status": "manual"
+      },
+      "badDebt": {
+        "label": "Bad debt across silos",
+        "raw": "isolated, low aggregate",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "subgraph",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Isolation",
+      "severity": "low",
+      "title": "Isolated market design",
+      "note": "Bad debt in one silo cannot directly spread to another - the core value proposition, and it has held up in practice.",
+      "source": "manual"
+    },
+    {
+      "category": "Listing",
+      "severity": "medium",
+      "title": "Permissionless silo creation",
+      "note": "Anyone can create a new silo; oracle and asset quality varies market-to-market, and isolation protects other silos, not depositors in a poorly built one.",
+      "source": "manual"
+    },
+    {
+      "category": "Oracle",
+      "severity": "low",
+      "title": "Per-silo oracle dependency",
+      "note": "Each silo's safety depends on its own configured price oracle.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "SiloFactory",
+      "address": "0x6d22C7B9739C7ec03F1af58f9E3C7D8D6a76E7f1",
+      "kind": "factory"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Most silos price via Chainlink, configured per-market at creation."
+    }
+  ],
+  "askSuggestions": [
+    "Since anyone can create a silo, how do I know a specific market is well-configured?",
+    "How does Silo's isolation actually prevent contagion compared to a pooled lending market?"
+  ]
+}

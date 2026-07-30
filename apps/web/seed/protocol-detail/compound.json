@@ -1,0 +1,230 @@
+{
+  "identity": {
+    "id": "compound",
+    "name": "Compound",
+    "ticker": "COMP",
+    "aliases": [
+      "Compound V3",
+      "Comet"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Single-borrowable-asset money market",
+    "description": "One of DeFi's original lending protocols. V3 (\"Comet\") redesigned around one borrowable base asset per deployment (e.g. a USDC market) with multiple collateral types, simplifying risk accounting versus V2's pooled-everything model. This repo's strategy supplies directly to a Comet USDC market.",
+    "launchDate": "2018-09-01",
+    "ageDays": 2889,
+    "links": {
+      "website": "https://compound.finance",
+      "docs": "https://docs.compound.finance",
+      "github": "https://github.com/compound-finance",
+      "twitter": "https://x.com/compoundfinance",
+      "defillama": "https://defillama.com/protocol/compound-finance",
+      "explorer": "https://etherscan.io/address/0xc3d688B66703497DAA19211EEdff47f25384cdc3",
+      "audits": [
+        "OpenZeppelin",
+        "Trail of Bits",
+        "ChainSecurity"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Compound is one of the longest-running, most battle-tested lending protocols in DeFi with no direct protocol-level exploit in its history - its risk profile today is closer to 'mature and slow-moving' than 'actively concerning'. V3's single-base-asset design is easier to reason about than V2's pooled model, at some cost to capital efficiency across markets.",
+      "riskFlags": [
+        "governance timelock risk"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 44.2,
+    "marketCap": 310000000,
+    "fdv": 442000000,
+    "priceChange24h": 0.4,
+    "priceChange7d": 2.8,
+    "priceChange30d": -3.2,
+    "circulating": 7010000,
+    "maxSupply": 10000000,
+    "rank": 155,
+    "athMultiple": "-94% from ATH ($910, May 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$2.8B",
+        "normalized": 0.83,
+        "trend": "flat",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+0.6%",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Liquidation rate 24h",
+        "raw": "$0.8M (normal)",
+        "normalized": 0.88,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Contract tx volume",
+        "raw": "moderate",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Alchemy",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral-positive",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.97,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "slow, deliberate",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Compound Governance",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "marketMaturity": {
+        "label": "Years live",
+        "raw": "~8 years",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "manual",
+        "status": "manual"
+      },
+      "badDebt": {
+        "label": "Bad debt",
+        "raw": "negligible",
+        "normalized": 0.93,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "timelockDelay": {
+        "label": "Governance timelock",
+        "raw": "2 days",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "manual",
+        "status": "manual"
+      },
+      "collateralDiversity": {
+        "label": "Supported collateral types",
+        "raw": "8+ per Comet market",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "subgraph",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Governance",
+      "severity": "low",
+      "title": "Governance timelock risk",
+      "note": "A malicious or erroneous governance proposal that passes still executes after only a 2-day timelock.",
+      "source": "manual"
+    },
+    {
+      "category": "Market design",
+      "severity": "low",
+      "title": "Single-asset market fragmentation",
+      "note": "V3's per-base-asset markets mean liquidity is split across deployments rather than pooled, a deliberate tradeoff for simpler risk isolation.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Comet (USDC market)",
+      "address": "0xc3d688B66703497DAA19211EEdff47f25384cdc3",
+      "kind": "core"
+    },
+    {
+      "label": "CometRewards",
+      "address": "0x1B0e765F6224C21223AeA2af16c1C46E38885a40",
+      "kind": "rewards"
+    },
+    {
+      "label": "Governor Bravo",
+      "address": "0xc0Da02939E1441F497fd74F78cE7Decb17B66529",
+      "kind": "admin"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Collateral pricing across Comet markets."
+    },
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Primary deployment; V3 also live on several L2s."
+    }
+  ],
+  "askSuggestions": [
+    "Why does Compound V3 use separate markets instead of one pooled market like V2?",
+    "How fast could a bad governance proposal actually execute?"
+  ]
+}

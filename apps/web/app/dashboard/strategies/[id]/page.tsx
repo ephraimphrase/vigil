@@ -6,5 +6,5 @@ import { StrategyDetailView } from "@/components/StrategyDetailView";
 
 export default function DashboardStrategyDetailPage() {
   const params = useParams<{ id: string }>();
-  return <StrategyDetailView protocolId={params.id} />;
+  return <StrategyDetailView id={params.id} />;
 }

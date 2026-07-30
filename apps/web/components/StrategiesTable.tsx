@@ -45,7 +45,7 @@ function HeaderRow({ table }: { table: Table<Strategy> }) {
 interface StrategiesTableProps {
   table: Table<Strategy>;
   isLoading: boolean;
-  onOpenStrategy: (protocolId: string) => void;
+  onOpenStrategy: (id: string) => void;
 }
 
 export function StrategiesTable({ table, isLoading, onOpenStrategy }: StrategiesTableProps) {
@@ -75,7 +75,7 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
               return (
                 <div
                   key={row.id}
-                  onClick={() => onOpenStrategy(row.original.protocolId)}
+                  onClick={() => onOpenStrategy(row.original.id)}
                   className="group absolute left-0 grid w-full cursor-pointer items-center border-b border-[#CAC0D5]/20 px-3 transition-colors hover:bg-surface-2/60"
                   style={{
                     gridTemplateColumns: STRATEGY_GRID_COLS,

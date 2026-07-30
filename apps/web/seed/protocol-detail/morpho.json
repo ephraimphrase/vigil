@@ -1,0 +1,242 @@
+{
+  "identity": {
+    "id": "morpho",
+    "name": "Morpho",
+    "ticker": "MORPHO",
+    "aliases": [
+      "Morpho Blue",
+      "MetaMorpho"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Peer-to-peer optimized lending primitive",
+    "description": "Morpho Blue is a minimal, immutable isolated-market lending primitive. MetaMorpho vaults (ERC-4626) sit on top, letting curators (Steakhouse, Gauntlet, B.Protocol, etc.) allocate deposits across markets on a user's behalf - this repo's strategy deposits into one such curated vault.",
+    "launchDate": "2022-01-25",
+    "ageDays": 1647,
+    "links": {
+      "website": "https://morpho.org",
+      "docs": "https://docs.morpho.org",
+      "github": "https://github.com/morpho-org",
+      "twitter": "https://x.com/MorphoLabs",
+      "defillama": "https://defillama.com/protocol/morpho",
+      "audits": [
+        "ChainSecurity",
+        "Spearbit",
+        "Trail of Bits",
+        "OpenZeppelin"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Blue's minimal, immutable core (no admin keys on deployed markets) is a strong security property, and TVL growth has been consistent as curated MetaMorpho vaults attract allocators. The real risk sits one layer up: which curator manages a given vault, and how conservative their market/oracle selection is - a bad curator decision on an isolated market doesn't touch Blue itself, but does touch depositors in that vault.",
+      "riskFlags": [
+        "curator dependency",
+        "isolated market risk"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 2.15,
+    "marketCap": 715000000,
+    "fdv": 2150000000,
+    "priceChange24h": 1.1,
+    "priceChange7d": 4.2,
+    "priceChange30d": 12.5,
+    "circulating": 332800000,
+    "maxSupply": 1000000000,
+    "rank": 68,
+    "athMultiple": "-58% from ATH ($5.16, Jan 2025)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$3.5B",
+        "normalized": 0.82,
+        "trend": "up",
+        "weight": 0.12,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+3.1%",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Liquidation rate 24h",
+        "raw": "$1.1M (normal)",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Contract tx volume",
+        "raw": "high",
+        "normalized": 0.82,
+        "trend": "up",
+        "weight": 0.04,
+        "source": "Alchemy",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.88,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive",
+        "normalized": 0.78,
+        "trend": "up",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "active",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "curatorConcentration": {
+        "label": "Top-curator TVL share",
+        "raw": "~40% (Steakhouse)",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "isolatedMarketCount": {
+        "label": "Active isolated markets",
+        "raw": "450+",
+        "normalized": 0.75,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "badDebt": {
+        "label": "Protocol-wide bad debt",
+        "raw": "negligible",
+        "normalized": 0.92,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "immutability": {
+        "label": "Core contract upgradability",
+        "raw": "immutable (Blue core)",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      },
+      "oracleHealth": {
+        "label": "Oracle health (per-market)",
+        "raw": "nominal",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Curation",
+      "severity": "medium",
+      "title": "Curator dependency",
+      "note": "MetaMorpho vault safety depends entirely on the curator's market/oracle/LTV selections - Blue itself has no opinion.",
+      "source": "manual"
+    },
+    {
+      "category": "Isolation",
+      "severity": "low",
+      "title": "Isolated market risk",
+      "note": "Each Blue market is fully isolated by design; a bad market can't directly cause contagion elsewhere, but a mispriced oracle on one market can still lose that market's lenders funds.",
+      "source": "manual"
+    },
+    {
+      "category": "Concentration",
+      "severity": "low",
+      "title": "Curator TVL concentration",
+      "note": "A large share of deposits sit under a small number of curators.",
+      "source": "DeFiLlama"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Morpho Blue",
+      "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+      "kind": "core"
+    },
+    {
+      "label": "MetaMorpho Factory",
+      "address": "0x1897A8997241C1cD4bD0698647e4EB7213535c24",
+      "kind": "factory"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "curator",
+      "target": "third-party-risk-managers",
+      "note": "Vault-level allocation decisions are delegated to curators (Steakhouse, Gauntlet, etc.), not Morpho Labs."
+    },
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Most markets price collateral via Chainlink feeds, configured per-market by the market creator."
+    }
+  ],
+  "askSuggestions": [
+    "How much of my deposit's risk actually comes from the curator, not Morpho Blue itself?",
+    "What happens if one isolated market gets bad debt - does it spread?"
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "identity": {
+    "id": "shadow",
+    "name": "Shadow Exchange",
+    "ticker": "SHADOW",
+    "aliases": [],
+    "category": "dex",
+    "chain": "sonic",
+    "settlementLayer": null,
+    "kind": "ve(3,3) concentrated liquidity AMM",
+    "description": "Sonic chain's leading native DEX, combining Solidly-style ve(3,3) emission mechanics with Uniswap V3-style concentrated liquidity. Tightly coupled to Sonic's growth (formerly Fantom, relaunched with a new VM and incentive program in 2025).",
+    "launchDate": "2024-12-01",
+    "ageDays": 606,
+    "links": {
+      "website": "https://www.shadow.so",
+      "docs": "https://docs.shadow.so",
+      "twitter": "https://x.com/ShadowOnSonic",
+      "defillama": "https://defillama.com/protocol/shadow-exchange"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Shadow has grown quickly as Sonic's dominant DEX, but both the application and its host chain are young. Sonic's relaunch (from Fantom) is still building a multi-cycle track record, and emissions-heavy ve(3,3) tokenomics tend to produce TVL that's more mercenary than sticky.",
+      "riskFlags": [
+        "new chain risk (sonic)",
+        "concentrated liquidity risk"
+      ],
+      "confidence": "low",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 8.2,
+    "marketCap": 16000000,
+    "fdv": 41000000,
+    "priceChange24h": -1.8,
+    "priceChange7d": -5.2,
+    "priceChange30d": -15,
+    "circulating": 1950000,
+    "maxSupply": 5000000
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$120M",
+        "normalized": 0.48,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-3.8%",
+        "normalized": 0.4,
+        "trend": "down",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "moderate",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "moderate",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "mixed",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity (ve gauge votes)",
+        "raw": "active",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "chainMaturity": {
+        "label": "Sonic mainnet age (relaunch)",
+        "raw": "~8 months",
+        "normalized": 0.35,
+        "trend": "up",
+        "weight": 0.13,
+        "source": "manual",
+        "status": "manual"
+      },
+      "emissionDependency": {
+        "label": "TVL sensitivity to emissions",
+        "raw": "high",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "veLockedShare": {
+        "label": "Supply locked as ve(3,3)",
+        "raw": "moderate",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Chain",
+      "severity": "high",
+      "title": "New chain risk (Sonic)",
+      "note": "Sonic's current form is a relatively recent relaunch; chain-level infrastructure has a short independent track record.",
+      "source": "manual"
+    },
+    {
+      "category": "Tokenomics",
+      "severity": "medium",
+      "title": "Emission-driven TVL",
+      "note": "ve(3,3) mechanics reward mercenary liquidity that can rotate out quickly when emissions favor another venue.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "low",
+      "title": "Concentrated liquidity risk",
+      "note": "Standard V3-style range risk applies on top of chain and emission risk.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Shadow Voter",
+      "address": "0x9F59349bDa2Aa4b8CDA0C46E0eF77e2C7Efd5ba1",
+      "kind": "governance"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "sonic",
+      "note": "Single-chain deployment on Sonic's relaunched mainnet."
+    }
+  ],
+  "askSuggestions": [
+    "How mature is Sonic as a chain compared to established L1s/L2s?",
+    "How much of Shadow's TVL would leave if emissions dropped?"
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "identity": {
+    "id": "pendle",
+    "name": "Pendle",
+    "ticker": "PENDLE",
+    "aliases": [
+      "Pendle Finance"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Yield tokenization protocol",
+    "description": "Splits yield-bearing assets into Principal Tokens (PT, redeemable 1:1 at maturity) and Yield Tokens (YT, claim on the yield stream). Lets users fix yield, speculate on yield direction, or trade discounted principal. TVL has grown enormously alongside points/airdrop farming demand.",
+    "launchDate": "2021-06-01",
+    "ageDays": 1885,
+    "links": {
+      "website": "https://pendle.finance",
+      "docs": "https://docs.pendle.finance",
+      "github": "https://github.com/pendle-finance",
+      "twitter": "https://x.com/pendle_fi",
+      "defillama": "https://defillama.com/protocol/pendle",
+      "audits": [
+        "ABDK",
+        "Dedaub",
+        "WatchPug"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Pendle's TVL growth has been substantial, much of it correlated with points/airdrop farming cycles on underlying yield sources rather than pure fixed-yield demand - a real dependency on external incentive trends. The PT/YT AMM math is more complex than a standard swap pool, and every position ultimately inherits the risk of whatever underlying yield-bearing asset was tokenized.",
+      "riskFlags": [
+        "yield-tokenization complexity",
+        "underlying protocol dependency"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 4.9,
+    "marketCap": 970000000,
+    "fdv": 1470000000,
+    "priceChange24h": 1.8,
+    "priceChange7d": 6.5,
+    "priceChange30d": 15,
+    "circulating": 198000000,
+    "maxSupply": 300000000,
+    "rank": 58,
+    "athMultiple": "-38% from ATH ($7.51, Dec 2024)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$4.5B",
+        "normalized": 0.85,
+        "trend": "up",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+4.1%",
+        "normalized": 0.82,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "PT/YT swap volume 24h",
+        "raw": "high",
+        "normalized": 0.82,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.92,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "active",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "pointsFarmingDependency": {
+        "label": "TVL tied to points/airdrop cycles",
+        "raw": "significant",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "underlyingAssetDiversity": {
+        "label": "Tokenized yield-source diversity",
+        "raw": "broad (LSDs, LP tokens, RWAs)",
+        "normalized": 0.75,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      },
+      "maturityConcentration": {
+        "label": "TVL concentration by maturity",
+        "raw": "moderate",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Dependency",
+      "severity": "medium",
+      "title": "Underlying yield-source risk pass-through",
+      "note": "A PT/YT position is only as safe as the yield-bearing asset it wraps - a depeg or exploit in the underlying passes straight through.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "medium",
+      "title": "Points-farming TVL dependency",
+      "note": "A meaningful share of TVL growth tracks points/airdrop farming cycles rather than pure fixed-yield demand, which can reverse when those cycles end.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "low",
+      "title": "AMM complexity",
+      "note": "PT/YT pricing math is more involved than a standard constant-product pool.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Pendle Router V4",
+      "address": "0x888888888889758F76e7103c6CbF23ABbF58F946",
+      "kind": "router"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "protocol",
+      "target": "many",
+      "note": "Each market tokenizes a specific underlying yield source (LSDs, LP tokens, lending receipts, etc.), inheriting that source's risk."
+    }
+  ],
+  "askSuggestions": [
+    "How much of Pendle's current TVL is airdrop-farming-driven versus organic fixed-yield demand?",
+    "If the underlying asset I tokenized depegs, what happens to my PT/YT position?"
+  ]
+}
