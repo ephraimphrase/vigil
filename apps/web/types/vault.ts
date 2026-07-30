@@ -39,6 +39,7 @@ export interface AllocationRow {
   actualWeight: number;
   valueUsd: number;
   score: number;
+  apy: number;
 }
 
 // Beefy-checklist-style pass/fail row - vault-level (the strategy set as a
@@ -58,4 +59,15 @@ export interface VaultData {
   position: UserPosition | null;
   allocation: AllocationRow[];
   riskChecks: RiskCheckRow[];
+}
+
+// Row shape for the /dashboard/vault picker. `apy` is derived from the
+// vault's own allocation (vaultAggregate, shared/vault.ts); `riskFlagged`
+// from its own riskChecks; `positionValueUsd` from its own position - all
+// computed once at seed-build time from that same vault's VaultData, never
+// hand-entered a second time.
+export interface VaultSummary extends VaultInfo {
+  apy: number;
+  riskFlagged: number;
+  positionValueUsd: number | null;
 }

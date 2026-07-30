@@ -2,24 +2,21 @@
 
 // ─────────────────────────────────────────────────────────────
 // VaultDetailView — composition only. The Yearn-style single-vault page:
-// masthead → your position → strategies (compact) → allocation → policy →
-// risk, with the deposit/withdraw rail sticky on the right. Strategies come
-// from the app-wide useStrategies() (same source as /dashboard/strategies,
-// so the compact view here can't drift from the full table), and the
-// blended APY/weighted health/deployed total are the same `aggregate()`
-// StrategiesHeader already uses - one formula, not a second one for the
-// vault page. No data logic of its own beyond that composition.
+// masthead → your position → strategies/allocation → policy → risk, with
+// the deposit/withdraw rail sticky on the right. Headline APY, weighted
+// health, and deployed total all come from vaultAggregate(vault.allocation)
+// - this vault's own rows, not the global strategies list - so each vault
+// in a multi-vault picker shows its own numbers, never another vault's.
+// No data logic of its own beyond that composition.
 //
 // Rendered from the top-level /vault/[slug] route (see the thin wrapper
 // there) - same split as ProtocolDetailView / StrategyDetailView.
 // ─────────────────────────────────────────────────────────────
 
 import { useVault } from "@/hooks/useVault";
-import { useStrategies } from "@/hooks/useStrategies";
-import { aggregate } from "@/shared/rebalance";
+import { vaultAggregate } from "@/shared/vault";
 import { VaultMasthead } from "@/components/VaultMasthead";
 import { VaultPositionSummary } from "@/components/VaultPositionSummary";
-import { VaultStrategies } from "@/components/VaultStrategies";
 import { VaultAllocation } from "@/components/VaultAllocation";
 import { VaultPolicy } from "@/components/VaultPolicy";
 import { VaultRiskChecklist } from "@/components/VaultRiskChecklist";
@@ -29,8 +26,6 @@ type Tab = "deposit" | "withdraw";
 
 export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (tab: Tab, amount: number) => void }) {
   const vault = useVault(slug);
-  const { strategies } = useStrategies();
-  const agg = aggregate(strategies);
 
   if (!vault) {
     return (
@@ -42,6 +37,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
   }
 
   const { info, policy, position, allocation, riskChecks } = vault;
+  const agg = vaultAggregate(allocation);
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 bg-base p-4">
@@ -51,7 +47,6 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
         {/* main column */}
         <div className="flex min-w-0 flex-col gap-4">
           <VaultPositionSummary info={info} position={position} deployed={agg.deployed} />
-          <VaultStrategies strategies={strategies} />
           <VaultAllocation rows={allocation} />
           <VaultPolicy policy={policy} />
           <VaultRiskChecklist rows={riskChecks} />

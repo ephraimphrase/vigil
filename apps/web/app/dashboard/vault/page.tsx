@@ -1,57 +1,39 @@
 "use client";
 
 // ─────────────────────────────────────────────────────────────
-// VaultsPage — vault picker. One row today (Balanced), slug-ready for more:
-// add an entry to VAULT_MOCKS and it shows up here with zero page changes.
-// Click-through goes to the Yearn-style detail + deposit panel at
-// /vault/[slug] - this list stays a picker, not a second copy of that page.
+// VaultsPage — vault picker. A real table (header + search + sortable
+// columns), not cards - vaults are comparison data (TVL, APY, risk), and
+// every other entity list in this app (protocols, strategies) is already a
+// table; cards would've been the odd one out. Empty state (no vaults, or a
+// search with no matches) is the same EmptyState the other tables use, so
+// "nothing here" never just renders blank. Row click goes to the
+// Yearn-style detail + deposit panel at /vault/[slug].
 // ─────────────────────────────────────────────────────────────
 
-import Link from "next/link";
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
-import { useStrategies } from "@/hooks/useStrategies";
-import { aggregate } from "@/shared/rebalance";
-import { BracketCard } from "@/components/ui/BracketCard";
-import { Chip } from "@/components/ui/Chip";
-import { fmtUsd } from "@/shared/format";
-import type { VaultInfo } from "@/types";
+import { useVaultsTable } from "@/hooks/useVaultsTable";
+import { CornerFrame } from "@/components/ui/CornerFrame";
+import { VaultsHeader } from "@/components/VaultsHeader";
+import { VaultsToolbar } from "@/components/VaultsToolbar";
+import { VaultsTable } from "@/components/VaultsTable";
+import type { VaultSummary } from "@/types";
 
-// ─── UTILS ───
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="font-mono text-lg tabular-nums text-body">{value}</span>
-      <span className="font-mono text-xs uppercase tracking-wider text-muted/60">{label}</span>
-    </div>
-  );
-}
-
-// ─── MAIN ───
 export default function VaultsPage() {
-  const vaults = useApi<VaultInfo[]>("/api/vaults", []);
-  const { strategies } = useStrategies();
-  const agg = aggregate(strategies);
+  const router = useRouter();
+  const vaults = useApi<VaultSummary[]>("/api/vaults", []);
+  const onOpenVault = useCallback((slug: string) => router.push(`/vault/${slug}`), [router]);
+
+  const { table, rawQuery, setRawQuery, query, visibleCount, totalCount } = useVaultsTable(vaults);
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {vaults.map((v) => (
-          <Link key={v.slug} href={`/vault/${v.slug}`}>
-            <BracketCard className="bg-panel/10 transition-colors hover:bg-panel/20">
-              <div className="flex flex-col gap-4 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-display text-lg leading-none text-body">{v.name}</span>
-                  <Chip mono>{v.asset}</Chip>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Stat label="TVL" value={fmtUsd(v.tvl)} />
-                  <Stat label="APY" value={`${agg.weightedApy.toFixed(1)}%`} />
-                </div>
-              </div>
-            </BracketCard>
-          </Link>
-        ))}
-      </div>
+      <VaultsHeader visibleCount={visibleCount} totalCount={totalCount} />
+      <VaultsToolbar query={rawQuery} onQueryChange={setRawQuery} />
+      <CornerFrame>
+        <VaultsTable table={table} query={query} onOpenVault={onOpenVault} />
+      </CornerFrame>
     </div>
   );
 }
