@@ -40,8 +40,9 @@ export interface Strategy {
 }
 
 // No vault field here - all strategies belong to the one VigilVault, so
-// vault-level totals (asset/totalAssets/idle) come from useVault() /
-// /api/vault, not a second copy duplicated into every strategies read.
+// vault-level totals (asset/totalAssets/idle) come from useVault(slug) /
+// /api/vault/[slug], not a second copy duplicated into every strategies
+// read.
 export interface StrategiesData {
   strategies: Strategy[];
 }

@@ -20,9 +20,20 @@ export function Masthead({ identity, health }: { identity: Identity; health: Hea
       <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-none border border-hairline bg-panel font-mono text-sm text-violet-bright">
-              {(identity.ticker ?? identity.name).slice(0, 3).toUpperCase()}
-            </div>
+            {identity.icon ? (
+              <img
+                src={identity.icon}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-none border border-hairline bg-panel object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div className="grid h-11 w-11 place-items-center rounded-none border border-hairline bg-panel font-mono text-sm text-violet-bright">
+                {(identity.ticker ?? identity.name).slice(0, 3).toUpperCase()}
+              </div>
+            )}
             <div>
               <h1 className="font-display text-2xl leading-none tracking-tight text-body">{identity.name}</h1>
               <div className="mt-1 flex items-center gap-2 font-mono text-xs text-muted">

@@ -2,12 +2,18 @@
 
 // ─────────────────────────────────────────────────────────────
 // DepositWithdraw — the action panel. Tabbed deposit / withdraw, amount +
-// MAX, live preview. Amount math is pure (shared/vault). Submit is a stub —
-// wire to approve+deposit / redeem. Hand-rolled input → coss NumberField.
+// MAX, live preview. Amount math is pure (shared/vault), mirroring ERC4626
+// previewDeposit/previewRedeem. Submit is a stub - wire to approve+deposit /
+// redeem later. Amount field is the coss InputGroup, restyled to our
+// hairline/mono tokens (rounded-none, no shadow/ring) instead of its
+// shadcn defaults - see the `!` overrides below.
 // ─────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from "react";
-import { previewDeposit, previewWithdraw, parseAmount } from "../shared/vault";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { InfoTooltip } from "@/components/ui/InfoTooltip";
+import { AnnotationText } from "@/components/ui/AnnotationText";
+import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
 
@@ -62,32 +68,41 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
         {/* amount */}
         <div>
           <div className="mb-1 flex items-center justify-between font-mono text-xs text-muted/60">
-            <span>{tab === "deposit" ? "USDC amount" : "USDC value"}</span>
+            <span>{tab === "deposit" ? `${info.asset} amount` : `${info.asset} value`}</span>
             <button
               onClick={() => setRaw(String(max))}
-              className="uppercase tracking-wider text-violet-bright transition-colors hover:text-body"
+              className="uppercase tracking-wider text-violet-bright transition-colors hover:text-body disabled:text-muted/40"
               disabled={!connected}
             >
               Max {connected ? fmtUsdFull(max) : ""}
             </button>
           </div>
-          <div className="flex items-center gap-2 rounded-none border border-hairline bg-base px-3 py-2 focus-within:border-violet">
-            <input
+          <InputGroup className="!rounded-none !border-hairline !bg-base !shadow-none !ring-0 before:!hidden focus-within:!border-violet">
+            <InputGroupInput
               inputMode="decimal"
               value={raw}
               onChange={(e) => setRaw(e.target.value)}
               placeholder="0.00"
-              className="w-full bg-transparent font-mono text-lg tabular-nums text-body outline-none placeholder:text-muted/40"
+              className="font-mono text-lg tabular-nums text-body placeholder:text-muted/40"
             />
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">USDC</span>
-          </div>
+            <InputGroupAddon align="inline-end">
+              <InputGroupText className="font-mono text-xs uppercase tracking-wider text-muted">{info.asset}</InputGroupText>
+            </InputGroupAddon>
+          </InputGroup>
           {overMax && <div className="mt-1 font-mono text-xs" style={{ color: "#E0607F" }}>Exceeds available.</div>}
         </div>
 
         {/* preview */}
         {preview && (
           <div className="flex items-center justify-between border-y border-hairline/60 py-2 font-mono text-xs">
-            <span className="text-muted/60">{preview.label}</span>
+            <span className="flex items-center gap-1 text-muted/60">
+              {preview.label}
+              <InfoTooltip>
+                <AnnotationText>
+                  Deposits mint shares at the current share price; withdrawals burn shares back to {info.asset} the same way. This mirrors an ERC-4626 vault&apos;s previewDeposit / previewRedeem — no surprises beyond how the pool&apos;s real allocation moves before execution.
+                </AnnotationText>
+              </InfoTooltip>
+            </span>
             <span className="text-body">{preview.value}</span>
           </div>
         )}

@@ -4,7 +4,7 @@ export interface ProtocolRow {
   id: string;
   name: string;
   ticker: string;
-  icon: string;    // logo URL (icons.llamao.fi)
+  icon: string;   
   score: number;
   delta24h: number;
   tvl: number;
@@ -88,6 +88,7 @@ export interface Identity {
   id: string;
   name: string;
   ticker: string | null;
+  icon: string;
   aliases: string[];
   category: Category;
   chain: string;

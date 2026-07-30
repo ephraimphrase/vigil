@@ -1,31 +1,26 @@
 // ─────────────────────────────────────────────────────────────
 // VaultAllocation — pool-wide allocation (actual vs target) per strategy.
-// Pooled model: this is the whole pool's split, not per-depositor. Reuses
-// the shared WeightBar + ScoreBadge. Rows link to protocol detail.
+// Pooled model: this is the whole pool's split, not per-depositor. Distinct
+// question from VaultStrategies (that's "what's the strategy earning",
+// this is "is the pool where its policy says it should be") - same
+// protocols, different lens, so both sections stay. Reuses the shared
+// WeightBar + ScoreBadge. Rows link to protocol detail.
 // ─────────────────────────────────────────────────────────────
 
-import type { ComponentType, ReactNode } from "react";
+import Link from "next/link";
+import { Section } from "@/components/Section";
 import { WeightBar } from "@/components/ui/WeightBar";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { fmtUsd } from "@/shared/format";
 import type { AllocationRow } from "@/types";
 
-type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
-const DefaultLink: LinkLike = ({ href, className, children }) => <a href={href} className={className}>{children}</a>;
-
-export function VaultAllocation({ rows, Link = DefaultLink }: { rows: AllocationRow[]; Link?: LinkLike }) {
+export function VaultAllocation({ rows }: { rows: AllocationRow[] }) {
   return (
-    <section className="rounded-none border border-hairline bg-panel/20">
-      <header className="flex items-center justify-between border-b border-hairline px-4 py-2">
-        <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-violet-bright">
-          <span className="h-1.5 w-1.5 rounded-full bg-violet" /> Allocation
-        </span>
-        <span className="font-mono text-xs text-muted/50">pool-wide · actual / target</span>
-      </header>
+    <Section title="Allocation" aside={<span className="font-mono text-xs text-muted/50">pool-wide · actual / target</span>}>
       <ul className="divide-y divide-hairline/40">
         {rows.map((r) => (
-          <li key={r.protocolId} className="grid grid-cols-[minmax(96px,1fr)_minmax(140px,1.6fr)_auto_auto] items-center gap-4 px-4 py-3">
-            <Link href={`/protocol/${r.protocolId}`} className="flex flex-col transition-colors hover:text-violet-bright">
+          <li key={r.protocolId} className="grid grid-cols-[minmax(96px,1fr)_minmax(140px,1.6fr)_auto_auto] items-center gap-4 py-3">
+            <Link href={`/protocols/${r.protocolId}`} className="flex flex-col transition-colors hover:text-violet-bright">
               <span className="text-sm text-body">{r.name}</span>
               <span className="font-mono text-xs uppercase tracking-wider text-muted/50">{r.category}</span>
             </Link>
@@ -35,6 +30,6 @@ export function VaultAllocation({ rows, Link = DefaultLink }: { rows: Allocation
           </li>
         ))}
       </ul>
-    </section>
+    </Section>
   );
 }

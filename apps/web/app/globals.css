@@ -215,3 +215,17 @@
   --sidebar-border: var(--color-border);
   --sidebar-ring: var(--color-violet);
 }
+
+
+/* ═══════════════════════════════════════════════
+   ⬢ WALLET CONNECT
+   ═══════════════════════════════════════════════ */
+   .tw-connect-wallet{
+    background: black !important;
+    color: #fff !important;
+    font-family: "Hanken Grotesk", sans-serif !important;
+    border: 1px solid #ffffff30 !important;
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+    height: 36px !important;
+    font-size: 14px !important;  }

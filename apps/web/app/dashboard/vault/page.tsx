@@ -1,45 +1,57 @@
 "use client";
 
 // ─────────────────────────────────────────────────────────────
-// VaultPage — pooled vault. Composition only. Position + allocation in the
-// main column, the deposit/withdraw action panel in a sticky rail, policy
-// full-width below. No data logic here.
+// VaultsPage — vault picker. One row today (Balanced), slug-ready for more:
+// add an entry to VAULT_MOCKS and it shows up here with zero page changes.
+// Click-through goes to the Yearn-style detail + deposit panel at
+// /vault/[slug] - this list stays a picker, not a second copy of that page.
 // ─────────────────────────────────────────────────────────────
 
-import type { ComponentType, ReactNode } from "react";
-import { useVault } from "../../../hooks/useVault";
-import { VaultPosition } from "../../../components/VaultPosition";
-import { VaultAllocation } from "../../../components/VaultAllocation";
-import { VaultPolicy } from "../../../components/VaultPolicy";
-import { DepositWithdraw } from "../../../components/DepositWithdraw";
+import Link from "next/link";
+import { useApi } from "@/hooks/useApi";
+import { useStrategies } from "@/hooks/useStrategies";
+import { aggregate } from "@/shared/rebalance";
+import { BracketCard } from "@/components/ui/BracketCard";
+import { Chip } from "@/components/ui/Chip";
+import { fmtUsd } from "@/shared/format";
+import type { VaultInfo } from "@/types";
 
-// ─── TYPES ───
-type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
-type Tab = "deposit" | "withdraw";
-
-interface VaultPageProps {
-  Link?: LinkLike;
-  onSubmit?: (tab: Tab, amount: number) => void;
+// ─── UTILS ───
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="font-mono text-lg tabular-nums text-body">{value}</span>
+      <span className="font-mono text-xs uppercase tracking-wider text-muted/60">{label}</span>
+    </div>
+  );
 }
 
 // ─── MAIN ───
-export default function VaultPage({ Link, onSubmit }: VaultPageProps) {
-  const { info, policy, position, allocation } = useVault();
+export default function VaultsPage() {
+  const vaults = useApi<VaultInfo[]>("/api/vaults", []);
+  const { strategies } = useStrategies();
+  const agg = aggregate(strategies);
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-        {/* main column */}
-        <div className="flex min-w-0 flex-col gap-4">
-          <VaultPosition info={info} position={position} />
-          <VaultAllocation rows={allocation} Link={Link} />
-        </div>
-        {/* action rail */}
-        <div className="lg:sticky lg:top-4 lg:self-start">
-          <DepositWithdraw info={info} position={position} onSubmit={onSubmit} />
-        </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {vaults.map((v) => (
+          <Link key={v.slug} href={`/vault/${v.slug}`}>
+            <BracketCard className="bg-panel/10 transition-colors hover:bg-panel/20">
+              <div className="flex flex-col gap-4 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-lg leading-none text-body">{v.name}</span>
+                  <Chip mono>{v.asset}</Chip>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Stat label="TVL" value={fmtUsd(v.tvl)} />
+                  <Stat label="APY" value={`${agg.weightedApy.toFixed(1)}%`} />
+                </div>
+              </div>
+            </BracketCard>
+          </Link>
+        ))}
       </div>
-      <VaultPolicy policy={policy} />
     </div>
   );
 }

@@ -7,10 +7,14 @@
 // Small/computed data (overview, vault) lives here directly; strategies
 // and the protocol list stay as their own JSON files and get assembled
 // below rather than inlined.
+// Vault is keyed by slug (VAULT_MOCKS) rather than a single object - one
+// entry today (see DEFAULT_VAULT_SLUG), ready for more without a shape
+// change. app/api/vault/[slug]/route.ts serves one entry via getVault();
+// app/api/vaults serves SEED.vaultList for the /dashboard/vault picker.
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
-import type { OverviewData, VaultData, StrategiesData, ProtocolRow } from "../types";
+import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultInfo } from "../types";
 
 import strategiesData from "./strategies.json";
 import protocolsData from "./protocols.json";
@@ -43,43 +47,62 @@ const overview: OverviewData = {
   pendingApprovals: 2,
 };
 
-const vault: VaultData = {
-  info: {
-    asset: "USDC",
-    totalAssets: 74500,
-    totalShares: 72753.91,
-    sharePrice: 1.024,
-    idle: 3350,
-    tvl: 1_240_000,
-    benchmarkDeltaPct: 2.1,
+export const DEFAULT_VAULT_SLUG = "balanced";
+
+const VAULT_MOCKS: Record<string, VaultData> = {
+  balanced: {
+    info: {
+      slug: "balanced",
+      name: "Balanced Vault",
+      asset: "USDC",
+      totalAssets: 74500,
+      totalShares: 72753.91,
+      sharePrice: 1.024,
+      idle: 3350,
+      tvl: 1_240_000,
+      benchmarkDeltaPct: 2.1,
+    },
+    policy: {
+      name: "Balanced",
+      maxWeightPerProtocol: 0.35,
+      exitFloorScore: 60,
+      cooldownHours: 6,
+      autonomyDefault: "auto",
+      excludedProtocols: ["radiant", "hundred"],
+    },
+    position: {
+      shares: 47120.11,
+      valueUsd: 48250,
+      costBasisUsd: 47000,
+      pnlUsd: 1250,
+      walletUsdc: 5200,
+    },
+    allocation: [
+      { protocolId: "aave",     name: "Aave",     category: "lending", targetWeight: 0.30, actualWeight: 0.348, valueUsd: 16800, score: 79 },
+      { protocolId: "lido",     name: "Lido",     category: "lsd",     targetWeight: 0.30, actualWeight: 0.294, valueUsd: 14200, score: 83 },
+      { protocolId: "sky",      name: "Sky",      category: "cdp",     targetWeight: 0.25, actualWeight: 0.251, valueUsd: 12100, score: 81 },
+      { protocolId: "uniswap",  name: "Uniswap",  category: "dex",     targetWeight: 0.15, actualWeight: 0.107, valueUsd: 5150,  score: 88 },
+      { protocolId: "morpho",   name: "Morpho",   category: "lending", targetWeight: 0.09, actualWeight: 0.085, valueUsd: 6000,  score: 85 },
+      { protocolId: "venus",    name: "Venus",    category: "lending", targetWeight: 0.07, actualWeight: 0.065, valueUsd: 4500,  score: 74 },
+      { protocolId: "stargate", name: "Stargate", category: "dex",     targetWeight: 0.05, actualWeight: 0.045, valueUsd: 3200,  score: 86 },
+      { protocolId: "compound", name: "Compound", category: "lending", targetWeight: 0.06, actualWeight: 0.056, valueUsd: 5000,  score: 87 },
+      { protocolId: "curve",    name: "Curve",    category: "dex",     targetWeight: 0.05, actualWeight: 0.048, valueUsd: 4200,  score: 82 },
+    ],
+    riskChecks: [
+      { id: "audited", label: "Underlying strategies audited", passed: true },
+      { id: "timelock", label: "Vault upgrades behind timelock", passed: true },
+      { id: "oracle", label: "No single-oracle dependency", passed: true, note: "Aave and Sky both price off Chainlink; the Uniswap leg uses a TWAP, not a single spot feed." },
+      { id: "concentration", label: "No protocol above the policy cap", passed: true },
+      { id: "admin-keys", label: "Admin keys held by a multisig, not an EOA", passed: false, note: "Vault owner is currently a 2-of-3 multisig pending migration to a Gnosis Safe." },
+    ],
   },
-  policy: {
-    name: "Balanced",
-    maxWeightPerProtocol: 0.35,
-    exitFloorScore: 60,
-    cooldownHours: 6,
-    autonomyDefault: "auto",
-    excludedProtocols: ["radiant", "hundred"],
-  },
-  position: {
-    shares: 47120.11,
-    valueUsd: 48250,
-    costBasisUsd: 47000,
-    pnlUsd: 1250,
-    walletUsdc: 5200,
-  },
-  allocation: [
-    { protocolId: "aave",     name: "Aave",     category: "lending", targetWeight: 0.30, actualWeight: 0.348, valueUsd: 16800, score: 79 },
-    { protocolId: "lido",     name: "Lido",     category: "lsd",     targetWeight: 0.30, actualWeight: 0.294, valueUsd: 14200, score: 83 },
-    { protocolId: "sky",      name: "Sky",      category: "cdp",     targetWeight: 0.25, actualWeight: 0.251, valueUsd: 12100, score: 81 },
-    { protocolId: "uniswap",  name: "Uniswap",  category: "dex",     targetWeight: 0.15, actualWeight: 0.107, valueUsd: 5150,  score: 88 },
-    { protocolId: "morpho",   name: "Morpho",   category: "lending", targetWeight: 0.09, actualWeight: 0.085, valueUsd: 6000,  score: 85 },
-    { protocolId: "venus",    name: "Venus",    category: "lending", targetWeight: 0.07, actualWeight: 0.065, valueUsd: 4500,  score: 74 },
-    { protocolId: "stargate", name: "Stargate", category: "dex",     targetWeight: 0.05, actualWeight: 0.045, valueUsd: 3200,  score: 86 },
-    { protocolId: "compound", name: "Compound", category: "lending", targetWeight: 0.06, actualWeight: 0.056, valueUsd: 5000,  score: 87 },
-    { protocolId: "curve",    name: "Curve",    category: "dex",     targetWeight: 0.05, actualWeight: 0.048, valueUsd: 4200,  score: 82 },
-  ],
 };
+
+export function getVault(slug: string): VaultData | undefined {
+  return VAULT_MOCKS[slug];
+}
+
+const vaultList: VaultInfo[] = Object.values(VAULT_MOCKS).map((v) => v.info);
 
 const strategies = strategiesData as StrategiesData;
 const protocols = protocolsData as ProtocolRow[];
@@ -87,4 +110,4 @@ const protocols = protocolsData as ProtocolRow[];
 // No protocolDetail here - app/api/protocols/[id]/route.ts queries the
 // `protocols` table in Postgres directly. protocol-detail/*.json still
 // exists as seed input for scripts/seed-db.ts, not served from here.
-export const SEED = { overview, vault, strategies, protocols };
+export const SEED = { overview, vaultList, strategies, protocols };

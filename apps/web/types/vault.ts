@@ -12,6 +12,8 @@ export interface VaultPolicy {
 }
 
 export interface VaultInfo {
+  slug: string;
+  name: string;
   asset: string;
   totalAssets: number;
   totalShares: number;
@@ -39,9 +41,21 @@ export interface AllocationRow {
   score: number;
 }
 
+// Beefy-checklist-style pass/fail row - vault-level (the strategy set as a
+// whole), not per-protocol. Distinct from protocols' severity-graded RiskRow
+// (see types/protocols.ts) - a different question (did this pass a fixed
+// gate? vs. how severe is this open issue?).
+export interface RiskCheckRow {
+  id: string;
+  label: string;
+  passed: boolean;
+  note?: string;
+}
+
 export interface VaultData {
   info: VaultInfo;
   policy: VaultPolicy;
   position: UserPosition | null;
   allocation: AllocationRow[];
+  riskChecks: RiskCheckRow[];
 }
