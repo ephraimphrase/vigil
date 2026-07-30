@@ -22,6 +22,13 @@ export const fmtSigned = (v: number, suffix = "") => {
 
 export const fmtPct = (v: number) => `${(v * 100).toFixed(0)}%`;
 
+// Fee-precision percent: whole numbers stay bare, fractional ones keep 2dp
+// (0% not 0.00%, but 0.1% not 0%).
+export const fmtFeePct = (v: number) => {
+  const pct = v * 100;
+  return `${Number.isInteger(pct) ? pct.toFixed(0) : pct.toFixed(2)}%`;
+};
+
 export const dateShort = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 

@@ -4,10 +4,10 @@
 // strategy reads; the event list is replaced by the WebSocket stream.
 // ─────────────────────────────────────────────────────────────
 
+import moment from "moment";
 import type { OverviewData } from "../types";
 
-const now = Date.now();
-const iso = (minsAgo: number) => new Date(now - minsAgo * 60_000).toISOString();
+const iso = (minsAgo: number) => moment().subtract(minsAgo, "minutes").toISOString();
 
 export const MOCK_OVERVIEW: OverviewData = {
   status: { state: "running", watchedCount: 5, lastCycle: iso(3) },

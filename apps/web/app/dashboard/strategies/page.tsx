@@ -1,20 +1,40 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  type SortingState,
+} from "@tanstack/react-table";
 
-import type { ComponentType, ReactNode } from "react";
 import { useStrategies } from "../../../hooks/useStrategies";
 import { aggregate } from "../../../lib/rebalance";
 import { StrategiesHeader } from "../../../components/StrategiesHeader";
-import { StrategyCard } from "../../../components/StrategyCard";
+import { StrategiesTable } from "../../../components/StrategiesTable";
+import { buildStrategyColumns } from "../../../components/StrategyColumns";
 
-type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
+const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];
 
-export default function StrategiesPage({ Link }: { Link?: LinkLike }) {
+export default function StrategiesPage() {
+  const router = useRouter();
   const data = useStrategies();
   const agg = aggregate(data.strategies, data.vault);
 
+  const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
+  const columns = useMemo(() => buildStrategyColumns(), []);
+  const table = useReactTable({
+    data: data.strategies,
+    columns,
+    state: { sorting },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex h-full flex-col gap-4 p-4">
       <StrategiesHeader data={data} />
 
       {agg.needsAttention > 0 && (
@@ -25,10 +45,12 @@ export default function StrategiesPage({ Link }: { Link?: LinkLike }) {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {data.strategies.map((s) => (
-          <StrategyCard key={s.protocolId} strategy={s} Link={Link} />
-        ))}
+      <div className="min-h-0 flex-1 border border-hairline">
+        <StrategiesTable
+          table={table}
+          isLoading={false}
+          onOpenStrategy={(protocolId) => router.push(`/dashboard/protocols/${protocolId}`)}
+        />
       </div>
     </div>
   );
