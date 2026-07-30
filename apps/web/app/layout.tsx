@@ -3,7 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Nav } from "@/components/landing/Nav";
+import { ConditionalNav } from "@/components/landing/ConditionalNav";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -81,7 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Nav />
+        <ConditionalNav />
         {children}
       </body>
     </html>
