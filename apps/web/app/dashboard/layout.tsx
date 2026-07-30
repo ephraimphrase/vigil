@@ -6,6 +6,7 @@ import NextLink from "next/link";
 
 import { AppShell } from "@/components/AppShell";
 import { NAV, isActive } from "@/components/nav.config";
+import { ConnectWallet } from "@/components/wallet/ConnectWallet";
 
 function titleFor(pathname: string): string {
   for (const section of NAV) {
@@ -28,6 +29,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       autoArmed={autoArmed}
       onToggleAuto={() => setAutoArmed((v) => !v)}
       Link={NextLink}
+      wallet={<ConnectWallet />}
     >
       {children}
     </AppShell>

@@ -1,16 +1,10 @@
-// ─────────────────────────────────────────────────────────────
-// CornerFrame — the hero motif (design brief §4a).
-// Hairline rectangle with four glowing corner-node dots. Shared
-// primitive: budget 1–2 per view, primary panels only.
-// ─────────────────────────────────────────────────────────────
+
  
 import type { ReactNode } from "react";
  
-// ─── CONSTANTS ───
 const DOT =
   "absolute h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]";
 
-// ─── MAIN ───
 interface CornerFrameProps {
   children: ReactNode;
   className?: string;

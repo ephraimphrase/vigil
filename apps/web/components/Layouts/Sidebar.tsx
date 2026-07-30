@@ -3,16 +3,14 @@
 import type { ComponentType, ReactNode } from "react";
 import { NAV, isActive } from "../nav.config";
 
-// ─── TYPES ───
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 
 interface SidebarProps {
   pathname: string;
   badges?: { approvals?: number };
-  Link?: LinkLike; // defaults to <a>; pass next/link in the app
+  Link?: LinkLike; 
 }
 
-// ─── MAIN ───
 const DefaultLink: LinkLike = ({ href, className, children }) => (
   <a href={href} className={className}>{children}</a>
 );
@@ -20,13 +18,11 @@ const DefaultLink: LinkLike = ({ href, className, children }) => (
 export function Sidebar({ pathname, badges, Link = DefaultLink }: SidebarProps) {
   return (
     <aside className="flex h-full w-56 shrink-0 flex-col border-r border-hairline bg-base">
-      {/* wordmark */}
       <div className="flex items-center gap-2 border-b border-hairline px-5 py-4">
         <span className="h-2 w-2 rounded-full bg-violet shadow-[0_0_4px_#9259DA]" />
         <span className="font-display text-lg tracking-tight text-body">Vigil</span>
       </div>
 
-      {/* nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         {NAV.map((section) => (
           <div key={section.label} className="mb-5">

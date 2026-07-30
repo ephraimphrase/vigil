@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
+import { ConnectWallet } from "../wallet/ConnectWallet";
 import { SplineRobot } from "./SplineRobot";
 
 
@@ -48,10 +49,8 @@ export function Hero() {
               no trades to make yourself.
             </p>
 
-            <div className="mb-11 flex flex-wrap gap-3.5">
-              <Button href="#" icon>
-                Connect Wallet
-              </Button>
+            <div className="mb-11 flex flex-wrap items-center gap-3.5">
+              <ConnectWallet />
               <Button href="#pipeline" variant="ghost">
                 See how it works
               </Button>

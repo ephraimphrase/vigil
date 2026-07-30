@@ -4,6 +4,7 @@ import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/shared/utils";
 import { ConditionalNav } from "@/components/landing/ConditionalNav";
+import { ThirdwebProvider } from "thirdweb/react";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -16,8 +17,7 @@ const geistMono = localFont({
   variable: '--font-geist-mono',
 });
 
-// Swap via NEXT_PUBLIC_SITE_URL once the real domain is live — every
-// relative og:url / canonical link below resolves against this.
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vigil.xyz';
 const SITE_NAME = 'Vigil';
 const SITE_DESCRIPTION =
