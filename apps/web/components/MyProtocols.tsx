@@ -1,8 +1,8 @@
 import type { ComponentType, ReactNode } from "react";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import { BAND_META, resolveBand, deltaColor } from "@/lib/health";
-import { fmtPct, fmtSigned } from "@/lib/format";
+import { BAND_META, resolveBand, deltaColor } from "@/shared/health";
+import { fmtPct, fmtSigned } from "@/shared/format";
 import type { Position } from "../types";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;

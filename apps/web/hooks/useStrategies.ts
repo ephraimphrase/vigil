@@ -1,6 +1,8 @@
-import { MOCK_STRATEGIES } from "../mocks/strategies.mock";
+import { useApi } from "./useApi";
 import type { StrategiesData } from "../types";
 
+const EMPTY: StrategiesData = { strategies: [] };
+
 export function useStrategies(): StrategiesData {
-  return MOCK_STRATEGIES;
+  return useApi("/api/strategies", EMPTY);
 }

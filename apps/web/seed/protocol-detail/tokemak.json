@@ -1,0 +1,183 @@
+{
+  "identity": {
+    "id": "tokemak",
+    "name": "Tokemak",
+    "ticker": "TOKE",
+    "aliases": [
+      "Tokemak V2",
+      "Auto-pools"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Liquidity-direction protocol",
+    "description": "Auto-pools accept a single deposit asset and algorithmically route it across multiple underlying DEX/lending venues to optimize risk-adjusted yield, rebalancing as conditions change. Pivoted to this design in V2 after V1's original 'liquidity reactor' model struggled to sustain itself.",
+    "launchDate": "2021-06-01",
+    "ageDays": 1885,
+    "links": {
+      "website": "https://tokemak.xyz",
+      "docs": "https://docs.tokemak.xyz",
+      "github": "https://github.com/Tokemak",
+      "twitter": "https://x.com/Tokemak",
+      "defillama": "https://defillama.com/protocol/tokemak"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Tokemak V2's Auto-pools model is a meaningful redesign after V1 struggled to sustain its original tokenomics, but the protocol is now smaller and less battle-tested in its current form than its multi-year brand history might suggest. Rebalancing logic that spans multiple external venues adds real operational complexity.",
+      "riskFlags": [
+        "auto-rebalancing risk",
+        "smaller protocol"
+      ],
+      "confidence": "low",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.11,
+    "marketCap": 5600000,
+    "fdv": 8800000,
+    "priceChange24h": -0.5,
+    "priceChange7d": -2.8,
+    "priceChange30d": -10,
+    "circulating": 51000000,
+    "maxSupply": 80000000,
+    "rank": 950,
+    "athMultiple": "-99% from ATH ($22.42, Sep 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$25M",
+        "normalized": 0.32,
+        "trend": "down",
+        "weight": 0.12,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-2.0%",
+        "normalized": 0.45,
+        "trend": "down",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "moderate",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Rebalance tx volume 24h",
+        "raw": "low",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "low",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.48,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low",
+        "normalized": 0.42,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "strategyComplexity": {
+        "label": "Cross-venue rebalancing surface",
+        "raw": "multiple external protocols",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.12,
+        "source": "manual",
+        "status": "manual"
+      },
+      "v1LegacyOverhang": {
+        "label": "V1-to-V2 migration status",
+        "raw": "mostly complete",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Smart contract",
+      "severity": "medium",
+      "title": "Cross-venue rebalancing complexity",
+      "note": "Auto-pools route capital across multiple external DEX/lending venues; a bug or failure in any downstream venue's integration affects the pool.",
+      "source": "manual"
+    },
+    {
+      "category": "Scale",
+      "severity": "low",
+      "title": "Smaller, less battle-tested TVL base",
+      "note": "Current V2 form has a shorter, smaller track record than the protocol's multi-year brand history implies.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Auto-pool Factory",
+      "address": "0x94E4A9679a1dEd0Cd6dF11Fd5eeB74d76F94a1AA",
+      "kind": "factory"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "protocol",
+      "target": "many",
+      "note": "Auto-pools allocate across multiple underlying DEX/lending venues, inheriting each one's risk while deployed there."
+    }
+  ],
+  "askSuggestions": [
+    "How is V2's Auto-pools model different from what Tokemak originally launched with?",
+    "What venues is a given Auto-pool currently allocated across?"
+  ]
+}

@@ -1,11 +1,19 @@
 
 
 import { useEffect, useState } from "react";
-import { MOCK_OVERVIEW } from "../mocks/overview.mock";
+import { useApi } from "./useApi";
 import type { FeedEvent, OverviewData } from "../types";
 
+const EMPTY: OverviewData = {
+  status: { state: "paused", watchedCount: 0, lastCycle: "" },
+  portfolio: { totalValue: 0, shares: 0, sharePrice: 0, pnl24h: 0, pnlPct24h: 0, benchmarkDeltaPct: 0 },
+  positions: [],
+  events: [],
+  pendingApprovals: 0,
+};
+
 export function useOverview(): OverviewData {
-  return MOCK_OVERVIEW;
+  return useApi("/api/overview", EMPTY);
 }
 
 const SAMPLE: Omit<FeedEvent, "id" | "ts">[] = [

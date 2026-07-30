@@ -1,8 +1,7 @@
-import sqlite3
 import json
 from datetime import datetime
 from typing import Awaitable, Callable, TypeVar
-from db.models import DB_PATH
+from db.models import get_connection
 
 T = TypeVar("T")
 
@@ -25,27 +24,31 @@ async def safe_fetch(fetch_fn: Callable[[str], Awaitable[T]], protocol: str, sig
         return last_good if last_good is not None else fallback
 
 def _store_last_good(protocol: str, key: str, value):
-    con = sqlite3.connect(DB_PATH)
-    
+    con = get_connection()
+
     # Store complex types as JSON strings
     if isinstance(value, (dict, list)):
         val_str = json.dumps(value)
     else:
         val_str = str(value)
-        
-    con.execute(
-        "INSERT OR REPLACE INTO signal_cache (protocol, key, value, updated_at) VALUES (?, ?, ?, ?)",
-        (protocol, key, val_str, datetime.utcnow().isoformat())
-    )
+
+    with con.cursor() as cur:
+        cur.execute(
+            """INSERT INTO signal_cache (protocol, key, value, updated_at) VALUES (%s, %s, %s, %s)
+               ON CONFLICT (protocol, key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at""",
+            (protocol, key, val_str, datetime.utcnow())
+        )
     con.commit()
     con.close()
 
 def _get_last_good(protocol: str, key: str):
-    con = sqlite3.connect(DB_PATH)
-    row = con.execute(
-        "SELECT value FROM signal_cache WHERE protocol = ? AND key = ? ORDER BY updated_at DESC LIMIT 1",
-        (protocol, key)
-    ).fetchone()
+    con = get_connection()
+    with con.cursor() as cur:
+        cur.execute(
+            "SELECT value FROM signal_cache WHERE protocol = %s AND key = %s ORDER BY updated_at DESC LIMIT 1",
+            (protocol, key)
+        )
+        row = cur.fetchone()
     con.close()
     
     if row:

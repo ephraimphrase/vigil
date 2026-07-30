@@ -1,13 +1,17 @@
-import sqlite3
+import os
 import logging
 from datetime import datetime
+
+import psycopg2
+from dotenv import load_dotenv
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = "db/vigil.sqlite"
-
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://vigil:vigil@localhost:5432/vigil")
 
 
 class HealthScore(BaseModel):
@@ -21,54 +25,140 @@ class HealthScore(BaseModel):
 
 _DB_SCHEMA = """
 CREATE TABLE IF NOT EXISTS signal_cache (
-    protocol   TEXT,
-    key        TEXT,
+    protocol   TEXT NOT NULL,
+    key        TEXT NOT NULL,
     value      TEXT,
-    updated_at DATETIME,
+    updated_at TIMESTAMP NOT NULL,
     PRIMARY KEY (protocol, key)
 );
 
 CREATE TABLE IF NOT EXISTS signal_history (
     protocol  TEXT NOT NULL,
-    timestamp DATETIME NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
     key       TEXT NOT NULL,
-    value     REAL
+    value     DOUBLE PRECISION
 );
 
 CREATE TABLE IF NOT EXISTS health_scores (
     protocol  TEXT NOT NULL,
-    timestamp DATETIME NOT NULL,
-    score     REAL,
+    timestamp TIMESTAMP NOT NULL,
+    score     DOUBLE PRECISION,
     reasoning TEXT
 );
 
 CREATE TABLE IF NOT EXISTS triggers (
     protocol  TEXT NOT NULL,
-    timestamp DATETIME NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
     action    TEXT,
     reason    TEXT,
     tx_hash   TEXT
 );
+
+-- User-configured alert conditions (distinct from `triggers`, which logs
+-- actions that already fired). routers/webhook.py evaluates these against
+-- a freshly computed score on every /webhook/score/{protocol} call.
+CREATE TABLE IF NOT EXISTS user_triggers (
+    id             SERIAL PRIMARY KEY,
+    wallet_address TEXT NOT NULL,
+    protocol       TEXT NOT NULL,
+    condition      TEXT NOT NULL,
+    action_slug    TEXT NOT NULL,
+    created_at     TIMESTAMP NOT NULL DEFAULT now()
+);
+
+-- Protocol detail pages. Real columns for the scalar/queryable fields;
+-- JSONB for the parts that are genuinely nested or have per-protocol
+-- dynamic shape (signals' keys differ per protocol; risk/contracts/
+-- incidents/dependencies are simple lists with no cross-protocol query
+-- need yet - normalizing those into 4 more join tables would be
+-- over-engineering for data nothing queries across protocols today).
+-- scoreHistory is NOT duplicated here - it's served from health_scores,
+-- which already exists and is what apps/api actually writes to.
+CREATE TABLE IF NOT EXISTS protocols (
+    id             TEXT PRIMARY KEY,
+    name           TEXT NOT NULL,
+    ticker         TEXT,
+    icon           TEXT,
+    aliases        JSONB NOT NULL DEFAULT '[]',
+    category       TEXT NOT NULL,
+    chain          TEXT NOT NULL,
+    settlement_layer TEXT,
+    kind           TEXT NOT NULL,
+    description    TEXT NOT NULL,
+    launch_date    TEXT NOT NULL,
+    links          JSONB NOT NULL DEFAULT '{}',
+    market         JSONB,
+    assessment     JSONB NOT NULL DEFAULT '{}',
+    assessment_history JSONB NOT NULL DEFAULT '[]',
+    signals        JSONB NOT NULL DEFAULT '{}',
+    risk           JSONB NOT NULL DEFAULT '[]',
+    contracts      JSONB NOT NULL DEFAULT '[]',
+    incidents      JSONB NOT NULL DEFAULT '[]',
+    dependencies   JSONB NOT NULL DEFAULT '[]',
+    ask_suggestions JSONB NOT NULL DEFAULT '[]',
+    updated_at     TIMESTAMP NOT NULL DEFAULT now()
+);
+
+-- One row per deployed strategy contract (see BeefyStrategyAdapter /
+-- IVigilProtocolAdapter in apps/contracts). A protocol can have more than
+-- one strategy variant (e.g. Curve has 9 separate Convex/StakeDAO/Fx
+-- strategy contracts), so `id` - not protocol_id - is the primary key;
+-- protocol_id is a plain indexed column. All fields are scalar except
+-- `rewards`, a short list of reward token symbols with no query need of
+-- its own. No `score` column - a strategy's score IS its protocol's score
+-- (health_scores, keyed by protocol_id), never a second copy that can
+-- drift from it. /api/strategies joins health_scores at read time instead.
+CREATE TABLE IF NOT EXISTS strategies (
+    id                  TEXT PRIMARY KEY,
+    protocol_id         TEXT NOT NULL,
+    name                TEXT NOT NULL,
+    category            TEXT NOT NULL,
+    description         TEXT NOT NULL,
+    adapter             TEXT NOT NULL,
+    strategy_address    TEXT NOT NULL,
+    strat_name          TEXT NOT NULL,
+    native              TEXT NOT NULL,
+    rewards             JSONB NOT NULL DEFAULT '[]',
+    harvest_on_deposit   BOOLEAN NOT NULL,
+    asset                TEXT NOT NULL,
+    want                 TEXT NOT NULL,
+    allocated            DOUBLE PRECISION NOT NULL,
+    target_weight        DOUBLE PRECISION NOT NULL,
+    actual_weight        DOUBLE PRECISION NOT NULL,
+    apy                  DOUBLE PRECISION NOT NULL,
+    last_rebalance       TIMESTAMP NOT NULL,
+    paused               BOOLEAN NOT NULL,
+    retired              BOOLEAN NOT NULL,
+    last_harvest         TIMESTAMP NOT NULL,
+    harvestable           BOOLEAN NOT NULL,
+    max_withdraw          DOUBLE PRECISION NOT NULL,
+    max_deposit           DOUBLE PRECISION,
+    deposit_fee            DOUBLE PRECISION NOT NULL,
+    withdraw_fee            DOUBLE PRECISION NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_strategies_protocol_id ON strategies (protocol_id);
 """
 
 
-def get_connection() -> sqlite3.Connection:
-    """Returns a configured SQLite connection with WAL mode for concurrency."""
-    con = sqlite3.connect(DB_PATH, check_same_thread=False)
-    con.execute("PRAGMA journal_mode=WAL")
-    con.execute("PRAGMA synchronous=NORMAL")
-    return con
+def get_connection() -> psycopg2.extensions.connection:
+    """Returns a connection to the shared Postgres instance (see /docker-compose.yml).
+    Unlike sqlite3, psycopg2 connections have no .execute() shortcut - callers
+    must open a cursor: `with con.cursor() as cur: cur.execute(...)`.
+    """
+    return psycopg2.connect(DATABASE_URL)
 
 
 def init_db():
-    """Initializes the SQLite database schema. Idempotent (CREATE TABLE IF NOT EXISTS)."""
+    """Initializes the Postgres schema. Idempotent (CREATE TABLE IF NOT EXISTS)."""
     try:
         con = get_connection()
-        con.executescript(_DB_SCHEMA)
+        with con.cursor() as cur:
+            cur.execute(_DB_SCHEMA)
         con.commit()
         con.close()
-        logger.debug("[DB] Schema initialized at %s", DB_PATH)
-    except sqlite3.Error as e:
+        logger.debug("[DB] Schema initialized against shared Postgres instance")
+    except psycopg2.Error as e:
         logger.error("[DB] Failed to initialize schema: %s", e)
         raise
 

@@ -1,0 +1,184 @@
+{
+  "identity": {
+    "id": "baseswap",
+    "name": "BaseSwap",
+    "ticker": "BSX",
+    "aliases": [],
+    "category": "dex",
+    "chain": "base",
+    "settlementLayer": "ethereum",
+    "kind": "Uniswap V2/V3-style AMM",
+    "description": "One of Base's earliest native DEXs, forked from Uniswap V2/V3 mechanics with its own BSX emissions and yield-farming layer. Small relative to Ethereum mainnet DEXs, but a meaningful piece of Base's early liquidity.",
+    "launchDate": "2023-08-01",
+    "ageDays": 1094,
+    "links": {
+      "website": "https://baseswap.fi",
+      "docs": "https://docs.baseswap.fi",
+      "twitter": "https://x.com/BaseSwap_fi",
+      "defillama": "https://defillama.com/protocol/baseswap"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "A young, fork-based DEX with a small team and limited independent audit history relative to established venues. Liquidity is thin enough that larger swaps see real slippage, and the emission-driven TVL model common to fork DEXs tends to be less sticky than fee-driven demand.",
+      "riskFlags": [
+        "low liquidity",
+        "limited audit history"
+      ],
+      "confidence": "low",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.012,
+    "marketCap": 4200000,
+    "fdv": 4800000,
+    "priceChange24h": -1.2,
+    "priceChange7d": -4.5,
+    "priceChange30d": -12,
+    "circulating": 350000000,
+    "maxSupply": 400000000
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$45M",
+        "normalized": 0.35,
+        "trend": "down",
+        "weight": 0.12,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-3.2%",
+        "normalized": 0.4,
+        "trend": "down",
+        "weight": 0.06,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "moderate",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "low",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "low",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "teamSignals": {
+        "label": "Team transparency",
+        "raw": "pseudonymous",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "auditCoverage": {
+        "label": "Independent audits",
+        "raw": "limited/self-reported",
+        "normalized": 0.3,
+        "trend": "flat",
+        "weight": 0.12,
+        "source": "manual",
+        "status": "manual"
+      },
+      "emissionDependency": {
+        "label": "TVL sensitivity to BSX emissions",
+        "raw": "high",
+        "normalized": 0.35,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Liquidity",
+      "severity": "medium",
+      "title": "Thin liquidity",
+      "note": "TVL is small enough that meaningful swap sizes move price noticeably.",
+      "source": "manual"
+    },
+    {
+      "category": "Audit",
+      "severity": "medium",
+      "title": "Limited independent audit history",
+      "note": "Fewer, less prominent audits than tier-1 DEXs.",
+      "source": "manual"
+    },
+    {
+      "category": "Tokenomics",
+      "severity": "low",
+      "title": "Emission-driven TVL",
+      "note": "A meaningful share of liquidity is incentive-farmed rather than fee-attracted, historically less sticky.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Router",
+      "address": "0x327Df1E6de05895d2ab08513aaDD9313Fe505d86",
+      "kind": "router"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "base",
+      "note": "Single-chain deployment."
+    }
+  ],
+  "askSuggestions": [
+    "How thin is liquidity here compared to a mainnet DEX for the same pair?",
+    "How much of BaseSwap's TVL is emission-farmed vs organic?"
+  ]
+}

@@ -1,0 +1,377 @@
+{
+  "identity": {
+    "id": "lido",
+    "name": "Lido",
+    "ticker": "LDO",
+    "aliases": [
+      "Lido Finance",
+      "stETH"
+    ],
+    "category": "lsd",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Liquid staking",
+    "description": "Largest Ethereum liquid-staking protocol; stETH is the most widely integrated LST and a dominant collateral asset across DeFi. Dual Governance protects stETH holders from contentious LDO votes.",
+    "launchDate": "2020-12-19",
+    "ageDays": 2046,
+    "links": {
+      "website": "https://lido.fi",
+      "docs": "https://docs.lido.fi",
+      "github": "https://github.com/lidofinance",
+      "twitter": "https://x.com/LidoFinance",
+      "defillama": "https://defillama.com/protocol/lido",
+      "explorer": "https://etherscan.io/address/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+      "audits": [
+        "Sigma Prime",
+        "MixBytes",
+        "Statemind",
+        "OpenZeppelin"
+      ]
+    }
+  },
+  "health": {
+    "score": 83,
+    "band": "hold",
+    "delta24h": 0.3,
+    "delta7d": 1.4,
+    "assessment": {
+      "summary": "Operationally strong: TVL up ~27% over 30 days, stETH holding peg, zero slashing events, and Dual Governance in place as a stETH-holder backstop. Two structural watch items: staking market share is slipping toward large institutional entrants, and stETH's role as ubiquitous collateral makes any depeg a systemic, cross-protocol event.",
+      "riskFlags": [
+        "market share erosion",
+        "systemic collateral (stETH)"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-27"
+    },
+    "assessmentHistory": [
+      {
+        "ts": "2026-06-12",
+        "score": 81,
+        "summary": "Market-share decline as BitMine/Grayscale enter staking."
+      },
+      {
+        "ts": "2026-07-17",
+        "score": 83,
+        "summary": "TVL recovery; buyback program and Dual Governance supportive."
+      }
+    ]
+  },
+  "market": {
+    "price": 0.39,
+    "marketCap": 322970000,
+    "fdv": 386160000,
+    "priceChange24h": 1.1,
+    "priceChange7d": 8.9,
+    "priceChange30d": 56.0,
+    "circulating": 828000000,
+    "maxSupply": 1000000000,
+    "rank": 171,
+    "athMultiple": "-94.7% from ATH ($7.30, Aug 2021)"
+  },
+  "scoreHistory": [
+    {
+      "ts": "2026-07-14",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-15",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-16",
+      "score": 82,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-17",
+      "score": 82,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-18",
+      "score": 82,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-19",
+      "score": 82,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-20",
+      "score": 83,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-21",
+      "score": 83,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-22",
+      "score": 83,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-23",
+      "score": 82,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-24",
+      "score": 83,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-25",
+      "score": 83,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-26",
+      "score": 83,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-27",
+      "score": 83,
+      "avg24h": 83
+    }
+  ],
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$18.2B",
+        "normalized": 0.88,
+        "trend": "up",
+        "weight": 0.1091,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+6.1%",
+        "normalized": 0.9,
+        "trend": "up",
+        "weight": 0.0455,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale unstaking 24h",
+        "raw": "low",
+        "normalized": 0.84,
+        "trend": "flat",
+        "weight": 0.1182,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "withdrawalQueue": {
+        "label": "Withdrawal queue depth",
+        "raw": "normal",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.0818,
+        "source": "Lido subgraph",
+        "status": "live"
+      },
+      "bufferHealth": {
+        "label": "Withdrawal buffer",
+        "raw": "healthy",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.0545,
+        "source": "Lido subgraph",
+        "status": "live"
+      },
+      "treasury": {
+        "label": "Treasury",
+        "raw": "$105.6M",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.0273,
+        "source": "DeFiLlama",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0545,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive (LDO +56% 30d)",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.0455,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.0636,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "teamSignals": {
+        "label": "Team stability",
+        "raw": "stable (15% cut Aug 2025)",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.0455,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "pegDeviation": {
+        "label": "stETH / ETH peg",
+        "raw": "~1.000",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.1091,
+        "source": "Curve / oracle",
+        "status": "live"
+      },
+      "marketShare": {
+        "label": "Share of staked ETH",
+        "raw": "~23%",
+        "normalized": 0.62,
+        "trend": "down",
+        "weight": 0.0727,
+        "source": "DeFiLlama / Dune",
+        "status": "live"
+      },
+      "slashingEvents": {
+        "label": "Slashing events (all-time)",
+        "raw": "0",
+        "normalized": 0.98,
+        "trend": "flat",
+        "weight": 0.0636,
+        "source": "beacon chain",
+        "status": "live"
+      },
+      "operatorConcentration": {
+        "label": "Node operator concentration",
+        "raw": "improving (CSM live)",
+        "normalized": 0.7,
+        "trend": "up",
+        "weight": 0.0545,
+        "source": "Lido",
+        "status": "live"
+      },
+      "dualGovernance": {
+        "label": "stETH-holder safeguard",
+        "raw": "Dual Governance live",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0364,
+        "source": "manual",
+        "status": "manual"
+      },
+      "effectiveFee": {
+        "label": "DAO effective take rate",
+        "raw": "6.11%",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.0182,
+        "source": "Lido reporting",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Systemic",
+      "severity": "high",
+      "title": "Ubiquitous collateral",
+      "note": "stETH is collateral across Aave, Sky and 100+ protocols; a depeg propagates system-wide.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "medium",
+      "title": "Staking share erosion",
+      "note": "Share of staked ETH declining as BitMine, Grayscale and others enter.",
+      "source": "news"
+    },
+    {
+      "category": "Validator",
+      "severity": "medium",
+      "title": "Operator concentration",
+      "note": "Historically concentrated operator set; CSM is decentralizing it but exposure remains.",
+      "source": "manual"
+    },
+    {
+      "category": "Token",
+      "severity": "low",
+      "title": "LDO value accrual",
+      "note": "LDO is 94.7% off ATH with weak direct claim on rewards; buybacks are new.",
+      "source": "DeFiLlama"
+    }
+  ],
+  "triggers": [],
+  "contracts": [
+    {
+      "label": "stETH (Lido)",
+      "address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+      "kind": "token"
+    },
+    {
+      "label": "wstETH",
+      "address": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+      "kind": "token"
+    },
+    {
+      "label": "Lido DAO Agent",
+      "address": "0x3e40D73EB977Dc6a537aF587D48316feE66E9C8c",
+      "kind": "admin"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2025-08-01",
+      "type": "org",
+      "severity": "info",
+      "title": "15% workforce reduction",
+      "note": "Cost optimization, framed as not performance-driven."
+    },
+    {
+      "ts": "2026-06-01",
+      "type": "governance",
+      "severity": "info",
+      "title": "Canonical wstETH bridge revocations",
+      "note": "Revoked canonical bridge status on several L2s (zkSync Era, Mode, Scroll, etc.)."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Ethereum consensus / beacon chain."
+    },
+    {
+      "type": "operators",
+      "target": "node-operators",
+      "note": "Curated + permissionless (CSM) operators run validators."
+    }
+  ],
+  "askSuggestions": [
+    "What would a stETH depeg do to the rest of my portfolio?",
+    "Is Lido's declining staking share a real risk?",
+    "How protected am I as a stETH holder under Dual Governance?"
+  ]
+}

@@ -1,0 +1,385 @@
+{
+  "identity": {
+    "id": "sky",
+    "name": "Sky (MakerDAO)",
+    "ticker": "SKY",
+    "aliases": [
+      "MakerDAO",
+      "Maker",
+      "MKR",
+      "USDS",
+      "DAI"
+    ],
+    "category": "cdp",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Collateralized debt position / stablecoin issuer",
+    "description": "Longest-running crypto-collateralized stablecoin issuer. Rebranded from MakerDAO to Sky in Aug 2024 (DAI\u2192USDS 1:1, MKR\u2192SKY 1:24,000). Backs ~$13B of USDS+DAI with crypto vaults, a USDC Peg Stability Module, and $1.5B+ of tokenized US Treasuries.",
+    "launchDate": "2017-12-18",
+    "ageDays": 3143,
+    "links": {
+      "website": "https://sky.money",
+      "docs": "https://docs.sky.money",
+      "github": "https://github.com/makerdao",
+      "twitter": "https://x.com/SkyEcosystem",
+      "defillama": "https://defillama.com/protocol/sky-lending",
+      "explorer": "https://etherscan.io/address/0x56072C95FAA701256059aa122697B133aDEd9279",
+      "makerburn": "https://makerburn.com",
+      "audits": [
+        "ChainSecurity",
+        "Trail of Bits",
+        "Runtime Verification (formal)"
+      ]
+    }
+  },
+  "health": {
+    "score": 81,
+    "band": "hold",
+    "delta24h": -0.2,
+    "delta7d": 0.6,
+    "assessment": {
+      "summary": "Stable and revenue-diversified: RWA Treasuries are now the largest income source, insulating Sky from crypto-only volatility, and USDS/DAI hold peg. The trade-off is trust surface \u2014 RWA counterparty exposure (Monetalis, BlockTower) and USDC pass-through risk via the Peg Stability Module both introduce off-chain and centralized dependencies a pure crypto-backed dollar wouldn't have.",
+      "riskFlags": [
+        "rwa counterparty",
+        "usdc pass-through (PSM)"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-27"
+    },
+    "assessmentHistory": [
+      {
+        "ts": "2026-06-17",
+        "score": 80,
+        "summary": "RWA share growing; peg stable, SSR at 3.75%."
+      },
+      {
+        "ts": "2026-07-19",
+        "score": 81,
+        "summary": "Obex RWA mandate deployment; revenue diversified."
+      }
+    ]
+  },
+  "market": {
+    "price": 0.062,
+    "tokenNote": "SKY (MKR-equivalent ~$1,488 at 1:24,000)",
+    "marketCap": 1300000000,
+    "fdv": 1500000000,
+    "priceChange24h": -0.3,
+    "priceChange7d": 2.1,
+    "priceChange30d": -4.0,
+    "rank": 78,
+    "athMultiple": "MKR ATH $6,339 (May 2021)"
+  },
+  "scoreHistory": [
+    {
+      "ts": "2026-07-14",
+      "score": 80,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-15",
+      "score": 80,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-16",
+      "score": 80,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-17",
+      "score": 81,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-18",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-19",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-20",
+      "score": 80,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-21",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-22",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-23",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-24",
+      "score": 80,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-25",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-26",
+      "score": 81,
+      "avg24h": 81
+    },
+    {
+      "ts": "2026-07-27",
+      "score": 81,
+      "avg24h": 81
+    }
+  ],
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Collateral locked (TVL)",
+        "raw": "$5.2B",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.0973,
+        "source": "DeFiLlama / MakerBurn",
+        "status": "live",
+        "unit": "USD"
+      },
+      "stablecoinSupply": {
+        "label": "USDS + DAI supply",
+        "raw": "$13.1B",
+        "normalized": 0.85,
+        "trend": "up",
+        "weight": 0.0708,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Vault / whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.1065,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Vault liquidations 24h",
+        "raw": "minimal",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0885,
+        "source": "MakerBurn",
+        "status": "live"
+      },
+      "surplusBuffer": {
+        "label": "Surplus buffer",
+        "raw": "healthy",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.0531,
+        "source": "MakerBurn",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.0531,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.0354,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.0619,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity (Endgame/Stars)",
+        "raw": "active",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.0442,
+        "source": "Sky vote",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "pegDeviation": {
+        "label": "USDS / DAI peg",
+        "raw": "~1.000",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.1062,
+        "source": "oracle / Curve",
+        "status": "live"
+      },
+      "collateralRatio": {
+        "label": "Global collateralization",
+        "raw": "overcollateralized",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0708,
+        "source": "MakerBurn",
+        "status": "live"
+      },
+      "rwaShare": {
+        "label": "RWA collateral share",
+        "raw": "$1.5B+ (largest revenue)",
+        "normalized": 0.72,
+        "trend": "up",
+        "weight": 0.0619,
+        "source": "MakerBurn",
+        "status": "live"
+      },
+      "psmDepth": {
+        "label": "PSM (USDC) backing share",
+        "raw": "material",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.0796,
+        "source": "MakerBurn",
+        "status": "live"
+      },
+      "savingsRate": {
+        "label": "Sky Savings Rate (SSR)",
+        "raw": "3.75%",
+        "normalized": 0.78,
+        "trend": "down",
+        "weight": 0.0265,
+        "source": "Sky",
+        "status": "live"
+      },
+      "collateralConcentration": {
+        "label": "Collateral concentration",
+        "raw": "diversified (crypto + RWA + USDC)",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.0442,
+        "source": "MakerBurn",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Counterparty",
+      "severity": "high",
+      "title": "RWA off-chain trust",
+      "note": "Tokenized Treasuries rely on off-chain custodians (Monetalis, BlockTower). Partner default would erode the surplus and could force a USDS haircut.",
+      "source": "manual"
+    },
+    {
+      "category": "Centralization",
+      "severity": "medium",
+      "title": "USDC pass-through (PSM)",
+      "note": "The Peg Stability Module holds significant USDC; a USDC depeg passes straight through to USDS.",
+      "source": "manual"
+    },
+    {
+      "category": "Collateral",
+      "severity": "medium",
+      "title": "Crypto liquidation cascade",
+      "note": "A large crypto drawdown could trigger vault liquidation cascades against the surplus.",
+      "source": "manual"
+    },
+    {
+      "category": "Governance",
+      "severity": "low",
+      "title": "SKY migration in progress",
+      "note": "MKR\u2192SKY migration ongoing; passive MKR holders unaffected but governance increasingly assumes SKY.",
+      "source": "news"
+    }
+  ],
+  "triggers": [],
+  "contracts": [
+    {
+      "label": "USDS",
+      "address": "0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+      "kind": "token"
+    },
+    {
+      "label": "DAI",
+      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "kind": "token"
+    },
+    {
+      "label": "PSM (USDC)",
+      "address": "0x89B78CfA322F6C5dE0aBcEecab66Aee45393cC5A",
+      "kind": "psm"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2024-08-27",
+      "type": "rebrand",
+      "severity": "info",
+      "title": "MakerDAO \u2192 Sky",
+      "note": "DAI\u2192USDS (1:1), MKR\u2192SKY (1:24,000); SubDAOs became Stars (Spark first)."
+    },
+    {
+      "ts": "2026-04-07",
+      "type": "migration",
+      "severity": "info",
+      "title": "Binance DAI\u2192USDS auto-conversion",
+      "note": "Largest exchange-level stablecoin conversion; DAI pairs delisted in favor of USDS."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "collateral",
+      "target": "circle-usdc",
+      "note": "USDC held in the PSM backs part of the peg."
+    },
+    {
+      "type": "rwa",
+      "target": "monetalis-blocktower",
+      "note": "Off-chain Treasury custodians."
+    },
+    {
+      "type": "collateral",
+      "target": "lido",
+      "note": "stETH accepted as vault collateral."
+    },
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Collateral pricing."
+    },
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Core deployment; USDS also on Base, Solana."
+    }
+  ],
+  "askSuggestions": [
+    "What happens to USDS if one of the RWA partners defaults?",
+    "How exposed is Sky to a USDC depeg through the PSM?",
+    "Is my sUSDS position safe in a crypto liquidation cascade?"
+  ]
+}

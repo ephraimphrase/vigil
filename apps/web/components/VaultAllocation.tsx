@@ -7,7 +7,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { WeightBar } from "@/components/ui/WeightBar";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
-import { fmtUsd } from "@/lib/format";
+import { fmtUsd } from "@/shared/format";
 import type { AllocationRow } from "@/types";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;

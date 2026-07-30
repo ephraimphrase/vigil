@@ -1,0 +1,223 @@
+{
+  "identity": {
+    "id": "stargate",
+    "name": "Stargate",
+    "ticker": "STG",
+    "aliases": [
+      "Stargate Finance",
+      "Stargate V2"
+    ],
+    "category": "dex",
+    "chain": "multichain",
+    "settlementLayer": null,
+    "kind": "Omnichain liquidity / bridging protocol (LayerZero)",
+    "description": "Unified-liquidity cross-chain bridge built on LayerZero messaging. V2 introduced Hydra pools and a unified USDC/USDT liquidity model across chains, reducing the slippage and fragmentation of V1's per-chain pools.",
+    "launchDate": "2022-03-17",
+    "ageDays": 1596,
+    "links": {
+      "website": "https://stargate.finance",
+      "docs": "https://stargateprotocol.gitbook.io",
+      "github": "https://github.com/stargate-protocol",
+      "twitter": "https://x.com/StargateFinance",
+      "defillama": "https://defillama.com/protocol/stargate",
+      "audits": [
+        "Zellic",
+        "Quantstamp",
+        "Certik"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Unified liquidity pools are a meaningful design improvement over V1's fragmented per-chain model, and STG's TVL is small enough relative to major lending protocols that it isn't a top systemic node - but bridges remain the single most exploited category in DeFi, and Stargate's security is only as strong as LayerZero's DVN (Decentralized Verifier Network) message verification underneath it.",
+      "riskFlags": [
+        "cross-chain bridge risk",
+        "layerzero dependency"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.42,
+    "marketCap": 210000000,
+    "fdv": 420000000,
+    "priceChange24h": 0.3,
+    "priceChange7d": 1.9,
+    "priceChange30d": -5.1,
+    "circulating": 500000000,
+    "maxSupply": 1000000000,
+    "rank": 195,
+    "athMultiple": "-92% from ATH ($5.06, Mar 2022)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$450M",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.1,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+1.2%",
+        "normalized": 0.7,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Cross-chain transfer volume 24h",
+        "raw": "moderate",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "LayerZero Scan",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.62,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "dvnDiversity": {
+        "label": "LayerZero DVN set diversity",
+        "raw": "multiple independent verifiers",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.12,
+        "source": "manual",
+        "status": "manual"
+      },
+      "poolUnification": {
+        "label": "Unified pool coverage (V2)",
+        "raw": "USDC/USDT unified",
+        "normalized": 0.78,
+        "trend": "up",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      },
+      "bridgeExploitHistory": {
+        "label": "Direct exploit history",
+        "raw": "0 successful exploits",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      },
+      "chainCoverage": {
+        "label": "Supported chains",
+        "raw": "20+",
+        "normalized": 0.75,
+        "trend": "up",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Bridge",
+      "severity": "high",
+      "title": "Cross-chain message risk",
+      "note": "Funds released on the destination chain depend on LayerZero's DVNs correctly verifying the source-chain message - the entire bridge category's dominant historical loss vector.",
+      "source": "manual"
+    },
+    {
+      "category": "Dependency",
+      "severity": "medium",
+      "title": "LayerZero dependency",
+      "note": "Stargate has no independent verification layer; a critical LayerZero-level bug or DVN collusion would affect Stargate directly.",
+      "source": "manual"
+    },
+    {
+      "category": "Liquidity",
+      "severity": "low",
+      "title": "Unified pool drawdown",
+      "note": "A large one-directional flow can temporarily deplete a chain's side of a unified pool.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Stargate V2 Router (Ethereum)",
+      "address": "0x77b2043768d28E9C9aB44E1aBfC95944bcE57931",
+      "kind": "router"
+    },
+    {
+      "label": "LayerZero Endpoint V2",
+      "address": "0x1a44076050125825900e736c501f859c50fE728c",
+      "kind": "messaging"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "messaging",
+      "target": "layerzero",
+      "note": "All cross-chain message verification and delivery runs through LayerZero's DVN set."
+    },
+    {
+      "type": "chain",
+      "target": "multichain",
+      "note": "Deployed across 20+ EVM and non-EVM chains; risk is per-chain-pair, not uniform."
+    }
+  ],
+  "askSuggestions": [
+    "What actually verifies a Stargate transfer is legitimate before funds release on the other chain?",
+    "How does V2's unified liquidity reduce risk vs V1's per-chain pools?"
+  ]
+}

@@ -1,18 +1,12 @@
 
 
+import moment from "moment";
 import { useEventStream } from "../hooks/useOverview";
 import type { EventKind, FeedEvent } from "../types";
 
 // ─── CONSTANTS ───
 const KIND_COLOR: Record<EventKind, string> = {
   score: "#9F95AB", trigger: "#E0A95F", execution: "#9259DA", alert: "#E0607F", cycle: "#5FD08A",
-};
-const timeAgo = (iso: string) => {
-  const s = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
-  if (s < 60) return `${s}s`;
-  if (s < 3600) return `${Math.floor(s / 60)}m`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h`;
-  return `${Math.floor(s / 86400)}d`;
 };
 
 // ─── COMPONENTS ───
@@ -23,7 +17,7 @@ function Row({ e }: { e: FeedEvent }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <span className="truncate text-sm text-body">{e.message}</span>
-          <span className="shrink-0 font-mono text-xs text-muted/50">{timeAgo(e.ts)}</span>
+          <span className="shrink-0 font-mono text-xs text-muted/50">{moment(e.ts).fromNow(true)}</span>
         </div>
         <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted/60">
           <span className="uppercase tracking-wider" style={{ color: KIND_COLOR[e.kind] }}>{e.kind}</span>

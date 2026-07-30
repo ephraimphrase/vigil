@@ -1,0 +1,211 @@
+{
+  "identity": {
+    "id": "balancer",
+    "name": "Balancer",
+    "ticker": "BAL",
+    "aliases": [
+      "Balancer V3"
+    ],
+    "category": "dex",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Weighted-pool automated market maker",
+    "description": "Generalized AMM supporting arbitrary weighted pools (not just 50/50), boosted pools that route idle liquidity into yield, and veBAL vote-locking for emission direction. V3 rebuilt the core around a singleton vault design.",
+    "launchDate": "2020-03-23",
+    "ageDays": 2320,
+    "links": {
+      "website": "https://balancer.fi",
+      "docs": "https://docs.balancer.fi",
+      "github": "https://github.com/balancer",
+      "twitter": "https://x.com/Balancer",
+      "defillama": "https://defillama.com/protocol/balancer-v3",
+      "audits": [
+        "Trail of Bits",
+        "Certora",
+        "OpenZeppelin"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Balancer's flexible pool math is powerful but has drawn real exploits: a 2023 boosted-pool vulnerability and a separate read-only reentrancy issue both resulted in losses across specific pool types, though the core vault and most pools were unaffected. V3's simplified singleton architecture is a direct response to that complexity surface.",
+      "riskFlags": [
+        "smart contract complexity",
+        "weighted-pool impermanent loss"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 1.85,
+    "marketCap": 112000000,
+    "fdv": 138000000,
+    "priceChange24h": 0.2,
+    "priceChange7d": -1.5,
+    "priceChange30d": 4.8,
+    "circulating": 60500000,
+    "maxSupply": 74800000,
+    "rank": 260,
+    "athMultiple": "-97% from ATH ($74.45, May 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$1.1B",
+        "normalized": 0.7,
+        "trend": "up",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+1.9%",
+        "normalized": 0.75,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "moderate",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 new incidents",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "active",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "exploitHistory": {
+        "label": "Prior exploit losses",
+        "raw": "2 incidents (2023)",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "poolComplexity": {
+        "label": "Pool-type surface",
+        "raw": "weighted/boosted/stable/custom",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "manual",
+        "status": "manual"
+      },
+      "v3Migration": {
+        "label": "TVL migrated to V3",
+        "raw": "partial, growing",
+        "normalized": 0.55,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Smart contract",
+      "severity": "high",
+      "title": "Prior boosted-pool exploit",
+      "note": "2023: a vulnerability in specific boosted pool implementations was exploited across several deployments before pools were paused.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "medium",
+      "title": "Read-only reentrancy",
+      "note": "A separate 2023 issue affected protocols reading Balancer pool balances mid-transaction, not direct fund loss but a real integration risk.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "low",
+      "title": "Weighted-pool impermanent loss",
+      "note": "Non-50/50 weighted pools have different, sometimes higher, IL profiles than constant-product pools.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Vault (V3)",
+      "address": "0xbA1333333333a1BA1108E8412f11850A5C319bA9",
+      "kind": "core"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2023-08-27",
+      "type": "exploit",
+      "severity": "high",
+      "title": "Boosted pool vulnerability exploited",
+      "note": "Specific legacy boosted pools were drained before governance could pause them; V3's vault design narrows this surface."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Primary deployment; also live on several L2s."
+    }
+  ],
+  "askSuggestions": [
+    "Does V3's new vault design actually fix the issues from the 2023 exploits?",
+    "How is weighted-pool risk different from a standard 50/50 pool?"
+  ]
+}

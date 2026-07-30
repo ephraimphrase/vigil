@@ -3,8 +3,8 @@
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AllocationDonut } from "./AllocationDonut";
-import { deltaColor } from "@/lib/health";
-import { fmtUsdFull, fmtSigned } from "@/lib/format";
+import { deltaColor } from "@/shared/health";
+import { fmtUsdFull, fmtSigned } from "@/shared/format";
 import type { Portfolio, Position } from "../types";
 import type { ReactNode } from "react";
 

@@ -8,16 +8,16 @@
 // app/protocols/page.tsx and app/dashboard/protocols/page.tsx, which are
 // both thin wrappers around this.
 //
-// Data: mock imported directly (per decision). To go live, swap
-// MOCK_PROTOCOLS for a hook returning { data, isLoading } — nothing else
-// in this tree changes.
+// Data: fetched from /api/protocols - no mock import here, so the raw
+// dataset never ships in the client bundle.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-import { MOCK_PROTOCOLS } from "@/mocks/protocols";
+import { useApi } from "@/hooks/useApi";
 import { useProtocolsTable } from "@/hooks/useProtocolsTable";
+import type { ProtocolRow } from "@/types";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { ProtocolsHeader } from "@/components/ProtocolsHeader";
 import { ProtocolsToolbar } from "@/components/ProtocolsToolbar";
@@ -34,6 +34,7 @@ interface ProtocolsViewProps {
 
 export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
   const router = useRouter();
+  const protocols = useApi<ProtocolRow[]>("/api/protocols", []);
   const onOpenProtocol = useCallback(
     (id: string) => router.push(`${basePath}/${id}`),
     [router, basePath]
@@ -60,7 +61,7 @@ export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
     visibleCount,
     totalCount,
   } = useProtocolsTable({
-    data: MOCK_PROTOCOLS,
+    data: protocols,
     watchlisted,
     onToggleWatch: toggleWatch,
   });

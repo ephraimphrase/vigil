@@ -1,4 +1,4 @@
-import { fmtPct } from "@/lib/format";
+import { fmtPct } from "@/shared/format";
 
 interface WeightBarProps {
   actual: number;  // 0–1

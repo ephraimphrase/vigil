@@ -1,0 +1,195 @@
+{
+  "identity": {
+    "id": "bunni",
+    "name": "Bunni",
+    "ticker": "BUNNI",
+    "aliases": [],
+    "category": "dex",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Automated Uniswap V3/V4 liquidity manager",
+    "description": "Wraps Uniswap V3/V4 concentrated liquidity positions into fungible, auto-managed vault tokens. Suffered a real exploit in September 2024 caused by a rounding/precision bug in its liquidity-density math, not a simple reentrancy or access-control bug.",
+    "launchDate": "2022-11-01",
+    "ageDays": 1367,
+    "links": {
+      "website": "https://bunni.xyz",
+      "docs": "https://docs.bunni.xyz",
+      "github": "https://github.com/timeless-fi",
+      "twitter": "https://x.com/bunni_xyz",
+      "defillama": "https://defillama.com/protocol/bunni"
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Bunni's September 2024 exploit (~$8.4M) came from a subtle precision error in its custom liquidity-density function, not a well-known bug class - a reminder that automated LP managers carry math-correctness risk beyond standard reentrancy/access-control checklists. TVL and usage have been modest since.",
+      "riskFlags": [
+        "v4 hook risk",
+        "concentrated liquidity IL"
+      ],
+      "confidence": "medium",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 0.008,
+    "marketCap": 3200000,
+    "fdv": 8000000,
+    "priceChange24h": -0.8,
+    "priceChange7d": -2.1,
+    "priceChange30d": 5.5,
+    "circulating": 400000000,
+    "maxSupply": 1000000000
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$60M",
+        "normalized": 0.5,
+        "trend": "up",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+2.2%",
+        "normalized": 0.62,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.75,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Rebalance tx volume 24h",
+        "raw": "low",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "cautious",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 new incidents",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "low",
+        "normalized": 0.5,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "exploitHistory": {
+        "label": "Prior exploit loss",
+        "raw": "~$8.4M (Sep 2024)",
+        "normalized": 0.45,
+        "trend": "flat",
+        "weight": 0.12,
+        "source": "manual",
+        "status": "manual"
+      },
+      "postIncidentAudit": {
+        "label": "Post-incident re-audit",
+        "raw": "completed",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      },
+      "hookSurface": {
+        "label": "V4 hook usage",
+        "raw": "moderate",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Smart contract",
+      "severity": "high",
+      "title": "Prior liquidity-math exploit",
+      "note": "September 2024: a rounding/precision bug in the liquidity-density function was exploited for ~$8.4M - a math-correctness bug, not a standard vulnerability class.",
+      "source": "manual"
+    },
+    {
+      "category": "Concentration",
+      "severity": "low",
+      "title": "Concentrated liquidity IL",
+      "note": "Auto-managed ranges still carry standard concentrated-liquidity impermanent-loss exposure.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "BunniHub",
+      "address": "0x000000DCeb71f3107909b1b748424349bfde5493",
+      "kind": "core"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2024-09-02",
+      "type": "exploit",
+      "severity": "high",
+      "title": "Liquidity-density rounding exploit - ~$8.4M",
+      "note": "A precision error in custom liquidity-shape math allowed an attacker to drain multiple pools."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "protocol",
+      "target": "uniswap-v4",
+      "note": "Built directly on Uniswap V3/V4 pool mechanics and hooks."
+    }
+  ],
+  "askSuggestions": [
+    "What exactly was the math bug in the September 2024 exploit, and has it been fixed?",
+    "How is Bunni's auto-management different from a manual concentrated liquidity position?"
+  ]
+}

@@ -1,7 +1,7 @@
 
 import { Section } from "./Section";
 import { Chip } from "@/components/ui/Chip";
-import { fmtPct, trendArrow } from "@/lib/format";
+import { fmtPct, trendArrow } from "@/shared/format";
 import type { Category, Signal, SignalGroups } from "../types";
 
 const TYPED_LABEL: Record<Category, string> = {

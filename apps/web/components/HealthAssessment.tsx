@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Section } from "./Section";
 import { Chip } from "@/components/ui/Chip";
-import { dateShort } from "@/lib/format";
+import { dateShort } from "@/shared/format";
 import type { Health } from "../types";
 
 export function HealthAssessment({ health }: { health: Health }) {

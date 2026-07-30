@@ -2,13 +2,13 @@
 
 // ─────────────────────────────────────────────────────────────
 // DepositWithdraw — the action panel. Tabbed deposit / withdraw, amount +
-// MAX, live preview. Amount math is pure (lib/vault). Submit is a stub —
+// MAX, live preview. Amount math is pure (shared/vault). Submit is a stub —
 // wire to approve+deposit / redeem. Hand-rolled input → coss NumberField.
 // ─────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from "react";
-import { previewDeposit, previewWithdraw, parseAmount } from "../lib/vault";
-import { fmtUsdFull } from "@/lib/format";
+import { previewDeposit, previewWithdraw, parseAmount } from "../shared/vault";
+import { fmtUsdFull } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
 
 // ─── TYPES ───

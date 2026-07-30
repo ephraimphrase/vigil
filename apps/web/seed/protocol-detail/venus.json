@@ -1,0 +1,254 @@
+{
+  "identity": {
+    "id": "venus",
+    "name": "Venus",
+    "ticker": "XVS",
+    "aliases": [
+      "Venus Protocol"
+    ],
+    "category": "lending",
+    "chain": "bnb-chain",
+    "settlementLayer": null,
+    "kind": "Overcollateralized money market (Aave-derived)",
+    "description": "BNB Chain's largest lending market, forked from Compound/Aave design. Issues VAI, an overcollateralized stablecoin. Recovered from a major 2021 bad-debt event and has since added Isolated Pools to contain future oracle-driven losses to a single market.",
+    "launchDate": "2020-10-01",
+    "ageDays": 2128,
+    "links": {
+      "website": "https://venus.io",
+      "docs": "https://docs.venus.io",
+      "github": "https://github.com/VenusProtocol",
+      "twitter": "https://x.com/VenusProtocol",
+      "defillama": "https://defillama.com/protocol/venus",
+      "audits": [
+        "CertiK",
+        "PeckShield"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Venus is deeply liquid on BNB Chain and has run without a repeat incident since Isolated Pools shipped, but the May 2021 event is a real precedent, not ancient history: a thinly-traded token (XVS itself) was oracle-manipulated to inflate borrowing power, leaving the protocol with roughly $200M in bad debt that took years to fully resolve. Isolated Pools now wall off exactly this failure mode from the Core Pool, which is where this repo's strategy sits.",
+      "riskFlags": [
+        "oracle dependency",
+        "past bad debt event"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 6.8,
+    "marketCap": 118000000,
+    "fdv": 204000000,
+    "priceChange24h": -0.6,
+    "priceChange7d": -2.1,
+    "priceChange30d": -8.4,
+    "circulating": 17370000,
+    "maxSupply": 30000000,
+    "rank": 210,
+    "athMultiple": "-97% from ATH ($227, May 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$2.1B",
+        "normalized": 0.72,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-1.8%",
+        "normalized": 0.55,
+        "trend": "down",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "moderate",
+        "normalized": 0.58,
+        "trend": "down",
+        "weight": 0.11,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Liquidation rate 24h",
+        "raw": "$2.4M (elevated)",
+        "normalized": 0.62,
+        "trend": "down",
+        "weight": 0.09,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Contract tx volume",
+        "raw": "high",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Alchemy",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "moderate",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral",
+        "normalized": 0.58,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 new incidents",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "moderate",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "Snapshot",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "oracleManipHistory": {
+        "label": "Prior oracle-manipulation loss",
+        "raw": "~$200M (May 2021)",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "manual",
+        "status": "manual"
+      },
+      "isolatedPoolCoverage": {
+        "label": "TVL in Isolated Pools",
+        "raw": "growing",
+        "normalized": 0.65,
+        "trend": "up",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      },
+      "badDebt": {
+        "label": "Current bad debt",
+        "raw": "residual, declining",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.09,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "vaiPegDeviation": {
+        "label": "VAI peg",
+        "raw": "~1.00",
+        "normalized": 0.88,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "oracle",
+        "status": "live"
+      },
+      "bnbChainConcentration": {
+        "label": "Single-chain exposure",
+        "raw": "BNB Chain only (Core Pool)",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Oracle",
+      "severity": "high",
+      "title": "Prior oracle-manipulation event",
+      "note": "May 2021: a low-liquidity token's price was manipulated to over-borrow against, leaving ~$200M in bad debt. Isolated Pools now contain this failure mode, but Core Pool history is real.",
+      "source": "manual"
+    },
+    {
+      "category": "Chain",
+      "severity": "medium",
+      "title": "BNB Chain concentration",
+      "note": "Effectively single-chain exposure; validator set and chain-level risk are BNB Chain's, not Venus's own.",
+      "source": "manual"
+    },
+    {
+      "category": "Collateral",
+      "severity": "low",
+      "title": "Liquidation sensitivity",
+      "note": "Liquidation volume runs elevated relative to TVL during volatile periods.",
+      "source": "subgraph"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Comptroller (Core Pool)",
+      "address": "0xfD36E2c2a6789Db23113685031d7F16329158384",
+      "kind": "core"
+    },
+    {
+      "label": "vUSDC",
+      "address": "0xecA88125a5ADbe82614ffC12D0DB554E2e2867C8",
+      "kind": "market"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2021-05-19",
+      "type": "exploit",
+      "severity": "critical",
+      "title": "XVS oracle manipulation - ~$200M bad debt",
+      "note": "Thin liquidity let an attacker spike XVS price on a CEX the oracle read from, over-borrowing against inflated collateral value."
+    },
+    {
+      "ts": "2022-10-01",
+      "type": "upgrade",
+      "severity": "info",
+      "title": "Isolated Pools launched",
+      "note": "New markets can now be walled off from the Core Pool, containing future oracle or collateral failures to one pool."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "bnb-chain",
+      "note": "Primary and dominant deployment."
+    },
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Core Pool price feeds; historically the attack surface in the 2021 incident predates the current oracle setup."
+    }
+  ],
+  "askSuggestions": [
+    "Is the 2021 bad-debt event still relevant to Core Pool depositors today?",
+    "How does Isolated Pools actually protect Core Pool users?"
+  ]
+}

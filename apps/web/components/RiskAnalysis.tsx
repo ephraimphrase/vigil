@@ -1,5 +1,5 @@
 import { Section } from "./Section";
-import { severityColor } from "@/lib/health";
+import { severityColor } from "@/shared/health";
 import type { RiskRow } from "../types";
 
 export function RiskAnalysis({ risk }: { risk: RiskRow[] }) {

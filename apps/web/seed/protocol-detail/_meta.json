@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "0.1.0",
+  "generatedAt": "2026-07-27",
+  "note": "Mock detail data for Vigil protocol pages. Values grounded in mid-2026 public data (DeFiLlama, L2Beat, CoinGecko, news) but are illustrative, not live. Each signal carries a `source` and `status` so unsourceable ones can be dropped without breaking the health-score calc. Optional sections (contracts/incidents/dependencies) may be empty per protocol.",
+  "signalConvention": "normalized \u2208 [0,1] where 1 = healthy, 0 = critical. weight = contribution to health score, normalized so weights sum to 1.0 across all signals per protocol.",
+  "bands": {
+    "hold": "80-100",
+    "reduce_25": "60-79",
+    "reduce_50": "40-59",
+    "exit": "0-39"
+  }
+}

@@ -4,8 +4,8 @@
 // health display, two densities. `size` toggles density.
 // ─────────────────────────────────────────────────────────────
 
-import { bandColor } from "@/lib/health";
-import { fmtScore } from "@/lib/format";
+import { bandColor } from "@/shared/health";
+import { fmtScore } from "@/shared/format";
 
 interface ScoreBadgeProps {
   score: number;

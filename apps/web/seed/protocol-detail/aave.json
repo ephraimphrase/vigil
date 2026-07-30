@@ -1,0 +1,393 @@
+{
+  "identity": {
+    "id": "aave",
+    "name": "Aave",
+    "ticker": "AAVE",
+    "aliases": [
+      "Aave V3",
+      "Aave Protocol"
+    ],
+    "category": "lending",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Overcollateralized money market",
+    "description": "Largest DeFi lending protocol. V3 across 21+ chains, V4 hub-and-spoke rolling out. Issues the GHO stablecoin; backstopped by the Safety Module.",
+    "launchDate": "2020-12-01",
+    "ageDays": 2064,
+    "links": {
+      "website": "https://aave.com",
+      "docs": "https://docs.aave.com",
+      "github": "https://github.com/aave",
+      "twitter": "https://x.com/aave",
+      "defillama": "https://defillama.com/protocol/aave",
+      "explorer": "https://etherscan.io/address/0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9",
+      "audits": [
+        "OpenZeppelin",
+        "Trail of Bits",
+        "SigmaPrime",
+        "Certora (formal verification)"
+      ]
+    }
+  },
+  "health": {
+    "score": 79,
+    "band": "reduce_25",
+    "delta24h": -1.2,
+    "delta7d": -4.6,
+    "assessment": {
+      "summary": "Fundamentally sound and deeply liquid, but the score sits at the top of the caution band. TVL is down ~52% from the November 2025 peak, partly from April's KelpDAO contagion, and an active governance dispute over Aave Labs funding adds uncertainty. Heavy reliance on stETH as collateral ties Aave's risk to Lido.",
+      "riskFlags": [
+        "tvl drawdown",
+        "governance dispute",
+        "stETH collateral concentration"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-27"
+    },
+    "assessmentHistory": [
+      {
+        "ts": "2026-04-28",
+        "score": 88,
+        "summary": "Near peak TVL, all signals nominal."
+      },
+      {
+        "ts": "2026-07-07",
+        "score": 82,
+        "summary": "TVL runoff continues post-KelpDAO; caution."
+      },
+      {
+        "ts": "2026-07-21",
+        "score": 79,
+        "summary": "Governance funding dispute escalates."
+      }
+    ]
+  },
+  "market": {
+    "price": 99.25,
+    "marketCap": 1531000000,
+    "fdv": 1588000000,
+    "priceChange24h": 0.9,
+    "priceChange7d": 10.7,
+    "priceChange30d": 2.7,
+    "circulating": 15420000,
+    "maxSupply": 16000000,
+    "rank": 64,
+    "athMultiple": "-85% from ATH ($661.69, May 2021)"
+  },
+  "scoreHistory": [
+    {
+      "ts": "2026-07-14",
+      "score": 84,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-15",
+      "score": 83,
+      "avg24h": 84
+    },
+    {
+      "ts": "2026-07-16",
+      "score": 83,
+      "avg24h": 84
+    },
+    {
+      "ts": "2026-07-17",
+      "score": 82,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-18",
+      "score": 82,
+      "avg24h": 83
+    },
+    {
+      "ts": "2026-07-19",
+      "score": 81,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-20",
+      "score": 81,
+      "avg24h": 82
+    },
+    {
+      "ts": "2026-07-21",
+      "score": 79,
+      "avg24h": 81,
+      "trigger": {
+        "action": "reduce_25",
+        "reason": "7d score decline breached threshold"
+      }
+    },
+    {
+      "ts": "2026-07-22",
+      "score": 79,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-23",
+      "score": 80,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-24",
+      "score": 79,
+      "avg24h": 80
+    },
+    {
+      "ts": "2026-07-25",
+      "score": 79,
+      "avg24h": 79
+    },
+    {
+      "ts": "2026-07-26",
+      "score": 78,
+      "avg24h": 79
+    },
+    {
+      "ts": "2026-07-27",
+      "score": 79,
+      "avg24h": 79
+    }
+  ],
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$14.5B",
+        "normalized": 0.78,
+        "trend": "down",
+        "weight": 0.113,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "-3.1%",
+        "normalized": 0.55,
+        "trend": "down",
+        "weight": 0.0609,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale / treasury outflows 24h",
+        "raw": "moderate",
+        "normalized": 0.6,
+        "trend": "down",
+        "weight": 0.1214,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "liquidations": {
+        "label": "Liquidation rate 24h",
+        "raw": "$4.2M (normal)",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.0957,
+        "source": "Alchemy / subgraph",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Contract tx volume",
+        "raw": "high",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0435,
+        "source": "Alchemy",
+        "status": "live"
+      },
+      "treasury": {
+        "label": "Protocol treasury",
+        "raw": "$97.6M",
+        "normalized": 0.7,
+        "trend": "flat",
+        "weight": 0.0261,
+        "source": "DeFiLlama",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.0522,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "mixed (gov dispute)",
+        "normalized": 0.55,
+        "trend": "down",
+        "weight": 0.0435,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "collateral contagion (KelpDAO)",
+        "normalized": 0.6,
+        "trend": "flat",
+        "weight": 0.0609,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "contentious ($51M vote)",
+        "normalized": 0.5,
+        "trend": "down",
+        "weight": 0.0522,
+        "source": "Snapshot / Tally",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "utilization": {
+        "label": "Utilization",
+        "raw": "74.8%",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.0609,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "activeLoans": {
+        "label": "Active loans",
+        "raw": "$11.2B",
+        "normalized": 0.78,
+        "trend": "down",
+        "weight": 0.0348,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "badDebt": {
+        "label": "Bad debt",
+        "raw": "negligible",
+        "normalized": 0.92,
+        "trend": "flat",
+        "weight": 0.0696,
+        "source": "subgraph / risk dashboards",
+        "status": "live"
+      },
+      "safetyModule": {
+        "label": "Safety Module coverage",
+        "raw": "adequate",
+        "normalized": 0.8,
+        "trend": "flat",
+        "weight": 0.0435,
+        "source": "manual",
+        "status": "manual"
+      },
+      "collateralConcentration": {
+        "label": "Top collateral concentration",
+        "raw": "stETH-heavy",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.0696,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "oracleHealth": {
+        "label": "Oracle health (Chainlink)",
+        "raw": "nominal",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.0522,
+        "source": "Chainlink feeds",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Collateral",
+      "severity": "medium",
+      "title": "stETH concentration",
+      "note": "stETH is a dominant collateral asset; a Lido/stETH depeg would cascade into Aave liquidations.",
+      "source": "manual"
+    },
+    {
+      "category": "Oracle",
+      "severity": "medium",
+      "title": "Chainlink dependency",
+      "note": "Pricing relies on Chainlink feeds; feed failure or manipulation is a systemic risk.",
+      "source": "manual"
+    },
+    {
+      "category": "Governance",
+      "severity": "medium",
+      "title": "Active funding dispute",
+      "note": "ACI vs Aave Labs dispute over a $51M funding vote introduces governance uncertainty.",
+      "source": "news"
+    },
+    {
+      "category": "Market",
+      "severity": "low",
+      "title": "TVL drawdown",
+      "note": "Down ~52% from Nov 2025 peak; partly broad market, partly KelpDAO contagion.",
+      "source": "DeFiLlama"
+    }
+  ],
+  "triggers": [
+    {
+      "ts": "2026-07-21",
+      "score": 79,
+      "delta": -6.2,
+      "action": "reduce_25",
+      "reason": "7-day score decline breached the -15pt rolling threshold amid governance dispute."
+    }
+  ],
+  "contracts": [
+    {
+      "label": "Pool (V3)",
+      "address": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+      "kind": "core"
+    },
+    {
+      "label": "PoolAddressesProvider",
+      "address": "0x2f39d218133AFaB8F2B819B1066c7E434Ad94E9e",
+      "kind": "core"
+    },
+    {
+      "label": "ACL Admin (Governance)",
+      "address": "0xEE56e2B3D491590B5b31738cC34d5232F378a8D5",
+      "kind": "admin"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2026-04-15",
+      "type": "contagion",
+      "severity": "high",
+      "title": "KelpDAO exploit contagion",
+      "note": "TVL fell from ~$26.4B to ~$14.3B over days as leveraged/restaking collateral unwound."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "oracle",
+      "target": "chainlink",
+      "note": "Price feeds for all markets."
+    },
+    {
+      "type": "collateral",
+      "target": "lido",
+      "note": "stETH is a major collateral asset."
+    },
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Primary deployment; V3 also on 21+ chains incl. Base."
+    }
+  ],
+  "askSuggestions": [
+    "Why did Aave's score drop this week?",
+    "How exposed is Aave to a Lido / stETH depeg?",
+    "Is the governance dispute a real risk to my deposits?"
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "identity": {
+    "id": "beefy",
+    "name": "Beefy",
+    "ticker": "BIFI",
+    "aliases": [
+      "Beefy Finance"
+    ],
+    "category": "lending",
+    "chain": "multichain",
+    "settlementLayer": null,
+    "kind": "Yield-optimizer / vault-of-vaults aggregator",
+    "description": "Auto-compounding yield aggregator running thousands of strategy contracts across 20+ chains - the same strategy pattern this repo's own beefy_strategies/ contracts are built from. Beefy itself doesn't originate yield; it harvests and compounds whatever the underlying protocol produces.",
+    "launchDate": "2020-09-01",
+    "ageDays": 2158,
+    "links": {
+      "website": "https://beefy.com",
+      "docs": "https://docs.beefy.finance",
+      "github": "https://github.com/beefyfinance",
+      "twitter": "https://x.com/beefyfinance",
+      "defillama": "https://defillama.com/protocol/beefy",
+      "audits": [
+        "PeckShield",
+        "Trail of Bits",
+        "Certik"
+      ]
+    }
+  },
+  "health": {
+    "assessment": {
+      "summary": "Beefy's own contracts are heavily audited and battle-tested across a large TVL base, but its risk profile is inherently a dependency chain: a Beefy vault's safety is a function of both Beefy's own strategy code AND whatever underlying protocol it's compounding into. A failure in the underlying protocol passes straight through to the vault.",
+      "riskFlags": [
+        "underlying strategy risk",
+        "vault-of-vaults dependency chain"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-30"
+    },
+    "assessmentHistory": []
+  },
+  "market": {
+    "price": 205,
+    "marketCap": 8400000,
+    "fdv": 8400000,
+    "priceChange24h": 0.5,
+    "priceChange7d": 2,
+    "priceChange30d": -6.5,
+    "circulating": 41000,
+    "maxSupply": 80000,
+    "rank": 1400,
+    "athMultiple": "-98% from ATH ($16,660, Apr 2021)"
+  },
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$300M",
+        "normalized": 0.68,
+        "trend": "up",
+        "weight": 0.1,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+1.5%",
+        "normalized": 0.72,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "Whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.08,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Harvest tx volume 24h",
+        "raw": "high (thousands of vaults)",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "subgraph",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "very high",
+        "normalized": 0.9,
+        "trend": "flat",
+        "weight": 0.05,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive",
+        "normalized": 0.78,
+        "trend": "flat",
+        "weight": 0.04,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents at Beefy layer",
+        "normalized": 0.92,
+        "trend": "flat",
+        "weight": 0.07,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "moderate",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.03,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "vaultCount": {
+        "label": "Active vaults",
+        "raw": "5,000+",
+        "normalized": 0.85,
+        "trend": "up",
+        "weight": 0.06,
+        "source": "manual",
+        "status": "manual"
+      },
+      "chainCoverage": {
+        "label": "Chains supported",
+        "raw": "20+",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.04,
+        "source": "manual",
+        "status": "manual"
+      },
+      "underlyingRiskPassthrough": {
+        "label": "Dependency-chain exposure",
+        "raw": "inherits underlying protocol risk",
+        "normalized": 0.55,
+        "trend": "flat",
+        "weight": 0.09,
+        "source": "manual",
+        "status": "manual"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Dependency",
+      "severity": "medium",
+      "title": "Underlying protocol pass-through",
+      "note": "A Beefy vault's real risk is whatever protocol it's compounding into - Beefy's own audit history doesn't cover that layer.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "low",
+      "title": "Large, complex strategy surface",
+      "note": "Thousands of distinct strategy contracts across chains means a long tail of less-scrutinized code, even if the core patterns are audited.",
+      "source": "manual"
+    }
+  ],
+  "contracts": [
+    {
+      "label": "BeefyVaultV7 (implementation)",
+      "address": "0xE5b9639Cf5140Fa76c069A2f9C99e63020E7Eb75",
+      "kind": "vault-template"
+    }
+  ],
+  "incidents": [],
+  "dependencies": [
+    {
+      "type": "protocol",
+      "target": "many",
+      "note": "Each vault depends on the specific underlying protocol it compounds - Aave, Curve, GMX, etc."
+    }
+  ],
+  "askSuggestions": [
+    "If I'm using this repo's own adapter over a Beefy-pattern strategy, does Beefy's own audit history even apply?",
+    "How does a Beefy vault's risk differ from depositing directly into the underlying protocol?"
+  ]
+}
