@@ -8,14 +8,13 @@
 // app/protocols/page.tsx and app/dashboard/protocols/page.tsx, which are
 // both thin wrappers around this.
 //
-// Data: mock imported directly (per decision). To go live, swap
-// MOCK_PROTOCOLS for a hook returning { data, isLoading } — nothing else
-// in this tree changes.
+// Data: fetched from /api/protocols, seeded with the mock for first paint.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
+import { useApi } from "@/hooks/useApi";
 import { MOCK_PROTOCOLS } from "@/mocks/protocols";
 import { useProtocolsTable } from "@/hooks/useProtocolsTable";
 import { CornerFrame } from "@/components/ui/CornerFrame";
@@ -34,6 +33,7 @@ interface ProtocolsViewProps {
 
 export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
   const router = useRouter();
+  const protocols = useApi("/api/protocols", MOCK_PROTOCOLS);
   const onOpenProtocol = useCallback(
     (id: string) => router.push(`${basePath}/${id}`),
     [router, basePath]
@@ -60,7 +60,7 @@ export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
     visibleCount,
     totalCount,
   } = useProtocolsTable({
-    data: MOCK_PROTOCOLS,
+    data: protocols,
     watchlisted,
     onToggleWatch: toggleWatch,
   });

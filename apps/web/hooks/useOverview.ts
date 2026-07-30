@@ -1,11 +1,12 @@
 
 
 import { useEffect, useState } from "react";
+import { useApi } from "./useApi";
 import { MOCK_OVERVIEW } from "../mocks/overview.mock";
 import type { FeedEvent, OverviewData } from "../types";
 
 export function useOverview(): OverviewData {
-  return MOCK_OVERVIEW;
+  return useApi("/api/overview", MOCK_OVERVIEW);
 }
 
 const SAMPLE: Omit<FeedEvent, "id" | "ts">[] = [

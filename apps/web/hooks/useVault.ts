@@ -4,9 +4,10 @@
 // Page and components are unchanged when the source flips.
 // ─────────────────────────────────────────────────────────────
 
+import { useApi } from "./useApi";
 import { MOCK_VAULT } from "../mocks/vault.mock";
 import type { VaultData } from "@/types";
 
 export function useVault(): VaultData {
-  return MOCK_VAULT;
+  return useApi("/api/vault", MOCK_VAULT);
 }
