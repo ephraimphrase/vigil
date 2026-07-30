@@ -7,7 +7,7 @@ import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.so
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IVigilProtocolAdapter} from "../adapter/IVigilProtocolAdapter.sol";
+import {IVigilProtocolAdapter} from "../interface/IVigilProtocolAdapter.sol";
 import {IVigilVault} from "../interface/IVigilVault.sol";
 import {HealthOracle} from "../oracle/HealthOracle.sol";
 
@@ -86,11 +86,13 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     // Pulls any remaining position back into the vault's idle balance before
     // dropping the adapter from rotation - otherwise those funds would be
     // stranded: no longer weighted into rebalance(), but still sitting in
-    // the adapter contract with nothing left tracking them.
+    // the adapter contract with nothing left tracking them. retire() (not
+    // withdrawAll()) because this drop is permanent, matching the
+    // interface's terminal-lifecycle contract.
     function removeAdapter(IVigilProtocolAdapter adapter) external override onlyRole(DEFAULT_ADMIN_ROLE) nonReentrant {
         if (!isAdapter[address(adapter)]) revert NotAnAdapter();
 
-        uint256 withdrawn = adapter.withdrawAll();
+        uint256 withdrawn = adapter.retire(0);
 
         isAdapter[address(adapter)] = false;
         _removeFromArray(adapter);
@@ -157,7 +159,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
 
         for (uint256 i; i < n; ++i) {
             if (current[i] > target[i]) {
-                adapters[i].withdraw(current[i] - target[i]);
+                adapters[i].withdraw(current[i] - target[i], 0);
             }
         }
         for (uint256 i; i < n; ++i) {
@@ -168,7 +170,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
                 if (amount == 0) continue;
 
                 IERC20(asset()).safeTransfer(address(adapters[i]), amount);
-                adapters[i].deposit(amount);
+                adapters[i].deposit(amount, 0);
             }
         }
 
@@ -190,7 +192,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     {
         if (!isAdapter[address(adapter)]) revert NotAnAdapter();
 
-        withdrawn = adapter.withdrawAll();
+        withdrawn = adapter.withdrawAll(0);
 
         emit AdapterEvacuated(address(adapter), withdrawn);
     }
@@ -228,7 +230,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
             if (avail == 0) continue;
 
             uint256 amount = avail < needed ? avail : needed;
-            uint256 withdrawn = adapters[i].withdraw(amount);
+            uint256 withdrawn = adapters[i].withdraw(amount, 0);
             needed -= withdrawn;
         }
     }
