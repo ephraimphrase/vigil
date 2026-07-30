@@ -29,6 +29,9 @@ export const fmtFeePct = (v: number) => {
   return `${Number.isInteger(pct) ? pct.toFixed(0) : pct.toFixed(2)}%`;
 };
 
+export const fmtAddress = (a: string) =>
+  a.length <= 10 ? a : `${a.slice(0, 6)}...${a.slice(-4)}`;
+
 export const dateShort = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 

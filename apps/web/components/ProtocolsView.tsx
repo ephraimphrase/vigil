@@ -8,15 +8,16 @@
 // app/protocols/page.tsx and app/dashboard/protocols/page.tsx, which are
 // both thin wrappers around this.
 //
-// Data: fetched from /api/protocols, seeded with the mock for first paint.
+// Data: fetched from /api/protocols - no mock import here, so the raw
+// dataset never ships in the client bundle.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { useApi } from "@/hooks/useApi";
-import { MOCK_PROTOCOLS } from "@/mocks/protocols";
 import { useProtocolsTable } from "@/hooks/useProtocolsTable";
+import type { ProtocolRow } from "@/types";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { ProtocolsHeader } from "@/components/ProtocolsHeader";
 import { ProtocolsToolbar } from "@/components/ProtocolsToolbar";
@@ -33,7 +34,7 @@ interface ProtocolsViewProps {
 
 export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
   const router = useRouter();
-  const protocols = useApi("/api/protocols", MOCK_PROTOCOLS);
+  const protocols = useApi<ProtocolRow[]>("/api/protocols", []);
   const onOpenProtocol = useCallback(
     (id: string) => router.push(`${basePath}/${id}`),
     [router, basePath]

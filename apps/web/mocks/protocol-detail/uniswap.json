@@ -1,0 +1,361 @@
+{
+  "identity": {
+    "id": "uniswap",
+    "name": "Uniswap",
+    "ticker": "UNI",
+    "aliases": [
+      "Uniswap V4",
+      "Uniswap Protocol"
+    ],
+    "category": "dex",
+    "chain": "ethereum",
+    "settlementLayer": null,
+    "kind": "Automated market maker (AMM)",
+    "description": "Largest DEX by volume. V4 adds Hooks + singleton architecture; ~half of V4 volume now runs on Unichain, Uniswap's own L2. Protocol fee switch activated late 2025.",
+    "launchDate": "2020-09-16",
+    "ageDays": 2140,
+    "links": {
+      "website": "https://uniswap.org",
+      "docs": "https://docs.uniswap.org",
+      "github": "https://github.com/Uniswap",
+      "twitter": "https://x.com/Uniswap",
+      "defillama": "https://defillama.com/protocol/uniswap",
+      "explorer": "https://etherscan.io/address/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "audits": [
+        "Trail of Bits",
+        "ABDK",
+        "OpenZeppelin",
+        "Certora"
+      ]
+    }
+  },
+  "health": {
+    "score": 88,
+    "band": "hold",
+    "delta24h": 0.8,
+    "delta7d": 3.2,
+    "assessment": {
+      "summary": "Strong and improving. The December 2025 fee switch (17% of fees now buy back and burn UNI, extended to L2s through 2026) finally links protocol usage to token value, and V4 volume is healthy. Main watch item is volume concentration on Unichain, a self-dependency, plus per-pool risk introduced by custom V4 Hooks.",
+      "riskFlags": [
+        "unichain concentration",
+        "v4 hook risk"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-27"
+    },
+    "assessmentHistory": [
+      {
+        "ts": "2026-05-28",
+        "score": 83,
+        "summary": "Pre-fee-switch; token value disconnected from usage."
+      },
+      {
+        "ts": "2026-07-02",
+        "score": 87,
+        "summary": "Fee switch live and extending to L2s; sentiment up."
+      }
+    ]
+  },
+  "market": {
+    "price": 12.4,
+    "marketCap": 7780000000,
+    "fdv": 12400000000,
+    "priceChange24h": 1.4,
+    "priceChange7d": 14.4,
+    "priceChange30d": 33.0,
+    "circulating": 628000000,
+    "maxSupply": 1000000000,
+    "rank": 22,
+    "athMultiple": "-72% from ATH ($44.92, May 2021)"
+  },
+  "scoreHistory": [
+    {
+      "ts": "2026-07-14",
+      "score": 85,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-15",
+      "score": 85,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-16",
+      "score": 86,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-17",
+      "score": 86,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-18",
+      "score": 86,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-19",
+      "score": 87,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-20",
+      "score": 87,
+      "avg24h": 87
+    },
+    {
+      "ts": "2026-07-21",
+      "score": 87,
+      "avg24h": 87
+    },
+    {
+      "ts": "2026-07-22",
+      "score": 88,
+      "avg24h": 87
+    },
+    {
+      "ts": "2026-07-23",
+      "score": 88,
+      "avg24h": 88
+    },
+    {
+      "ts": "2026-07-24",
+      "score": 87,
+      "avg24h": 88
+    },
+    {
+      "ts": "2026-07-25",
+      "score": 88,
+      "avg24h": 88
+    },
+    {
+      "ts": "2026-07-26",
+      "score": 88,
+      "avg24h": 88
+    },
+    {
+      "ts": "2026-07-27",
+      "score": 88,
+      "avg24h": 88
+    }
+  ],
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Total value locked",
+        "raw": "$4.5B",
+        "normalized": 0.8,
+        "trend": "up",
+        "weight": 0.1122,
+        "source": "DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVL 7d change",
+        "raw": "+2.4%",
+        "normalized": 0.85,
+        "trend": "up",
+        "weight": 0.051,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "whaleOutflow": {
+        "label": "LP whale outflows 24h",
+        "raw": "low",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.1228,
+        "source": "Alchemy Transfers",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Swap tx volume 24h",
+        "raw": "high",
+        "normalized": 0.9,
+        "trend": "up",
+        "weight": 0.0612,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "treasury": {
+        "label": "Treasury",
+        "raw": "$1.04B (mostly UNI)",
+        "normalized": 0.68,
+        "trend": "flat",
+        "weight": 0.0306,
+        "source": "DeFiLlama",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "very high (~100 hooks/day)",
+        "normalized": 0.95,
+        "trend": "up",
+        "weight": 0.0714,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "positive (fee switch)",
+        "normalized": 0.85,
+        "trend": "up",
+        "weight": 0.051,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.0714,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "governance": {
+        "label": "Governance activity",
+        "raw": "active, aligned",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.051,
+        "source": "Tally",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "volume24h": {
+        "label": "DEX volume 24h",
+        "raw": "$1.6B",
+        "normalized": 0.88,
+        "trend": "up",
+        "weight": 0.102,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "volumeTvlRatio": {
+        "label": "Volume / TVL ratio",
+        "raw": "0.36",
+        "normalized": 0.84,
+        "trend": "up",
+        "weight": 0.0612,
+        "source": "derived",
+        "status": "derived"
+      },
+      "feeRevenue": {
+        "label": "Fees (30d) / buyback",
+        "raw": "17% \u2192 UNI burn",
+        "normalized": 0.86,
+        "trend": "up",
+        "weight": 0.0816,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "poolConcentration": {
+        "label": "Liquidity concentration",
+        "raw": "moderate",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.051,
+        "source": "subgraph",
+        "status": "live"
+      },
+      "unichainShare": {
+        "label": "Volume share on Unichain",
+        "raw": "~50% of V4",
+        "normalized": 0.6,
+        "trend": "up",
+        "weight": 0.051,
+        "source": "manual",
+        "status": "manual"
+      },
+      "hookRisk": {
+        "label": "V4 hook surface",
+        "raw": "2,500+ custom pools",
+        "normalized": 0.65,
+        "trend": "flat",
+        "weight": 0.0306,
+        "source": "subgraph",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Concentration",
+      "severity": "medium",
+      "title": "Unichain dependency",
+      "note": "~Half of V4 volume runs on Uniswap's own L2; an issue there concentrates impact.",
+      "source": "manual"
+    },
+    {
+      "category": "Smart contract",
+      "severity": "medium",
+      "title": "V4 hook surface",
+      "note": "Hooks let anyone inject custom code into pool lifecycle \u2014 per-pool risk varies widely.",
+      "source": "manual"
+    },
+    {
+      "category": "Regulatory",
+      "severity": "low",
+      "title": "Fee-switch precedent",
+      "note": "Turning on protocol fees has historically raised securities-treatment questions for governance tokens.",
+      "source": "manual"
+    },
+    {
+      "category": "Market",
+      "severity": "low",
+      "title": "Volume cyclicality",
+      "note": "Revenue now tied to volume, which is volatile with market conditions.",
+      "source": "manual"
+    }
+  ],
+  "triggers": [],
+  "contracts": [
+    {
+      "label": "V4 PoolManager",
+      "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+      "kind": "core"
+    },
+    {
+      "label": "Universal Router",
+      "address": "0x66a9893cC07D91D95644AEDD05D03f95e1dBA8Af",
+      "kind": "router"
+    },
+    {
+      "label": "Governance Timelock",
+      "address": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
+      "kind": "admin"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2025-12-28",
+      "type": "governance",
+      "severity": "info",
+      "title": "Fee switch activated (Ethereum)",
+      "note": "17% of fees redirected to buy back and burn UNI; extended to L2s (Mar 2026) and more chains (Jun 2026)."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "chain",
+      "target": "ethereum",
+      "note": "Primary deployment; multichain incl. Base, Unichain."
+    },
+    {
+      "type": "l2",
+      "target": "unichain",
+      "note": "Uniswap's own L2 carries ~half of V4 volume."
+    }
+  ],
+  "askSuggestions": [
+    "How does the fee switch change UNI's value accrual?",
+    "What's the risk from V4 hooks in the pools I'd be exposed to?",
+    "How dependent is Uniswap on Unichain now?"
+  ]
+}

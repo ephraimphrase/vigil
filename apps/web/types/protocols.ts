@@ -4,6 +4,7 @@ export interface ProtocolRow {
   id: string;
   name: string;
   ticker: string;
+  icon: string;    // logo URL (icons.llamao.fi)
   score: number;
   delta24h: number;
   tvl: number;
@@ -148,13 +149,6 @@ export interface ProtocolDetail {
   askSuggestions: string[];
 }
 
-export interface ProtocolDetailDoc {
-  meta: {
-    schemaVersion: string;
-    generatedAt: string;
-    note: string;
-    signalConvention: string;
-    bands: Record<Band, string>;
-  };
-  protocols: ProtocolDetail[];
-}
+// The old single-file {meta, protocols} wrapper is gone - each protocol is
+// its own file under mocks/protocol-detail/ now (see _meta.json for the
+// shared meta block, kept for reference but not currently served).

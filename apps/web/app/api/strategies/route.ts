@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { MOCK_STRATEGIES } from "@/mocks/strategies.mock";
+import strategies from "@/mocks/strategies.json";
 
 export function GET() {
-  return NextResponse.json(MOCK_STRATEGIES);
+  return NextResponse.json(strategies);
 }

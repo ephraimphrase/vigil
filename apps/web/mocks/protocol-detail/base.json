@@ -1,0 +1,368 @@
+{
+  "identity": {
+    "id": "base",
+    "name": "Base",
+    "ticker": null,
+    "aliases": [],
+    "category": "rollup",
+    "chain": "self",
+    "settlementLayer": "ethereum",
+    "kind": "Optimistic rollup (OP Stack)",
+    "description": "Coinbase's Ethereum L2 built on the OP Stack, part of the Optimism Superchain. Largest OP-Stack chain by TVL.",
+    "launchDate": "2023-08-09",
+    "ageDays": 1083,
+    "links": {
+      "website": "https://base.org",
+      "docs": "https://docs.base.org",
+      "github": "https://github.com/base-org",
+      "twitter": "https://x.com/base",
+      "defillama": "https://defillama.com/chain/base",
+      "l2beat": "https://l2beat.com/scaling/projects/base",
+      "explorer": "https://basescan.org",
+      "audits": [
+        "OP Stack audits (Optimism)",
+        "Azul proof-system audits (partial)"
+      ]
+    }
+  },
+  "health": {
+    "score": 86,
+    "band": "hold",
+    "delta24h": 0.4,
+    "delta7d": -1.1,
+    "assessment": {
+      "summary": "Healthy activity and TVL, but the score is capped by sequencer centralization: Coinbase operates the only sequencer and a Security Council multisig retains upgrade authority (L2Beat Stage 0). The Azul upgrade cut the trustless-exit window to ~1 day, improving the withdrawal risk profile.",
+      "riskFlags": [
+        "stage 0",
+        "centralized sequencer",
+        "multisig upgrade authority"
+      ],
+      "confidence": "high",
+      "updatedAt": "2026-07-27"
+    },
+    "assessmentHistory": [
+      {
+        "ts": "2026-06-27",
+        "score": 84,
+        "summary": "Pre-Azul: 7-day withdrawal window weighing on exit risk."
+      },
+      {
+        "ts": "2026-07-24",
+        "score": 86,
+        "summary": "Azul TEE+ZK proofs live; withdrawal window down to ~1 day."
+      }
+    ]
+  },
+  "market": null,
+  "scoreHistory": [
+    {
+      "ts": "2026-07-14",
+      "score": 85,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-15",
+      "score": 85,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-16",
+      "score": 84,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-17",
+      "score": 86,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-18",
+      "score": 86,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-19",
+      "score": 87,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-20",
+      "score": 87,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-21",
+      "score": 86,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-22",
+      "score": 85,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-23",
+      "score": 84,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-24",
+      "score": 86,
+      "avg24h": 85
+    },
+    {
+      "ts": "2026-07-25",
+      "score": 86,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-26",
+      "score": 86,
+      "avg24h": 86
+    },
+    {
+      "ts": "2026-07-27",
+      "score": 86,
+      "avg24h": 86
+    }
+  ],
+  "signals": {
+    "onchain": {
+      "tvl": {
+        "label": "Value secured (TVS)",
+        "raw": "$3.9B",
+        "normalized": 0.82,
+        "trend": "flat",
+        "weight": 0.1167,
+        "source": "L2Beat / DeFiLlama",
+        "status": "live",
+        "unit": "USD"
+      },
+      "tvlDelta7d": {
+        "label": "TVS 7d change",
+        "raw": "-2.1%",
+        "normalized": 0.7,
+        "trend": "down",
+        "weight": 0.05,
+        "source": "DeFiLlama",
+        "status": "live"
+      },
+      "activity": {
+        "label": "Daily transactions",
+        "raw": "12.89M",
+        "normalized": 0.95,
+        "trend": "up",
+        "weight": 0.0833,
+        "source": "growthepie / L2Beat",
+        "status": "live"
+      },
+      "activeAddresses": {
+        "label": "Daily active addresses",
+        "raw": "1.8M",
+        "normalized": 0.9,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "bridgeFlows": {
+        "label": "Net bridge flows 24h",
+        "raw": "+$4.2M",
+        "normalized": 0.66,
+        "trend": "flat",
+        "weight": 0.0667,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "onchainCosts": {
+        "label": "Median USDC transfer fee",
+        "raw": "$0.004",
+        "normalized": 0.92,
+        "trend": "flat",
+        "weight": 0.0333,
+        "source": "growthepie",
+        "status": "live"
+      }
+    },
+    "offchain": {
+      "githubVelocity": {
+        "label": "Commit velocity (30d)",
+        "raw": "high",
+        "normalized": 0.88,
+        "trend": "flat",
+        "weight": 0.0667,
+        "source": "GitHub REST",
+        "status": "live"
+      },
+      "sentiment": {
+        "label": "Social sentiment",
+        "raw": "neutral-positive",
+        "normalized": 0.72,
+        "trend": "flat",
+        "weight": 0.0417,
+        "source": "LunarCrush",
+        "status": "manual"
+      },
+      "securityNews": {
+        "label": "Security events (90d)",
+        "raw": "0 incidents",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.0583,
+        "source": "DeFiLlama Hacks",
+        "status": "live"
+      },
+      "teamSignals": {
+        "label": "Operator / team stability",
+        "raw": "stable (Coinbase)",
+        "normalized": 0.85,
+        "trend": "flat",
+        "weight": 0.0333,
+        "source": "manual",
+        "status": "manual"
+      }
+    },
+    "typed": {
+      "stage": {
+        "label": "L2Beat stage",
+        "raw": "Stage 0",
+        "normalized": 0.4,
+        "trend": "flat",
+        "weight": 0.1,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "sequencer": {
+        "label": "Sequencer decentralization",
+        "raw": "centralized (Coinbase)",
+        "normalized": 0.3,
+        "trend": "flat",
+        "weight": 0.0833,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "proofSystem": {
+        "label": "Proof system",
+        "raw": "Fault proofs + TEE/ZK (Azul)",
+        "normalized": 0.75,
+        "trend": "up",
+        "weight": 0.0583,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "dataAvailability": {
+        "label": "DA layer",
+        "raw": "Ethereum (blobs, EIP-4844)",
+        "normalized": 0.95,
+        "trend": "flat",
+        "weight": 0.0417,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "withdrawalDelay": {
+        "label": "Trustless exit window",
+        "raw": "~1 day (post-Azul)",
+        "normalized": 0.7,
+        "trend": "up",
+        "weight": 0.05,
+        "source": "L2Beat",
+        "status": "live"
+      },
+      "upgradeControl": {
+        "label": "Upgrade authority",
+        "raw": "Security Council multisig",
+        "normalized": 0.35,
+        "trend": "flat",
+        "weight": 0.0667,
+        "source": "L2Beat",
+        "status": "live"
+      }
+    }
+  },
+  "risk": [
+    {
+      "category": "Sequencer",
+      "severity": "high",
+      "title": "Centralized sequencer",
+      "note": "Coinbase runs the only sequencer. A regulatory action or operational incident at Coinbase directly affects all Base users.",
+      "source": "L2Beat"
+    },
+    {
+      "category": "Governance",
+      "severity": "high",
+      "title": "Multisig upgrade authority",
+      "note": "A Security Council multisig can pause or upgrade contracts (Stage 0).",
+      "source": "L2Beat"
+    },
+    {
+      "category": "Proof system",
+      "severity": "medium",
+      "title": "New proof stack",
+      "note": "Azul's dual TEE+ZK system is recent; audit coverage still maturing. TEE hardware vulnerabilities partially backstopped by ZK override.",
+      "source": "manual"
+    },
+    {
+      "category": "Data availability",
+      "severity": "low",
+      "title": "Ethereum DA",
+      "note": "Posts data to Ethereum via blobs \u2014 strong DA guarantees.",
+      "source": "L2Beat"
+    }
+  ],
+  "triggers": [],
+  "contracts": [
+    {
+      "label": "L1 Standard Bridge",
+      "address": "0x3154Cf16ccdb4C6d922629664174b904d80F2C35",
+      "kind": "bridge"
+    },
+    {
+      "label": "OptimismPortal",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "kind": "portal"
+    },
+    {
+      "label": "Security Council (multisig)",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "kind": "admin"
+    }
+  ],
+  "incidents": [
+    {
+      "ts": "2024-10-01",
+      "type": "upgrade",
+      "severity": "info",
+      "title": "Fault proofs shipped to mainnet",
+      "note": "Permissionless fault proofs went live."
+    },
+    {
+      "ts": "2026-05-28",
+      "type": "upgrade",
+      "severity": "info",
+      "title": "Azul mainnet activation",
+      "note": "Dual TEE+ZK proof system; withdrawal window cut 7d \u2192 ~1d."
+    }
+  ],
+  "dependencies": [
+    {
+      "type": "settlement",
+      "target": "ethereum",
+      "note": "Settles to and posts DA on Ethereum."
+    },
+    {
+      "type": "operator",
+      "target": "coinbase",
+      "note": "Sequencer operated by Coinbase."
+    },
+    {
+      "type": "framework",
+      "target": "op-stack",
+      "note": "Shares OP Stack code + Superchain fee agreement with Optimism Collective."
+    }
+  ],
+  "askSuggestions": [
+    "What happens to my positions if the Base sequencer goes down?",
+    "How much did Azul actually reduce exit risk?",
+    "Why is Base capped at Stage 0 and what would move it to Stage 1?"
+  ]
+}

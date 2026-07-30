@@ -7,6 +7,7 @@
 import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { fmtUsd } from "@/lib/format";
 import { aggregate } from "../lib/rebalance";
+import { useVault } from "../hooks/useVault";
 import type { StrategiesData } from "../types";
 
 // ─── UTILS ───
@@ -21,11 +22,12 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
 
 // ─── MAIN ───
 export function StrategiesHeader({ data }: { data: StrategiesData }) {
-  const agg = aggregate(data.strategies, data.vault);
+  const vault = useVault();
+  const agg = aggregate(data.strategies);
   return (
     <div className="grid grid-cols-2 divide-x divide-y divide-hairline rounded-none border border-hairline bg-panel/20 md:grid-cols-5 md:divide-y-0">
       <Stat label="Deployed"><span className="font-mono text-lg tabular-nums text-body">{fmtUsd(agg.deployed)}</span></Stat>
-      <Stat label="Idle (USDC)"><span className="font-mono text-lg tabular-nums text-body">{fmtUsd(data.vault.idle)}</span></Stat>
+      <Stat label="Idle (USDC)"><span className="font-mono text-lg tabular-nums text-body">{fmtUsd(vault.info.idle)}</span></Stat>
       <Stat label="Strategies"><span className="font-mono text-lg tabular-nums text-body">{data.strategies.length}</span></Stat>
       <Stat label="Weighted health"><ScoreBadge score={agg.weightedHealth} /></Stat>
       <Stat label="Blended APY"><span className="font-mono text-lg tabular-nums text-body">{agg.weightedApy.toFixed(1)}%</span></Stat>

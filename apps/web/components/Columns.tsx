@@ -34,11 +34,21 @@ export function buildColumns({
     col.accessor("name", {
       header: "Protocol",
       cell: ({ row }) => (
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm text-text">{row.original.name}</span>
-          <span className="font-mono text-xs text-text-muted">
-            {row.original.ticker}
-          </span>
+        <div className="flex items-center gap-2.5">
+          <img
+            src={row.original.icon}
+            alt=""
+            width={24}
+            height={24}
+            className="h-6 w-6 shrink-0 rounded-full"
+            loading="lazy"
+          />
+          <div className="flex flex-col leading-tight">
+            <span className="text-sm text-text">{row.original.name}</span>
+            <span className="font-mono text-xs text-text-muted">
+              {row.original.ticker}
+            </span>
+          </div>
         </div>
       ),
     }),

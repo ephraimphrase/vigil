@@ -20,7 +20,7 @@ const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];
 export default function StrategiesPage() {
   const router = useRouter();
   const data = useStrategies();
-  const agg = aggregate(data.strategies, data.vault);
+  const agg = aggregate(data.strategies);
 
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
   const columns = useMemo(() => buildStrategyColumns(), []);
@@ -49,7 +49,7 @@ export default function StrategiesPage() {
         <StrategiesTable
           table={table}
           isLoading={false}
-          onOpenStrategy={(protocolId) => router.push(`/dashboard/protocols/${protocolId}`)}
+          onOpenStrategy={(protocolId) => router.push(`/dashboard/strategies/${protocolId}`)}
         />
       </div>
     </div>

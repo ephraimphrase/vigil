@@ -7,7 +7,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { resolveBand, BAND_META, type Band } from "@/lib/health";
-import type { Strategy, VaultBuffer } from "../types";
+import type { Strategy } from "../types";
 
 // ─── CONSTANTS ───
 export const DRIFT_THRESHOLD = 0.05; // 5 percentage points
@@ -63,7 +63,7 @@ export interface StrategyAggregate {
   needsAttention: number; // count of non-balanced strategies
 }
 
-export function aggregate(strategies: Strategy[], vault: VaultBuffer): StrategyAggregate {
+export function aggregate(strategies: Strategy[]): StrategyAggregate {
   const deployed = strategies.reduce((s, x) => s + x.allocated, 0);
   const w = (pick: (s: Strategy) => number) =>
     deployed === 0 ? 0 : strategies.reduce((s, x) => s + pick(x) * x.allocated, 0) / deployed;
