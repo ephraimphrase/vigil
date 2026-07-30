@@ -1,4 +1,5 @@
 import { Button } from "../ui/Button";
+import { ConnectWallet } from "../wallet/ConnectWallet";
 import Image from "next/image"
 
 export function FinalCTA() {
@@ -16,9 +17,8 @@ export function FinalCTA() {
             <br />
             in seconds.
           </h2>
-        <div className="relative flex flex-wrap gap-3.5">
-        
-            <Button href="#" >Connect Wallet →</Button>
+        <div className="relative flex flex-wrap items-center gap-3.5">
+            <ConnectWallet />
             <Button href="#" variant="ghost">
               Read the docs
             </Button>

@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { BiRightArrowAlt } from "react-icons/bi";
 
-// ─── TYPES ─────────────────────────────────────
 type ButtonVariant = "primary" | "ghost";
 
 interface ButtonProps {
@@ -12,11 +11,9 @@ interface ButtonProps {
   children: ReactNode;
 }
 
-// ─── CONSTANTS ─────────────────────────────────────
 const PRIMARY_CLASSES =
   "bg-gradient-to-br from-violet-bright to-violet text-white hover:shadow-[0_8px_28px_rgba(176,108,225,0.35)]";
 
-// ─── SUBCOMPONENTS ─────────────────────────────────
 function ArrowBubble() {
   return (
     <span className="ml-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-text text-violet transition-transform duration-300 group-hover:rotate-45">
@@ -25,16 +22,9 @@ function ArrowBubble() {
   );
 }
 
-// ─── COMPONENT ─────────────────────────────────────
 export function Button({ href, variant = "primary", icon = false, className, children }: ButtonProps) {
   if (variant === "ghost") {
-    // ── wrapper-div technique: outer <a> IS the gradient — it's just a 1px
-    // padding box with a gradient background, no border/mask/clip involved.
-    // The inner <span> is a solid fill sitting on top, 1px smaller on every
-    // side, which is what actually reads as "the button". Because both use
-    // rounded-full, the inner pill's radius auto-adjusts to its own
-    // (slightly smaller) height, so the ring stays an even 1px all the way
-    // around the curved ends too. ──
+    
     return (
       <a
         href={href}

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Geist } from "next/font/google";
+import { ThirdwebProvider } from "thirdweb/react";
 import { cn } from "@/lib/utils";
 import { Nav } from "@/components/landing/Nav";
 
@@ -16,8 +17,7 @@ const geistMono = localFont({
   variable: '--font-geist-mono',
 });
 
-// Swap via NEXT_PUBLIC_SITE_URL once the real domain is live — every
-// relative og:url / canonical link below resolves against this.
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vigil.xyz';
 const SITE_NAME = 'Vigil';
 const SITE_DESCRIPTION =
@@ -81,8 +81,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Nav />
-        {children}
+        <ThirdwebProvider>
+          <Nav />
+          {children}
+        </ThirdwebProvider>
       </body>
     </html>
   );
