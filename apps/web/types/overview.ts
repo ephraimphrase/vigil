@@ -1,5 +1,10 @@
 import type { SystemState } from "@/components/Layouts/StatusPill";
 import type { Category } from "./shared";
+// EventKind/FeedEvent live in ./activity now (Activity is the domain that
+// owns the concept, Overview's ticker is the lightweight consumer) - the
+// barrel (types/index.tsx) exports them from there, not re-exported here
+// too, to avoid a duplicate-export collision.
+import type { FeedEvent } from "./activity";
 
 export interface Portfolio {
   totalValue: number;
@@ -20,19 +25,6 @@ export interface Position {
   score: number;
   apy: number;
   lastRebalance: string;
-}
-
-export type EventKind = "score" | "trigger" | "execution" | "alert" | "cycle";
-
-export interface FeedEvent {
-  id: string;
-  ts: string;
-  kind: EventKind;
-  protocolId?: string;
-  message: string;
-  score?: number;
-  action?: string;
-  txHash?: string;
 }
 
 export interface OverviewData {

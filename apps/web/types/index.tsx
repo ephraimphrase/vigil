@@ -3,6 +3,7 @@
 // sibling file + export line here, not back into this file directly.
 export * from "./shared";
 export * from "./protocols";
+export * from "./activity";
 export * from "./overview";
 export * from "./strategies";
 export * from "./vault";

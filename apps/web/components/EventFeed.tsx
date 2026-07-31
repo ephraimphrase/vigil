@@ -5,12 +5,8 @@ import { PiPulseLight } from "react-icons/pi";
 import { useEventStream } from "../hooks/useOverview";
 import { Loader } from "./ui/Loader";
 import { EmptyState } from "./EmptyState";
-import type { EventKind, FeedEvent } from "../types";
-
-// ─── CONSTANTS ───
-const KIND_COLOR: Record<EventKind, string> = {
-  score: "#9F95AB", trigger: "#E0A95F", execution: "#9259DA", alert: "#E0607F", cycle: "#5FD08A",
-};
+import { KIND_COLOR } from "../shared/activity";
+import type { FeedEvent } from "../types";
 
 // ─── COMPONENTS ───
 function Row({ e }: { e: FeedEvent }) {

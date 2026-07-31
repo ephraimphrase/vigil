@@ -13,7 +13,6 @@ import {
 
 import { useStrategies } from "../../../hooks/useStrategies";
 import { aggregate, groupByProtocol } from "../../../shared/rebalance";
-import { StrategiesHeader } from "../../../components/StrategiesHeader";
 import { StrategiesTable } from "../../../components/StrategiesTable";
 import { buildStrategyColumns } from "../../../components/StrategyColumns";
 import type { Strategy } from "../../../types";
@@ -48,8 +47,6 @@ export default function StrategiesPage() {
 
   return (
     <div className="flex h-full flex-col gap-4 p-4">
-      <StrategiesHeader data={data} />
-
       {agg.needsAttention > 0 && (
         <div className="flex items-center gap-2 border-l-2 border-[#E0A95F] bg-panel/20 px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-wider text-[#E0A95F]">

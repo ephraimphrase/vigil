@@ -4,9 +4,9 @@
 // problem to hide). Share count/share price/vs-no-op get tooltips per the
 // product brief - depositors need to understand shares before they trust
 // the number. `deployed` is passed in (derived once, in VaultDetailView,
-// from the same strategies aggregate StrategiesHeader uses) rather than
-// recomputed here from totalAssets - idle, so there is one formula for
-// "deployed" across the app, not two that can drift.
+// via vaultAggregate(vault.allocation) - this vault's own rows) rather
+// than recomputed here from totalAssets - idle, so there is one formula
+// for "deployed" per vault, not two that can drift.
 // ─────────────────────────────────────────────────────────────
 
 import { Section } from "@/components/Section";

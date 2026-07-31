@@ -15,8 +15,9 @@
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
-import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultSummary } from "../types";
+import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultSummary, ActivityData } from "../types";
 import { vaultAggregate } from "../shared/vault";
+import { ACTIVITY_ENTRIES } from "./activity";
 
 import strategiesData from "./strategies.json";
 import protocolsData from "./protocols.json";
@@ -188,8 +189,9 @@ const vaultList: VaultSummary[] = Object.values(VAULT_MOCKS).map((v) => ({
 
 const strategies = strategiesData as StrategiesData;
 const protocols = protocolsData as ProtocolRow[];
+const activity: ActivityData = { entries: ACTIVITY_ENTRIES };
 
 // No protocolDetail here - app/api/protocols/[id]/route.ts queries the
 // `protocols` table in Postgres directly. protocol-detail/*.json still
 // exists as seed input for scripts/seed-db.ts, not served from here.
-export const SEED = { overview, vaultList, strategies, protocols };
+export const SEED = { overview, vaultList, strategies, protocols, activity };

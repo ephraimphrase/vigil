@@ -1,8 +1,17 @@
+import type { IconType } from "react-icons";
+import {
+  PiSquaresFourLight,
+  PiStackLight,
+  PiFlowArrowLight,
+  PiVaultLight,
+  PiScrollLight,
+} from "react-icons/pi";
 
 export interface NavItem {
   label: string;
   href: string;
-  badgeKey?: "approvals"; 
+  icon: IconType;
+  badgeKey?: "approvals";
 }
 export interface NavSection {
   label: string;
@@ -13,22 +22,20 @@ export const NAV: NavSection[] = [
   {
     label: "Monitor",
     items: [
-      { label: "Overview", href: "/dashboard" },
-      { label: "Protocols", href: "/dashboard/protocols" },
-      { label: "Strategies", href: "/dashboard/strategies" },
+      { label: "Overview", href: "/dashboard", icon: PiSquaresFourLight },
+      { label: "Protocols", href: "/dashboard/protocols", icon: PiStackLight },
+      { label: "Strategies", href: "/dashboard/strategies", icon: PiFlowArrowLight },
     ],
   },
   {
     label: "Manage",
     items: [
-      { label: "Vault", href: "/dashboard/vault" },
-      { label: "Automation", href: "/dashboard/automation" },
-      { label: "Approvals", href: "/dashboard/approvals", badgeKey: "approvals" },
+      { label: "Vault", href: "/dashboard/vault", icon: PiVaultLight },
     ],
   },
   {
     label: "Log",
-    items: [{ label: "Activity", href: "/dashboard/activity" }],
+    items: [{ label: "Activity", href: "/dashboard/activity", icon: PiScrollLight }],
   },
 ];
 

@@ -30,6 +30,16 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
                 {row.getIsExpanded() ? "▾" : "▸"}
               </button>
             )}
+            {canExpand && row.original.icon && (
+              <img
+                src={row.original.icon}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6 shrink-0 rounded-full"
+                loading="lazy"
+              />
+            )}
             <div className="flex flex-col leading-tight">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-text">{row.original.name}</span>
@@ -37,7 +47,7 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
                 {!row.original.retired && row.original.paused && <Chip mono dotColor="#E0A95F">Paused</Chip>}
               </div>
               <span className="font-mono text-xs text-text-muted">
-                {canExpand ? `${row.original.category} · ${row.subRows.length} strategies` : `${row.original.category} · ${row.original.want}`}
+                {canExpand ? `${row.original.category} · ${row.original.description}` : `${row.original.category} · ${row.original.want}`}
               </span>
             </div>
           </div>
