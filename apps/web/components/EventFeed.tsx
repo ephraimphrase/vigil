@@ -1,7 +1,10 @@
 
 
 import moment from "moment";
+import { PiPulseLight } from "react-icons/pi";
 import { useEventStream } from "../hooks/useOverview";
+import { Loader } from "./ui/Loader";
+import { EmptyState } from "./EmptyState";
 import type { EventKind, FeedEvent } from "../types";
 
 // ─── CONSTANTS ───
@@ -30,7 +33,7 @@ function Row({ e }: { e: FeedEvent }) {
 }
 
 // ─── MAIN ───
-export function EventFeed({ initial }: { initial: FeedEvent[] }) {
+export function EventFeed({ initial, isLoading = false }: { initial: FeedEvent[]; isLoading?: boolean }) {
   const events = useEventStream(initial);
   return (
     <section className="flex h-full flex-col rounded-none border border-hairline bg-panel/20">
@@ -43,9 +46,17 @@ export function EventFeed({ initial }: { initial: FeedEvent[] }) {
           Live activity
         </span>
       </header>
-      <ul className="min-h-0 flex-1 divide-y divide-hairline/40 overflow-y-auto">
-        {events.map((e) => <Row key={e.id} e={e} />)}
-      </ul>
+      {isLoading ? (
+        <div className="flex flex-1 items-center justify-center">
+          <Loader />
+        </div>
+      ) : events.length === 0 ? (
+        <EmptyState query="" label="activity" icon={PiPulseLight} message="Nothing's happened yet — events appear here as cycles run." />
+      ) : (
+        <ul className="min-h-0 flex-1 divide-y divide-hairline/40 overflow-y-auto">
+          {events.map((e) => <Row key={e.id} e={e} />)}
+        </ul>
+      )}
     </section>
   );
 }

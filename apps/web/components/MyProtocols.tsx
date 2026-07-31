@@ -1,6 +1,9 @@
 import type { ComponentType, ReactNode } from "react";
+import { PiVaultLight } from "react-icons/pi";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
+import { Loader } from "@/components/ui/Loader";
+import { EmptyState } from "@/components/EmptyState";
 import { BAND_META, resolveBand, deltaColor } from "@/shared/health";
 import { fmtPct, fmtSigned } from "@/shared/format";
 import type { Position } from "../types";
@@ -17,7 +20,13 @@ function HeaderTerm({ label, info }: { label: string; info: ReactNode }) {
   );
 }
 
-export function MyProtocols({ positions, Link = DefaultLink }: { positions: Position[]; Link?: LinkLike }) {
+interface MyProtocolsProps {
+  positions: Position[];
+  isLoading?: boolean;
+  Link?: LinkLike;
+}
+
+export function MyProtocols({ positions, isLoading = false, Link = DefaultLink }: MyProtocolsProps) {
   return (
     <section className="rounded-none border border-hairline bg-panel/20">
       <header className="flex items-center justify-between border-b border-hairline px-4 py-2">
@@ -41,6 +50,13 @@ export function MyProtocols({ positions, Link = DefaultLink }: { positions: Posi
           />
         </span>
       </header>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader />
+        </div>
+      ) : positions.length === 0 ? (
+        <EmptyState query="" label="protocols" icon={PiVaultLight} message="No positions yet — deposit into a vault to see it here." />
+      ) : (
       <ul className="divide-y divide-hairline/40">
         {positions.map((p) => {
           const band = BAND_META[resolveBand(p.score)];
@@ -69,6 +85,7 @@ export function MyProtocols({ positions, Link = DefaultLink }: { positions: Posi
           );
         })}
       </ul>
+      )}
     </section>
   );
 }

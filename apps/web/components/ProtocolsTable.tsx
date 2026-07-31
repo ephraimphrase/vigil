@@ -6,8 +6,8 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { ProtocolRow } from "../types";
 import { GRID_COLS, ROW_HEIGHT, OVERSCAN } from "../config/table.config";
-import { TableSkeleton } from "./TableSkeleton";
 import { EmptyState } from "./EmptyState";
+import { Loader } from "./ui/Loader";
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (
@@ -73,7 +73,9 @@ export function ProtocolsTable({
       <HeaderRow table={table} />
 
       {isLoading ? (
-        <TableSkeleton />
+        <div className="flex flex-1 items-center justify-center py-12">
+          <Loader />
+        </div>
       ) : rows.length === 0 ? (
         <EmptyState query={query} />
       ) : (

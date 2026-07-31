@@ -38,6 +38,7 @@
 
   --animate-float: float 7s ease-in-out infinite;
   --animate-ticker: ticker 22s linear infinite;
+  --animate-bar-scale: bar-scale 1s linear infinite;
 }
 
 @keyframes float {
@@ -48,6 +49,16 @@
 @keyframes ticker {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+@keyframes bar-scale {
+  20% {
+    background-color: var(--color-violet-bright);
+    transform: scaleY(1.5);
+  }
+  40% {
+    transform: scaleY(1);
+  }
 }
 
 /* ═══════════════════════════════════════════════

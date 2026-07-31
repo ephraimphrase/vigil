@@ -15,6 +15,7 @@
 
 import { useVault } from "@/hooks/useVault";
 import { vaultAggregate } from "@/shared/vault";
+import { Loader } from "@/components/ui/Loader";
 import { VaultMasthead } from "@/components/VaultMasthead";
 import { VaultPositionSummary } from "@/components/VaultPositionSummary";
 import { VaultAllocation } from "@/components/VaultAllocation";
@@ -25,7 +26,15 @@ import { DepositWithdraw } from "@/components/DepositWithdraw";
 type Tab = "deposit" | "withdraw";
 
 export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (tab: Tab, amount: number) => void }) {
-  const vault = useVault(slug);
+  const { data: vault, isLoading } = useVault(slug);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center bg-base p-4">
+        <Loader />
+      </div>
+    );
+  }
 
   if (!vault) {
     return (

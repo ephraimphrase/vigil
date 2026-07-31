@@ -74,3 +74,77 @@ export function aggregate(strategies: Strategy[]): StrategyAggregate {
     needsAttention: strategies.filter((s) => rebalanceState(s).kind !== "balanced").length,
   };
 }
+
+// ─── GROUPING ───
+/**
+ * Folds a flat Strategy[] into one row per protocol for the strategies
+ * table: a protocol with a single strategy contract stays a single row
+ * (Aave, Lido, ...); a protocol with several (Curve has 9, GMX has 4)
+ * collapses into one expandable parent row carrying the real children in
+ * `subRows`, so the repeated protocol-level score/category isn't shown
+ * once per strategy. Every field on the synthetic parent is a real
+ * aggregate of its children (dollar-weighted for apy/fees, same
+ * weighting `aggregate()` above uses; summed for weight/TVL/maxWithdraw;
+ * "any child" for paused/retired/harvestable - worst-first, same
+ * philosophy as DEFAULT_SORT in useProtocolsTable) - never a placeholder,
+ * so every column keeps working on the parent row with no special-casing
+ * except the Name cell (which needs the expand caret).
+ */
+export function groupByProtocol(strategies: Strategy[]): Strategy[] {
+  const byProtocol = new Map<string, Strategy[]>();
+  for (const s of strategies) {
+    const list = byProtocol.get(s.protocolId);
+    if (list) list.push(s);
+    else byProtocol.set(s.protocolId, [s]);
+  }
+
+  const result: Strategy[] = [];
+  for (const children of byProtocol.values()) {
+    const first = children[0];
+    if (!first) continue; // Map.values() never yields an empty array, but satisfies noUncheckedIndexedAccess
+    if (children.length === 1) {
+      result.push(first);
+      continue;
+    }
+
+    const allocated = children.reduce((s, c) => s + c.allocated, 0);
+    const weighted = (pick: (c: Strategy) => number) =>
+      allocated === 0 ? 0 : children.reduce((s, c) => s + pick(c) * c.allocated, 0) / allocated;
+    const mostRecent = (pick: (c: Strategy) => string) =>
+      children.reduce((max, c) => (pick(c) > max ? pick(c) : max), pick(first));
+    result.push({
+      id: `${first.protocolId}::group`,
+      protocolId: first.protocolId,
+      protocolName: first.protocolName,
+      name: first.protocolName,
+      category: first.category,
+      description: `${children.length} strategies`,
+      adapter: "",
+      strategyAddress: "",
+      stratName: "",
+      native: "",
+      rewards: [],
+      harvestOnDeposit: false,
+      asset: first.asset,
+      want: "",
+      allocated,
+      targetWeight: children.reduce((s, c) => s + c.targetWeight, 0),
+      actualWeight: children.reduce((s, c) => s + c.actualWeight, 0),
+      score: first.score,
+      apy: weighted((c) => c.apy),
+      lastRebalance: mostRecent((c) => c.lastRebalance),
+      paused: children.some((c) => c.paused),
+      retired: children.some((c) => c.retired),
+      lastHarvest: mostRecent((c) => c.lastHarvest),
+      harvestable: children.some((c) => c.harvestable),
+      maxWithdraw: children.reduce((s, c) => s + c.maxWithdraw, 0),
+      maxDeposit: children.some((c) => c.maxDeposit == null)
+        ? null
+        : children.reduce((s, c) => s + (c.maxDeposit ?? 0), 0),
+      depositFee: weighted((c) => c.depositFee),
+      withdrawFee: weighted((c) => c.withdrawFee),
+      subRows: children,
+    });
+  }
+  return result;
+}

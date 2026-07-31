@@ -23,7 +23,7 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
 
 // ─── MAIN ───
 export function StrategiesHeader({ data }: { data: StrategiesData }) {
-  const vault = useVault(DEFAULT_VAULT_SLUG);
+  const { data: vault } = useVault(DEFAULT_VAULT_SLUG);
   const agg = aggregate(data.strategies);
   return (
     <div className="grid grid-cols-2 divide-x divide-y divide-hairline rounded-none border border-hairline bg-panel/20 md:grid-cols-5 md:divide-y-0">

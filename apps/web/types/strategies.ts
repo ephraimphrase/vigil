@@ -9,6 +9,7 @@ import type { Category } from "./shared";
 export interface Strategy {
   id: string;           // unique per strategy contract - a protocol can have several (e.g. Curve has 9)
   protocolId: string;   // links to the protocol page; not unique across strategies
+  protocolName: string; // joined live from the protocols table, same way score joins from health_scores
   name: string;
   category: Category;
   description: string;       // what the strategy actually does with the deposited asset
@@ -37,6 +38,12 @@ export interface Strategy {
   // withdrawFee() are never actually configurable there.
   depositFee: number;          // fraction, e.g. 0.001 = 0.1%
   withdrawFee: number;         // fraction
+  // Present only on a synthetic protocol-group row built by groupByProtocol
+  // (shared/rebalance.ts) for the strategies table - a protocol with more
+  // than one strategy contract (Curve has 9) gets one expandable row
+  // instead of N rows repeating the same protocol-level score. Absent on
+  // real leaf strategies and on protocols with exactly one strategy.
+  subRows?: Strategy[];
 }
 
 // No vault field here - all strategies belong to the one VigilVault, so

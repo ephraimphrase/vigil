@@ -12,6 +12,7 @@ import moment from "moment";
 
 import { useStrategies } from "@/hooks/useStrategies";
 import { CornerFrame } from "@/components/ui/CornerFrame";
+import { Loader } from "@/components/ui/Loader";
 import { Chip } from "@/components/ui/Chip";
 import { WeightBar } from "@/components/ui/WeightBar";
 import { BAND_META, resolveBand, bandColor } from "@/shared/health";
@@ -93,8 +94,16 @@ function Masthead({ s }: { s: Strategy }) {
 }
 
 export function StrategyDetailView({ id }: { id: string }) {
-  const data = useStrategies();
+  const { data, isLoading } = useStrategies();
   const s = data.strategies.find((x) => x.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center bg-base">
+        <Loader />
+      </div>
+    );
+  }
 
   if (!s) {
     return (

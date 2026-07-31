@@ -6,31 +6,44 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getExpandedRowModel,
   type SortingState,
+  type ExpandedState,
 } from "@tanstack/react-table";
 
 import { useStrategies } from "../../../hooks/useStrategies";
-import { aggregate } from "../../../shared/rebalance";
+import { aggregate, groupByProtocol } from "../../../shared/rebalance";
 import { StrategiesHeader } from "../../../components/StrategiesHeader";
 import { StrategiesTable } from "../../../components/StrategiesTable";
 import { buildStrategyColumns } from "../../../components/StrategyColumns";
+import type { Strategy } from "../../../types";
 
 const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];
 
 export default function StrategiesPage() {
   const router = useRouter();
-  const data = useStrategies();
+  const { data, isLoading } = useStrategies();
   const agg = aggregate(data.strategies);
 
+  // Grouping is a presentational fold of the flat list (one row per
+  // protocol, multi-strategy protocols expandable) - aggregate() above
+  // still runs on the flat data so vault-wide totals never double-count a
+  // group and its children.
+  const grouped = useMemo(() => groupByProtocol(data.strategies), [data.strategies]);
+
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
   const columns = useMemo(() => buildStrategyColumns(), []);
   const table = useReactTable({
-    data: data.strategies,
+    data: grouped,
     columns,
-    state: { sorting },
+    state: { sorting, expanded },
     onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
+    getSubRows: (row: Strategy) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
   });
 
   return (
@@ -48,7 +61,7 @@ export default function StrategiesPage() {
       <div className="min-h-0 flex-1 border border-hairline">
         <StrategiesTable
           table={table}
-          isLoading={false}
+          isLoading={isLoading}
           onOpenStrategy={(id) => router.push(`/dashboard/strategies/${id}`)}
         />
       </div>

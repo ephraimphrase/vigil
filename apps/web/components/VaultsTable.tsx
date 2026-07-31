@@ -5,6 +5,7 @@ import { flexRender, type Table } from "@tanstack/react-table";
 import type { VaultSummary } from "../types";
 import { VAULT_GRID_COLS } from "../config/table.config";
 import { EmptyState } from "./EmptyState";
+import { Loader } from "./ui/Loader";
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (
@@ -37,16 +38,21 @@ function HeaderRow({ table }: { table: Table<VaultSummary> }) {
 interface VaultsTableProps {
   table: Table<VaultSummary>;
   query: string;
+  isLoading: boolean;
   onOpenVault: (slug: string) => void;
 }
 
-export function VaultsTable({ table, query, onOpenVault }: VaultsTableProps) {
+export function VaultsTable({ table, query, isLoading, onOpenVault }: VaultsTableProps) {
   const rows = table.getRowModel().rows;
 
   return (
     <div className="flex flex-col">
       <HeaderRow table={table} />
-      {rows.length === 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader />
+        </div>
+      ) : rows.length === 0 ? (
         <EmptyState query={query} label="vaults" />
       ) : (
         rows.map((row) => (

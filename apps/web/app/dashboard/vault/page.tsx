@@ -6,8 +6,11 @@
 // every other entity list in this app (protocols, strategies) is already a
 // table; cards would've been the odd one out. Empty state (no vaults, or a
 // search with no matches) is the same EmptyState the other tables use, so
-// "nothing here" never just renders blank. Row click goes to the
-// Yearn-style detail + deposit panel at /vault/[slug].
+// "nothing here" never just renders blank. Row click stays inside the
+// dashboard shell (/dashboard/vault/[slug]) rather than dropping to the
+// bare public /vault/[slug] route - same split as protocols
+// (/dashboard/protocols/[id] vs /protocols/[id]), both rendering the same
+// VaultDetailView so the two can't drift apart.
 // ─────────────────────────────────────────────────────────────
 
 import { useCallback } from "react";
@@ -22,8 +25,8 @@ import type { VaultSummary } from "@/types";
 
 export default function VaultsPage() {
   const router = useRouter();
-  const vaults = useApi<VaultSummary[]>("/api/vaults", []);
-  const onOpenVault = useCallback((slug: string) => router.push(`/vault/${slug}`), [router]);
+  const { data: vaults, isLoading } = useApi<VaultSummary[]>("/api/vaults", []);
+  const onOpenVault = useCallback((slug: string) => router.push(`/dashboard/vault/${slug}`), [router]);
 
   const { table, rawQuery, setRawQuery, query, visibleCount, totalCount } = useVaultsTable(vaults);
 
@@ -32,7 +35,7 @@ export default function VaultsPage() {
       <VaultsHeader visibleCount={visibleCount} totalCount={totalCount} />
       <VaultsToolbar query={rawQuery} onQueryChange={setRawQuery} />
       <CornerFrame>
-        <VaultsTable table={table} query={query} onOpenVault={onOpenVault} />
+        <VaultsTable table={table} query={query} isLoading={isLoading} onOpenVault={onOpenVault} />
       </CornerFrame>
     </div>
   );

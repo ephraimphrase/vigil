@@ -6,8 +6,8 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { Strategy } from "../types";
 import { STRATEGY_GRID_COLS, ROW_HEIGHT, OVERSCAN } from "../config/table.config";
-import { TableSkeleton } from "./TableSkeleton";
 import { EmptyState } from "./EmptyState";
+import { Loader } from "./ui/Loader";
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (
@@ -18,23 +18,34 @@ function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
 }
 
 function HeaderRow({ table }: { table: Table<Strategy> }) {
+  const allExpanded = table.getIsAllRowsExpanded();
   return (
     <div
       className="grid items-center border-b border-[#CAC0D5]/20 px-3 py-2"
       style={{ gridTemplateColumns: STRATEGY_GRID_COLS }}
     >
-      {table.getHeaderGroups()[0].headers.map((header) => {
+      {table.getHeaderGroups()[0].headers.map((header, i) => {
         const canSort = header.column.getCanSort();
         return (
-          <div
-            key={header.id}
-            onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
-            className={`select-none pr-4 font-mono text-xs uppercase tracking-wider text-text-muted ${
-              canSort ? "cursor-pointer hover:text-text" : ""
-            }`}
-          >
-            {flexRender(header.column.columnDef.header, header.getContext())}
-            {canSort && <SortCaret dir={header.column.getIsSorted()} />}
+          <div key={header.id} className="flex items-center gap-2 pr-4">
+            {i === 0 && (
+              <button
+                onClick={() => table.toggleAllRowsExpanded()}
+                className="font-mono text-[10px] text-text-muted transition-colors hover:text-text"
+                title={allExpanded ? "Collapse all" : "Expand all"}
+              >
+                {allExpanded ? "▾" : "▸"}
+              </button>
+            )}
+            <div
+              onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
+              className={`select-none font-mono text-xs uppercase tracking-wider text-text-muted ${
+                canSort ? "cursor-pointer hover:text-text" : ""
+              }`}
+            >
+              {flexRender(header.column.columnDef.header, header.getContext())}
+              {canSort && <SortCaret dir={header.column.getIsSorted()} />}
+            </div>
           </div>
         );
       })}
@@ -64,7 +75,9 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
       <HeaderRow table={table} />
 
       {isLoading ? (
-        <TableSkeleton gridCols={STRATEGY_GRID_COLS} cols={7} />
+        <div className="flex flex-1 items-center justify-center py-12">
+          <Loader />
+        </div>
       ) : rows.length === 0 ? (
         <EmptyState query="" label="strategies" />
       ) : (
@@ -75,7 +88,7 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
               return (
                 <div
                   key={row.id}
-                  onClick={() => onOpenStrategy(row.original.id)}
+                  onClick={() => (row.getCanExpand() ? row.toggleExpanded() : onOpenStrategy(row.original.id))}
                   className="group absolute left-0 grid w-full cursor-pointer items-center border-b border-[#CAC0D5]/20 px-3 transition-colors hover:bg-surface-2/60"
                   style={{
                     gridTemplateColumns: STRATEGY_GRID_COLS,

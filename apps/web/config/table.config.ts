@@ -9,4 +9,3 @@ export const VAULT_GRID_COLS =
 
 export const ROW_HEIGHT = 52;
 export const OVERSCAN = 8;
-export const SKELETON_ROWS = 9;
