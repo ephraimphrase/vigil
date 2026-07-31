@@ -81,8 +81,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ConditionalNav />
-        {children}
+        <ThirdwebProvider>
+          <ConditionalNav />
+          {children}
+        </ThirdwebProvider>
       </body>
     </html>
   );
