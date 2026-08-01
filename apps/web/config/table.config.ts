@@ -5,7 +5,7 @@ export const STRATEGY_GRID_COLS =
   "minmax(200px,1.6fr) 100px 90px 110px 130px";
 
 export const VAULT_GRID_COLS =
-  "minmax(180px,1.6fr) 110px 90px 130px 130px";
+  "minmax(220px,1.6fr) 90px 110px 110px 130px 130px";
 
 export const ROW_HEIGHT = 52;
 export const OVERSCAN = 8;

@@ -1,16 +1,16 @@
 // ─────────────────────────────────────────────────────────────
-// VaultAllocation — the vault's own per-protocol breakdown: what it's
-// earning (APY, health) and whether the pool is where its policy says it
-// should be (actual vs target weight). One honest table instead of two
-// overlapping ones - an earlier pass split "what's earning" and "is it on
-// target" into separate sections, but both read off the same rows, so they
-// merged. "View all strategies" still links out to /dashboard/strategies:
-// that page carries operational detail (fees, harvest cadence, pause
-// state) this summary doesn't need.
+// VaultAllocation — the Strategies tab: the vault's own per-protocol
+// breakdown, what it's earning (APY, health) and whether the pool is where
+// its policy says it should be (actual vs target weight). One honest table
+// instead of two overlapping ones - an earlier pass split "what's earning"
+// and "is it on target" into separate sections, but both read off the same
+// rows, so they merged. "View all strategies" still links out to
+// /dashboard/strategies: that page carries operational detail (fees,
+// harvest cadence, pause state) this summary doesn't need. Bare (no
+// <Section> wrapper) - VaultDetailView nests this inside its own tab shell.
 // ─────────────────────────────────────────────────────────────
 
 import Link from "next/link";
-import { Section } from "@/components/Section";
 import { WeightBar } from "@/components/ui/WeightBar";
 import { ScoreBadge } from "@/components/health/ScoreBadge";
 import { fmtUsd } from "@/shared/format";
@@ -18,14 +18,12 @@ import type { AllocationRow } from "@/types";
 
 export function VaultAllocation({ rows }: { rows: AllocationRow[] }) {
   return (
-    <Section
-      title="Strategies"
-      aside={
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-end">
         <Link href="/dashboard/strategies" className="font-mono text-xs text-muted/50 transition-colors hover:text-violet-bright">
           View all {"↗"}
         </Link>
-      }
-    >
+      </div>
       <ul className="divide-y divide-hairline/40">
         {rows.map((r) => (
           <li key={r.protocolId} className="grid grid-cols-[minmax(96px,1fr)_minmax(140px,1.4fr)_64px_auto_auto] items-center gap-4 py-3">
@@ -40,6 +38,6 @@ export function VaultAllocation({ rows }: { rows: AllocationRow[] }) {
           </li>
         ))}
       </ul>
-    </Section>
+    </div>
   );
 }

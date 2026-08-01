@@ -21,6 +21,29 @@ export interface VaultInfo {
   idle: number;
   tvl: number;
   benchmarkDeltaPct: number;
+  chain: string;
+  description: string;
+  assetType: "stablecoin" | "volatile";
+  vaultType: string;
+  vaultContractAddress: string;
+  tokenContractAddress: string;
+  managementFeePct: number;
+  performanceFeePct: number;
+  deployedOn: string;         // ISO date
+  features: string[];
+  docs: {
+    userDocsUrl: string;
+    devDocsUrl: string;
+    analyticsUrl: string;
+    apiUrl: string;
+  };
+}
+
+export interface VaultHistoryPoint {
+  ts: string;             // ISO date
+  apy30d: number;
+  performance: number;    // cumulative % return since inception
+  tvl: number;
 }
 
 export interface UserPosition {
@@ -59,6 +82,7 @@ export interface VaultData {
   position: UserPosition | null;
   allocation: AllocationRow[];
   riskChecks: RiskCheckRow[];
+  history: VaultHistoryPoint[];
 }
 
 // Row shape for the /dashboard/vault picker. `apy` is derived from the

@@ -1,17 +1,17 @@
 // ─────────────────────────────────────────────────────────────
 // VaultsColumns — column defs for the /dashboard/vault picker table.
 // Mirrors Columns.tsx / StrategyColumns.tsx: createColumnHelper, one column
-// per concern, mono for every number. Vaults never differ by asset or
-// chain (always pooled USDC), so unlike Yearn's listing there's no
-// asset/chain column - the real differentiator is the policy tier, folded
-// into the Vault cell.
+// per concern, mono for every number. Vaults are always pooled USDC, so
+// the Vault cell uses one fixed UsdcIcon rather than a per-row icon feed;
+// chain/asset-type/vault-type ride as a subtitle line under the name, same
+// icon+name+subtitle shape as StrategyColumns' protocol rows.
 // ─────────────────────────────────────────────────────────────
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
 import type { VaultSummary } from "../types";
-import { fmtUsd, fmtUsdFull } from "../shared/format";
-import { Chip } from "./ui/Chip";
+import { fmtUsd, fmtUsdFull, fmtFeePct } from "../shared/format";
+import { UsdcIcon } from "./ui/UsdcIcon";
 import { BAND_META } from "../shared/health";
 
 const col = createColumnHelper<VaultSummary>();
@@ -22,11 +22,25 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
   return [
     col.accessor("name", {
       header: "Vault",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-body">{row.original.name}</span>
-          <Chip mono>{row.original.asset}</Chip>
-        </div>
+      cell: ({ row }) => {
+        const v = row.original;
+        return (
+          <div className="flex items-center gap-2">
+            <UsdcIcon className="size-6" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm text-body">{v.name}</span>
+              <span className="font-mono text-xs text-muted/60">
+                {v.chain} · {v.assetType === "stablecoin" ? "Stablecoin" : "Volatile"} · {v.vaultType}
+              </span>
+            </div>
+          </div>
+        );
+      },
+    }),
+    col.accessor("apy", {
+      header: "Est. APY",
+      cell: ({ getValue }) => (
+        <span className="font-mono text-sm tabular-nums text-body">{getValue().toFixed(1)}%</span>
       ),
     }),
     col.accessor("tvl", {
@@ -35,10 +49,13 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
         <span className="font-mono text-sm tabular-nums text-body">{fmtUsd(getValue())}</span>
       ),
     }),
-    col.accessor("apy", {
-      header: "Est. APY",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm tabular-nums text-body">{getValue().toFixed(1)}%</span>
+    col.display({
+      id: "fees",
+      header: "Fees",
+      cell: ({ row }) => (
+        <span className="font-mono text-xs text-text-muted">
+          {fmtFeePct(row.original.managementFeePct)} | {fmtFeePct(row.original.performanceFeePct)}
+        </span>
       ),
     }),
     col.accessor("positionValueUsd", {

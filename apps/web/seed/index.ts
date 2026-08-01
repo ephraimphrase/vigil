@@ -15,7 +15,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
-import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultSummary, ActivityData } from "../types";
+import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultHistoryPoint, VaultSummary, ActivityData } from "../types";
 import { vaultAggregate } from "../shared/vault";
 import { ACTIVITY_ENTRIES } from "./activity";
 
@@ -23,6 +23,24 @@ import strategiesData from "./strategies.json";
 import protocolsData from "./protocols.json";
 
 const iso = (minsAgo: number) => moment().subtract(minsAgo, "minutes").toISOString();
+
+// Deterministic ~12-month ramp toward each vault's real headline apy/tvl
+// (vaultAggregate(...).weightedApy, info.tvl) - no randomness, so the seed
+// stays stable across reloads, and the chart's endpoint always matches the
+// masthead numbers instead of drifting from them.
+function buildVaultHistory(targetApy: number, targetTvl: number): VaultHistoryPoint[] {
+  const months = 11;
+  const points: VaultHistoryPoint[] = [];
+  let cumulativePerf = 0;
+  for (let i = months; i >= 0; i--) {
+    const progress = (months - i) / months; // 0 -> 1
+    const apy30d = Number((targetApy * (0.7 + 0.3 * progress)).toFixed(2));
+    const tvl = Math.round(targetTvl * (0.6 + 0.4 * progress));
+    cumulativePerf = Number((cumulativePerf + apy30d / 12).toFixed(2));
+    points.push({ ts: iso(60 * 24 * 30 * i), apy30d, performance: cumulativePerf, tvl });
+  }
+  return points;
+}
 
 const overview: OverviewData = {
   status: { state: "running", watchedCount: 5, lastCycle: iso(3) },
@@ -62,7 +80,7 @@ const VAULT_MOCKS: Record<string, VaultData> = {
   conservative: {
     info: {
       slug: "conservative",
-      name: "Conservative Vault",
+      name: "USDC (Conservative)",
       asset: "USDC",
       totalAssets: 512_000,
       totalShares: 496_606.21,
@@ -70,6 +88,23 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       idle: 18_000,
       tvl: 512_000,
       benchmarkDeltaPct: 1.4,
+      chain: "Ethereum",
+      description:
+        "A capital-preservation-first allocator that spreads USDC across the highest-health, lowest-volatility protocols in Vigil's universe — Aave, Lido, and Sky — rebalancing automatically as health scores move.",
+      assetType: "stablecoin",
+      vaultType: "Managed Vault",
+      vaultContractAddress: "0x4b1B4413E6D1c5B4e5A2F6E7c3E2C1a8F0D9B7A6",
+      tokenContractAddress: "0x1a2B3c4D5e6F7089aBcDeF0123456789aBcDeF0",
+      managementFeePct: 0,
+      performanceFeePct: 0.10,
+      deployedOn: "2023-03-14T00:00:00.000Z",
+      features: ["Auto-compounding", "Autonomous rebalancing"],
+      docs: {
+        userDocsUrl: "https://docs.vigil.xyz/vaults/conservative",
+        devDocsUrl: "https://docs.vigil.xyz/dev/vaults",
+        analyticsUrl: "https://analytics.vigil.xyz/vaults/conservative",
+        apiUrl: "https://api.vigil.xyz/vaults/conservative/snapshot",
+      },
     },
     policy: {
       name: "Conservative",
@@ -92,11 +127,12 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       { id: "concentration", label: "No protocol above the policy cap", passed: true },
       { id: "admin-keys", label: "Admin keys held by a multisig, not an EOA", passed: true, note: "Vault owner is a 3-of-5 Gnosis Safe." },
     ],
+    history: buildVaultHistory(3.94, 512_000),
   },
   balanced: {
     info: {
       slug: "balanced",
-      name: "Balanced Vault",
+      name: "USDC (Balanced)",
       asset: "USDC",
       totalAssets: 74_500,
       totalShares: 72_753.91,
@@ -104,6 +140,23 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       idle: 3_350,
       tvl: 74_500,
       benchmarkDeltaPct: 2.1,
+      chain: "Ethereum",
+      description:
+        "The default allocator — diversifies USDC across nine protocols spanning lending, LSDs, DEX LPs, and CDPs, reweighting toward whichever combination of yield and health currently earns its place.",
+      assetType: "stablecoin",
+      vaultType: "Managed Vault",
+      vaultContractAddress: "0x7C8d9E0f1A2b3C4d5E6f7089aBcDeF012345678",
+      tokenContractAddress: "0x9F0e1D2c3B4a5968778695A4B3C2D1E0F9A8B7C",
+      managementFeePct: 0,
+      performanceFeePct: 0.10,
+      deployedOn: "2022-11-02T00:00:00.000Z",
+      features: ["Auto-compounding", "Autonomous rebalancing", "Multi-protocol diversification"],
+      docs: {
+        userDocsUrl: "https://docs.vigil.xyz/vaults/balanced",
+        devDocsUrl: "https://docs.vigil.xyz/dev/vaults",
+        analyticsUrl: "https://analytics.vigil.xyz/vaults/balanced",
+        apiUrl: "https://api.vigil.xyz/vaults/balanced/snapshot",
+      },
     },
     policy: {
       name: "Balanced",
@@ -138,11 +191,12 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       { id: "concentration", label: "No protocol above the policy cap", passed: true },
       { id: "admin-keys", label: "Admin keys held by a multisig, not an EOA", passed: false, note: "Vault owner is currently a 2-of-3 multisig pending migration to a Gnosis Safe." },
     ],
+    history: buildVaultHistory(6.08, 74_500),
   },
   degen: {
     info: {
       slug: "degen",
-      name: "Degen Vault",
+      name: "USDC (Degen)",
       asset: "USDC",
       totalAssets: 286_000,
       totalShares: 280_943.03,
@@ -150,6 +204,23 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       idle: 9_000,
       tvl: 286_000,
       benchmarkDeltaPct: -1.8,
+      chain: "Ethereum",
+      description:
+        "The highest-conviction allocator — concentrates USDC into the strongest-yielding DEX and lending pairs, trading a wider drawdown band for the biggest upside among Vigil's three tiers.",
+      assetType: "stablecoin",
+      vaultType: "Managed Vault",
+      vaultContractAddress: "0x2E3f4A5b6C7d8E9f0123456789aBcDeF0123456",
+      tokenContractAddress: "0x5B6c7D8e9F0a1B2c3D4e5F6789aBcDeF0abcdef",
+      managementFeePct: 0,
+      performanceFeePct: 0.10,
+      deployedOn: "2023-07-19T00:00:00.000Z",
+      features: ["Auto-compounding", "Autonomous rebalancing"],
+      docs: {
+        userDocsUrl: "https://docs.vigil.xyz/vaults/degen",
+        devDocsUrl: "https://docs.vigil.xyz/dev/vaults",
+        analyticsUrl: "https://analytics.vigil.xyz/vaults/degen",
+        apiUrl: "https://api.vigil.xyz/vaults/degen/snapshot",
+      },
     },
     policy: {
       name: "Degen",
@@ -173,6 +244,7 @@ const VAULT_MOCKS: Record<string, VaultData> = {
       { id: "concentration", label: "No protocol above the policy cap", passed: true },
       { id: "admin-keys", label: "Admin keys held by a multisig, not an EOA", passed: false, note: "Vault owner is currently a 2-of-3 multisig pending migration to a Gnosis Safe." },
     ],
+    history: buildVaultHistory(7.22, 286_000),
   },
 };
 
