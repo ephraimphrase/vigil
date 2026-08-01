@@ -12,7 +12,7 @@
 
 import Link from "next/link";
 import { WeightBar } from "@/components/ui/WeightBar";
-import { ScoreBadge } from "@/components/health/ScoreBadge";
+import { ScoreBadge } from "@/components/Health/ScoreBadge";
 import { fmtUsd } from "@/shared/format";
 import type { AllocationRow } from "@/types";
 

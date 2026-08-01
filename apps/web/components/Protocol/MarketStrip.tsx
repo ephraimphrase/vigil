@@ -2,7 +2,7 @@
 
 import { deltaColor } from "@/shared/health";
 import { fmtUsd, fmtUsdFull, fmtSigned } from "@/shared/format";
-import type { Market } from "../types";
+import type { Market } from "../../types";
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   return (

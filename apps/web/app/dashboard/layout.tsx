@@ -4,9 +4,9 @@ import { useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import NextLink from "next/link";
 
-import { AppShell } from "@/components/AppShell";
-import { NAV, isActive } from "@/components/nav.config";
-import { ConnectWallet } from "@/components/wallet/ConnectWallet";
+import { AppShell } from "@/components/Layouts/AppShell";
+import { NAV, isActive } from "@/components/Layouts/nav.config";
+import { ConnectWallet } from "@/components/Wallet/ConnectWallet";
 
 function titleFor(pathname: string): string {
   for (const section of NAV) {

@@ -11,7 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { NAV } from "@/components/nav.config";
+import { NAV } from "@/components/Layouts/nav.config";
 
 const NAV_LABELS = new Map(NAV.flatMap((section) => section.items).map((item) => [item.href, item.label]));
 

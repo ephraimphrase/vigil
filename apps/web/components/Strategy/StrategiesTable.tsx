@@ -4,10 +4,10 @@ import { useRef } from "react";
 import { flexRender, type Table } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 
-import type { Strategy } from "../types";
-import { STRATEGY_GRID_COLS, ROW_HEIGHT, OVERSCAN } from "../config/table.config";
-import { EmptyState } from "./EmptyState";
-import { Loader } from "./ui/Loader";
+import type { Strategy } from "../../types";
+import { STRATEGY_GRID_COLS, ROW_HEIGHT, OVERSCAN } from "../../config/table.config";
+import { EmptyState } from "../EmptyState";
+import { Loader } from "../ui/Loader";
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (

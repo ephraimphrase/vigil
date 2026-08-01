@@ -1,6 +1,6 @@
 import { PiScrollLight } from "react-icons/pi";
 import type { Table } from "@tanstack/react-table";
-import { ActivityRow } from "@/components/ActivityRow";
+import { ActivityRow } from "@/components/Activity/ActivityRow";
 import { EmptyState } from "@/components/EmptyState";
 import { Loader } from "@/components/ui/Loader";
 import type { ActivityEntry } from "@/types";

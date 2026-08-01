@@ -1,4 +1,4 @@
-import { resolveBand } from "../config/bands.config";
+import { resolveBand } from "../../config/bands.config";
 
 export function BandLabel({ score }: { score: number }) {
   const band = resolveBand(score);

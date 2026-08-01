@@ -5,7 +5,7 @@ import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AllocationDonut } from "./AllocationDonut";
 import { deltaColor } from "@/shared/health";
 import { fmtUsdFull, fmtSigned } from "@/shared/format";
-import type { Portfolio, Position } from "../types";
+import type { Portfolio, Position } from "../../types";
 import type { ReactNode } from "react";
 
 function Stat({ label, value, color, info }: { label: string; value: string; color?: string; info?: ReactNode }) {

@@ -1,5 +1,5 @@
 import { Button } from "../ui/Button";
-import { ConnectWallet } from "../wallet/ConnectWallet";
+import { ConnectWallet } from "../Wallet/ConnectWallet";
 import Image from "next/image"
 
 export function FinalCTA() {

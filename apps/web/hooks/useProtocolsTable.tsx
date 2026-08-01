@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 
 import type { ProtocolRow } from "../types";
-import { buildColumns } from "../components/Columns";
+import { buildColumns } from "../components/Protocol/Columns";
 import { useDebouncedValue } from "./useDebouncedValue";
 
 // ─── CONSTANTS ───

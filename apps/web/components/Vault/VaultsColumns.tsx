@@ -9,10 +9,10 @@
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
-import type { VaultSummary } from "../types";
-import { fmtUsd, fmtUsdFull, fmtFeePct } from "../shared/format";
-import { UsdcIcon } from "./ui/UsdcIcon";
-import { BAND_META } from "../shared/health";
+import type { VaultSummary } from "../../types";
+import { fmtUsd, fmtUsdFull, fmtFeePct } from "../../shared/format";
+import { UsdcIcon } from "../ui/UsdcIcon";
+import { BAND_META } from "../../shared/health";
 
 const col = createColumnHelper<VaultSummary>();
 const PASS = BAND_META.hold.color;

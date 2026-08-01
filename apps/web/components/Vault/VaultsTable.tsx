@@ -2,10 +2,10 @@
 
 import { flexRender, type Table } from "@tanstack/react-table";
 
-import type { VaultSummary } from "../types";
-import { VAULT_GRID_COLS } from "../config/table.config";
-import { EmptyState } from "./EmptyState";
-import { Loader } from "./ui/Loader";
+import type { VaultSummary } from "../../types";
+import { VAULT_GRID_COLS } from "../../config/table.config";
+import { EmptyState } from "../EmptyState";
+import { Loader } from "../ui/Loader";
 
 function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
   return (

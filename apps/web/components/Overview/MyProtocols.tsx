@@ -1,12 +1,12 @@
 import type { ComponentType, ReactNode } from "react";
 import { PiVaultLight } from "react-icons/pi";
-import { ScoreBadge } from "@/components/health/ScoreBadge";
+import { ScoreBadge } from "@/components/Health/ScoreBadge";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { Loader } from "@/components/ui/Loader";
 import { EmptyState } from "@/components/EmptyState";
 import { BAND_META, resolveBand, deltaColor } from "@/shared/health";
 import { fmtPct, fmtSigned } from "@/shared/format";
-import type { Position } from "../types";
+import type { Position } from "../../types";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 const DefaultLink: LinkLike = ({ href, className, children }) => <a href={href} className={className}>{children}</a>;

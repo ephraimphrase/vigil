@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { fmtUsd } from "@/shared/format";
-import type { Position } from "../types";
+import type { Position } from "../../types";
 
 const SLICE = ["#9259DA", "#B58AE6", "#6E4E9E", "#8065B0", "#55416E", "#9F95AB"];
 

@@ -2,7 +2,7 @@
 
 import type { ComponentType, ReactNode } from "react";
 import { PiHouseLight } from "react-icons/pi";
-import { NAV, isActive } from "../nav.config";
+import { NAV, isActive } from "./nav.config";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 

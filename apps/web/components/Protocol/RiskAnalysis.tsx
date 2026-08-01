@@ -1,6 +1,6 @@
-import { Section } from "./Section";
+import { Section } from "../Section";
 import { severityColor } from "@/shared/health";
-import type { RiskRow } from "../types";
+import type { RiskRow } from "../../types";
 
 export function RiskAnalysis({ risk }: { risk: RiskRow[] }) {
   if (risk.length === 0) return null;

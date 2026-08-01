@@ -12,8 +12,8 @@ import {
 
 import { useStrategies } from "../../../hooks/useStrategies";
 import { aggregate, groupByProtocol } from "../../../shared/rebalance";
-import { StrategiesTable } from "../../../components/StrategiesTable";
-import { buildStrategyColumns } from "../../../components/StrategyColumns";
+import { StrategiesTable } from "../../../components/Strategy/StrategiesTable";
+import { buildStrategyColumns } from "../../../components/Strategy/StrategyColumns";
 import type { Strategy } from "../../../types";
 
 const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];

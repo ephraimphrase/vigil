@@ -13,8 +13,8 @@ import { useMemo } from "react";
 import { useActivity } from "@/hooks/useActivity";
 import { useActivityTable } from "@/hooks/useActivityTable";
 import { ALL_KINDS } from "@/shared/activity";
-import { ActivityHeader } from "@/components/ActivityHeader";
-import { ActivityTimeline } from "@/components/ActivityTimeline";
+import { ActivityHeader } from "@/components/Activity/ActivityHeader";
+import { ActivityTimeline } from "@/components/Activity/ActivityTimeline";
 
 export default function ActivityPage() {
   const { data, isLoading } = useActivity();

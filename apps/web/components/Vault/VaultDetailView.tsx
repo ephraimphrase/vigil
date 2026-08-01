@@ -34,14 +34,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { VaultMasthead } from "@/components/VaultMasthead";
-import { VaultPositionSummary } from "@/components/VaultPositionSummary";
-import { VaultPerformanceChart } from "@/components/VaultPerformanceChart";
-import { VaultInfoTab } from "@/components/VaultInfoTab";
-import { VaultAllocation } from "@/components/VaultAllocation";
-import { VaultRiskChecklist } from "@/components/VaultRiskChecklist";
-import { VaultMoreInfo } from "@/components/VaultMoreInfo";
-import { DepositWithdraw } from "@/components/DepositWithdraw";
+import { VaultMasthead } from "@/components/Vault/VaultMasthead";
+import { VaultPositionSummary } from "@/components/Vault/VaultPositionSummary";
+import { VaultPerformanceChart } from "@/components/Vault/VaultPerformanceChart";
+import { VaultInfoTab } from "@/components/Vault/VaultInfoTab";
+import { VaultAllocation } from "@/components/Vault/VaultAllocation";
+import { VaultRiskChecklist } from "@/components/Vault/VaultRiskChecklist";
+import { VaultMoreInfo } from "@/components/Vault/VaultMoreInfo";
+import { DepositWithdraw } from "@/components/Vault/DepositWithdraw";
 
 type Tab = "deposit" | "withdraw";
 type DetailTab = "performance" | "vault-info" | "strategies" | "risk" | "more-info";
@@ -61,10 +61,16 @@ function scrollToSection(id: DetailTab) {
 
 // Active tab tracks whichever section is currently at the top of the
 // viewport, not which one was last clicked - clicking just scrolls there.
-function useScrollSpy(ids: DetailTab[]): DetailTab {
+// `ready` gates the effect: VaultDetailView calls this hook before its
+// isLoading/not-found early returns (hooks can't be conditional), so on
+// first mount the <section> elements don't exist in the DOM yet - without
+// `ready`, the observer would attach to nothing and never re-attach once
+// the real content (and its section ids) actually renders.
+function useScrollSpy(ids: DetailTab[], ready: boolean): DetailTab {
   const [active, setActive] = useState<DetailTab>(ids[0] ?? "performance");
 
   useEffect(() => {
+    if (!ready) return;
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter((e) => e.isIntersecting);
@@ -77,7 +83,7 @@ function useScrollSpy(ids: DetailTab[]): DetailTab {
     const elements = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [ids]);
+  }, [ids, ready]);
 
   return active;
 }
@@ -86,7 +92,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
   const { data: vault, isLoading } = useVault(slug);
   const pathname = usePathname();
   const inDashboard = pathname.startsWith("/dashboard");
-  const activeTab = useScrollSpy(SECTION_IDS);
+  const activeTab = useScrollSpy(SECTION_IDS, !isLoading && vault != null);
 
   if (isLoading) {
     return (

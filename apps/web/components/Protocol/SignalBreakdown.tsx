@@ -1,8 +1,8 @@
 
-import { Section } from "./Section";
+import { Section } from "../Section";
 import { Chip } from "@/components/ui/Chip";
 import { fmtPct, trendArrow } from "@/shared/format";
-import type { Category, Signal, SignalGroups } from "../types";
+import type { Category, Signal, SignalGroups } from "../../types";
 
 const TYPED_LABEL: Record<Category, string> = {
   rollup: "Rollup signals", lending: "Lending signals", dex: "DEX signals",

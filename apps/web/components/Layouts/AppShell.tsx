@@ -1,10 +1,10 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { Sidebar } from "./Layouts/Sidebar";
-import { Topbar } from "./Layouts/Topbar";
+import { Sidebar } from "./Sidebar";
+import { Topbar } from "./Topbar";
 import { Breadcrumbs } from "./Breadcrumbs";
-import type { SystemState } from "./Layouts/StatusPill";
+import type { SystemState } from "./StatusPill";
 
 interface AppShellProps {
   pathname: string;

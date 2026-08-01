@@ -1,12 +1,12 @@
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
 
-import type { ProtocolRow } from "../types";
-import { fmtUsd } from "../shared/format";
-import { WatchDot } from "./ui/WatchDot";
-import { ScoreCell } from "./ScoreCell";
-import { DeltaCell } from "./DeltaCell";
-import { BandLabel } from "./BandLabel";
+import type { ProtocolRow } from "../../types";
+import { fmtUsd } from "../../shared/format";
+import { WatchDot } from "../ui/WatchDot";
+import { ScoreCell } from "../Health/ScoreCell";
+import { DeltaCell } from "../Health/DeltaCell";
+import { BandLabel } from "../Health/BandLabel";
 import { RiskChips } from "./RiskChips";
 
 interface ColumnDeps {

@@ -1,9 +1,9 @@
 import { createColumnHelper, type ColumnDef, type Row } from "@tanstack/react-table";
 
-import type { Strategy } from "../types";
-import { fmtUsd, fmtFeePct } from "../shared/format";
-import { ScoreCell } from "./ScoreCell";
-import { Chip } from "./ui/Chip";
+import type { Strategy } from "../../types";
+import { fmtUsd, fmtFeePct } from "../../shared/format";
+import { ScoreCell } from "../Health/ScoreCell";
+import { Chip } from "../ui/Chip";
 
 const col = createColumnHelper<Strategy>();
 

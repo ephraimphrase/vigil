@@ -1,10 +1,10 @@
 
 
 import { useState } from "react";
-import { Section } from "./Section";
+import { Section } from "../Section";
 import { Chip } from "@/components/ui/Chip";
 import { dateShort } from "@/shared/format";
-import type { Health } from "../types";
+import type { Health } from "../../types";
 
 export function HealthAssessment({ health }: { health: Health }) {
   const [open, setOpen] = useState(false);

@@ -1,5 +1,5 @@
-import { resolveBand } from "../config/bands.config";
-import { fmtScore } from "../shared/format";
+import { resolveBand } from "../../config/bands.config";
+import { fmtScore } from "../../shared/format";
 
 export function ScoreCell({ score }: { score: number }) {
   const band = resolveBand(score);

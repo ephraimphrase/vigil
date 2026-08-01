@@ -3,9 +3,9 @@
 import NextLink from "next/link";
 
 import { useOverview } from "@/hooks/useOverview";
-import { PortfolioSummary } from "@/components/PortfolioSummary";
-import { MyProtocols } from "@/components/MyProtocols";
-import { EventFeed } from "@/components/EventFeed";
+import { PortfolioSummary } from "@/components/Overview/PortfolioSummary";
+import { MyProtocols } from "@/components/Overview/MyProtocols";
+import { EventFeed } from "@/components/Overview/EventFeed";
 
 export default function DashboardOverviewPage() {
   const { data, isLoading } = useOverview();

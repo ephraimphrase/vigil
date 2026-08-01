@@ -3,10 +3,10 @@ import {
     ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid,
     Tooltip, ReferenceDot,
   } from "recharts";
-  import { Section } from "./Section";
+  import { Section } from "../Section";
   import { dateShort } from "@/shared/format";
   import { bandColor } from "@/shared/health";
-  import type { ScorePoint } from "../types";
+  import type { ScorePoint } from "../../types";
   
   const HAIRLINE = "rgba(202,192,213,0.2)";
   const VIOLET = "#9259DA";

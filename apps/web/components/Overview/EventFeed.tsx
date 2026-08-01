@@ -2,11 +2,11 @@
 
 import moment from "moment";
 import { PiPulseLight } from "react-icons/pi";
-import { useEventStream } from "../hooks/useOverview";
-import { Loader } from "./ui/Loader";
-import { EmptyState } from "./EmptyState";
-import { KIND_COLOR } from "../shared/activity";
-import type { FeedEvent } from "../types";
+import { useEventStream } from "../../hooks/useOverview";
+import { Loader } from "../ui/Loader";
+import { EmptyState } from "../EmptyState";
+import { KIND_COLOR } from "../../shared/activity";
+import type { FeedEvent } from "../../types";
 
 // ─── COMPONENTS ───
 function Row({ e }: { e: FeedEvent }) {

@@ -15,15 +15,15 @@
 
 import { useProtocolDetail } from "@/hooks/useProtocolsDetails";
 import { Loader } from "@/components/ui/Loader";
-import { Masthead } from "@/components/MastHead";
-import { HealthAssessment } from "@/components/HealthAssessment";
-import { ScoreChart } from "@/components/ScoreChart";
-import { SignalBreakdown } from "@/components/SignalBreakdown";
-import { RiskAnalysis } from "@/components/RiskAnalysis";
-import { TriggerHistory } from "@/components/TriggerHistory";
-import { DeepPanel } from "@/components/DeepPanel";
-import { AskPanel } from "@/components/AskPanel";
-import { MarketStrip } from "@/components/MarketStrip";
+import { Masthead } from "@/components/Protocol/MastHead";
+import { HealthAssessment } from "@/components/Protocol/HealthAssessment";
+import { ScoreChart } from "@/components/Protocol/ScoreChart";
+import { SignalBreakdown } from "@/components/Protocol/SignalBreakdown";
+import { RiskAnalysis } from "@/components/Protocol/RiskAnalysis";
+import { TriggerHistory } from "@/components/Protocol/TriggerHistory";
+import { DeepPanel } from "@/components/Protocol/DeepPanel";
+import { AskPanel } from "@/components/Protocol/AskPanel";
+import { MarketStrip } from "@/components/Protocol/MarketStrip";
 
 export function ProtocolDetailView({ protocolId }: { protocolId: string }) {
   const { data: p, isLoading } = useProtocolDetail(protocolId);

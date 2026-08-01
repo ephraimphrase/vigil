@@ -14,7 +14,7 @@ import moment from "moment";
 import { PiWarningOctagonLight } from "react-icons/pi";
 import { Chip } from "@/components/ui/Chip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
-import { ActivityStage } from "@/components/ActivityStage";
+import { ActivityStage } from "@/components/Activity/ActivityStage";
 import { KIND_COLOR, KIND_LABEL, STAGE_COLOR } from "@/shared/activity";
 import { fmtAddress } from "@/shared/format";
 import type { ActivityEntry } from "@/types";

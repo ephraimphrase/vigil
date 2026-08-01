@@ -3,7 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/shared/utils";
-import { ConditionalNav } from "@/components/landing/ConditionalNav";
+import { ConditionalNav } from "@/components/Landing/ConditionalNav";
 import { ThirdwebProvider } from "thirdweb/react";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});

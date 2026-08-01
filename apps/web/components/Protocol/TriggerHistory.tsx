@@ -1,7 +1,7 @@
-import { Section } from "./Section";
+import { Section } from "../Section";
 import { bandColor } from "@/shared/health";
 import { dateShort, fmtSigned } from "@/shared/format";
-import type { TriggerRecord } from "../types";
+import type { TriggerRecord } from "../../types";
 
 export function TriggerHistory({ triggers }: { triggers: TriggerRecord[] }) {
   return (

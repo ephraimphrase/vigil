@@ -18,9 +18,9 @@ import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useVaultsTable } from "@/hooks/useVaultsTable";
 import { CornerFrame } from "@/components/ui/CornerFrame";
-import { VaultsHeader } from "@/components/VaultsHeader";
-import { VaultsToolbar } from "@/components/VaultsToolbar";
-import { VaultsTable } from "@/components/VaultsTable";
+import { VaultsHeader } from "@/components/Vault/VaultsHeader";
+import { VaultsToolbar } from "@/components/Vault/VaultsToolbar";
+import { VaultsTable } from "@/components/Vault/VaultsTable";
 import type { VaultSummary } from "@/types";
 
 export default function VaultsPage() {

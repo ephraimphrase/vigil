@@ -1,10 +1,10 @@
-import { Hero } from "@/components/landing/Hero";
-import { Pipeline } from "@/components/landing/PipeLine";
-import { Features } from "@/components/landing/Features";
-import { DecisionLogic } from "@/components/landing/DecisionLogic";
-import { SignalsTracked } from "@/components/landing/SignalsTracked";
-import { FAQ } from "@/components/landing/Faq";
-import { FinalCTA } from "@/components/landing/FinalCTA";
+import { Hero } from "@/components/Landing/Hero";
+import { Pipeline } from "@/components/Landing/PipeLine";
+import { Features } from "@/components/Landing/Features";
+import { DecisionLogic } from "@/components/Landing/DecisionLogic";
+import { SignalsTracked } from "@/components/Landing/SignalsTracked";
+import { FAQ } from "@/components/Landing/Faq";
+import { FinalCTA } from "@/components/Landing/FinalCTA";
 import { Footer } from "@/components/Layouts/Footer";
 
 // ─── MAIN ─────────────────────────────────────

@@ -2,7 +2,7 @@ import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
 import { bandColor, BAND_META, resolveBand, deltaColor } from "@/shared/health";
 import { fmtScore, fmtSigned } from "@/shared/format";
-import type { Identity, Health } from "../types";
+import type { Identity, Health } from "../../types";
 
 const LINK_LABELS: Record<string, string> = {
   website: "Site", docs: "Docs", github: "GitHub", twitter: "X",

@@ -19,9 +19,9 @@ import { useApi } from "@/hooks/useApi";
 import { useProtocolsTable } from "@/hooks/useProtocolsTable";
 import type { ProtocolRow } from "@/types";
 import { CornerFrame } from "@/components/ui/CornerFrame";
-import { ProtocolsHeader } from "@/components/ProtocolsHeader";
-import { ProtocolsToolbar } from "@/components/ProtocolsToolbar";
-import { ProtocolsTable } from "@/components/ProtocolsTable";
+import { ProtocolsHeader } from "@/components/Protocol/ProtocolsHeader";
+import { ProtocolsToolbar } from "@/components/Protocol/ProtocolsToolbar";
+import { ProtocolsTable } from "@/components/Protocol/ProtocolsTable";
 
 interface ProtocolsViewProps {
   // Detail links resolve to `${basePath}/${id}` - pass "/dashboard/protocols"
