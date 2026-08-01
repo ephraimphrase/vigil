@@ -32,7 +32,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     bytes32 public constant GUARDIAN_ROLE = keccak256("GUARDIAN_ROLE");
 
     // Bounds the cost of rebalance()/totalAssets(), both O(adapters.length).
-    uint256 public constant MAX_ADAPTERS = 12;
+    uint256 public constant MAX_ADAPTERS = 8;
 
     HealthOracle public immutable override oracle;
 

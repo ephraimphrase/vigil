@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(echo \"== .env.example ==\" && cat .env.example && echo \"== .env \\(keys only\\) ==\" && sed 's/=.*/=<redacted>/' .env)",
+      "Bash(chmod +x /home/daniel/development/vigil/apps/web/start.sh)",
+      "Bash(pkill -f \"next dev\")"
+    ],
+    "additionalDirectories": [
+      "/home/daniel/development/vigil/apps/contracts"
     ]
   }
 }
