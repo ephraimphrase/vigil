@@ -18,25 +18,15 @@ function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
 }
 
 function HeaderRow({ table }: { table: Table<Strategy> }) {
-  const allExpanded = table.getIsAllRowsExpanded();
   return (
     <div
       className="grid items-center border-b border-[#CAC0D5]/20 px-3 py-2"
       style={{ gridTemplateColumns: STRATEGY_GRID_COLS }}
     >
-      {table.getHeaderGroups()[0].headers.map((header, i) => {
+      {table.getHeaderGroups()[0].headers.map((header) => {
         const canSort = header.column.getCanSort();
         return (
           <div key={header.id} className="flex items-center gap-2 pr-4">
-            {i === 0 && (
-              <button
-                onClick={() => table.toggleAllRowsExpanded()}
-                className="font-mono text-[10px] text-text-muted transition-colors hover:text-text"
-                title={allExpanded ? "Collapse all" : "Expand all"}
-              >
-                {allExpanded ? "▾" : "▸"}
-              </button>
-            )}
             <div
               onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
               className={`select-none font-mono text-xs uppercase tracking-wider text-text-muted ${
@@ -85,11 +75,16 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
           <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
             {virtualizer.getVirtualItems().map((vr) => {
               const row = rows[vr.index];
+              // Protocol rows (depth 0) are always expanded and unclickable -
+              // there's nothing left to toggle. Only leaf strategy rows open.
+              const isLeaf = row.depth > 0;
               return (
                 <div
                   key={row.id}
-                  onClick={() => (row.getCanExpand() ? row.toggleExpanded() : onOpenStrategy(row.original.id))}
-                  className="group absolute left-0 grid w-full cursor-pointer items-center border-b border-[#CAC0D5]/20 px-3 transition-colors hover:bg-surface-2/60"
+                  onClick={isLeaf ? () => onOpenStrategy(row.original.id) : undefined}
+                  className={`group absolute left-0 grid w-full items-center border-b border-[#CAC0D5]/20 px-3 transition-colors ${
+                    isLeaf ? "cursor-pointer hover:bg-surface-2/60" : ""
+                  }`}
                   style={{
                     gridTemplateColumns: STRATEGY_GRID_COLS,
                     height: vr.size,

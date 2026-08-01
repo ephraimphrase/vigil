@@ -8,7 +8,6 @@ import {
   getSortedRowModel,
   getExpandedRowModel,
   type SortingState,
-  type ExpandedState,
 } from "@tanstack/react-table";
 
 import { useStrategies } from "../../../hooks/useStrategies";
@@ -31,14 +30,15 @@ export default function StrategiesPage() {
   const grouped = useMemo(() => groupByProtocol(data.strategies), [data.strategies]);
 
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
-  const [expanded, setExpanded] = useState<ExpandedState>({});
   const columns = useMemo(() => buildStrategyColumns(), []);
   const table = useReactTable({
     data: grouped,
     columns,
-    state: { sorting, expanded },
+    // Every protocol row is permanently expanded - no collapse control
+    // anywhere in the UI, so `expanded: true` (not wired to any setter)
+    // is a fixed "always all rows expanded" state, not a toggleable one.
+    state: { sorting, expanded: true },
     onSortingChange: setSorting,
-    onExpandedChange: setExpanded,
     getSubRows: (row: Strategy) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

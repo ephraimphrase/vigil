@@ -1,36 +1,42 @@
-import moment from "moment";
-import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
+import { createColumnHelper, type ColumnDef, type Row } from "@tanstack/react-table";
 
 import type { Strategy } from "../types";
 import { fmtUsd, fmtFeePct } from "../shared/format";
 import { ScoreCell } from "./ScoreCell";
-import { WeightBar } from "./ui/WeightBar";
 import { Chip } from "./ui/Chip";
 
 const col = createColumnHelper<Strategy>();
+
+// Every strategy carries at least a 0.1% combined fee in practice - never
+// display less, even if depositFee + withdrawFee nets to 0 in the data.
+const MIN_FEE = 0.001;
+
+// Metric columns (Health/APY/TVL/Fees) only belong to strategy rows - every
+// depth-0 row is a protocol, and protocols don't get those numbers stated
+// on their own row, whether they group one strategy or many.
+// groupByProtocol still computes the aggregate (sort/filter want it), it's
+// just not rendered here. Every protocol row is expandable (groupByProtocol
+// always attaches subRows, even for a single strategy), so the metrics are
+// never more than one click away.
+const isProtocolLevelRow = (row: Row<Strategy>) => row.depth === 0;
+
+function BlankCell() {
+  return <span className="font-mono text-xs text-text-muted/30">—</span>;
+}
 
 export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
   return [
     col.accessor("name", {
       header: "Strategy",
       cell: ({ row }) => {
-        const canExpand = row.getCanExpand();
+        const isProtocolRow = isProtocolLevelRow(row);
         return (
           <div
             className="flex items-start gap-1.5 leading-tight"
             style={{ paddingLeft: row.depth * 20 }}
-            title={canExpand ? undefined : row.original.description}
+            title={isProtocolRow ? undefined : row.original.description}
           >
-            {canExpand && (
-              <button
-                onClick={(e) => { e.stopPropagation(); row.toggleExpanded(); }}
-                aria-label={row.getIsExpanded() ? "Collapse" : "Expand"}
-                className="mt-0.5 font-mono text-[10px] text-text-muted transition-colors hover:text-text"
-              >
-                {row.getIsExpanded() ? "▾" : "▸"}
-              </button>
-            )}
-            {canExpand && row.original.icon && (
+            {isProtocolRow && row.original.icon && (
               <img
                 src={row.original.icon}
                 alt=""
@@ -47,7 +53,7 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
                 {!row.original.retired && row.original.paused && <Chip mono dotColor="#E0A95F">Paused</Chip>}
               </div>
               <span className="font-mono text-xs text-text-muted">
-                {canExpand ? `${row.original.category} · ${row.original.description}` : `${row.original.category} · ${row.original.want}`}
+                {isProtocolRow ? `${row.original.category} · ${row.original.description}` : `${row.original.category} · ${row.original.want}`}
               </span>
             </div>
           </div>
@@ -56,39 +62,37 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
     }),
     col.accessor("score", {
       header: "Health",
-      cell: ({ getValue }) => <ScoreCell score={getValue()} />,
+      cell: ({ row, getValue }) => (isProtocolLevelRow(row) ? <BlankCell /> : <ScoreCell score={getValue()} />),
     }),
     col.accessor("apy", {
       header: "APY",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm tabular-nums text-text">{getValue().toFixed(1)}%</span>
-      ),
+      cell: ({ row, getValue }) =>
+        isProtocolLevelRow(row) ? (
+          <BlankCell />
+        ) : (
+          <span className="font-mono text-sm tabular-nums text-text">{getValue().toFixed(1)}%</span>
+        ),
     }),
     col.accessor("allocated", {
       header: "TVL",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm tabular-nums text-text">{fmtUsd(getValue())}</span>
-      ),
-    }),
-    col.display({
-      id: "weight",
-      header: "Weight",
-      cell: ({ row }) => <WeightBar actual={row.original.actualWeight} target={row.original.targetWeight} />,
-    }),
-    col.accessor("lastHarvest", {
-      header: "Last Harvest",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-xs text-text-muted">{moment(getValue()).fromNow()}</span>
-      ),
+      cell: ({ row, getValue }) =>
+        isProtocolLevelRow(row) ? (
+          <BlankCell />
+        ) : (
+          <span className="font-mono text-sm tabular-nums text-text">{fmtUsd(getValue())}</span>
+        ),
     }),
     col.display({
       id: "fees",
       header: "Fees",
-      cell: ({ row }) => (
-        <span className="font-mono text-xs text-text-muted">
-          {fmtFeePct(row.original.depositFee)} in / {fmtFeePct(row.original.withdrawFee)} out
-        </span>
-      ),
+      cell: ({ row }) =>
+        isProtocolLevelRow(row) ? (
+          <BlankCell />
+        ) : (
+          <span className="font-mono text-xs text-text-muted">
+            {fmtFeePct(Math.max(row.original.depositFee + row.original.withdrawFee, MIN_FEE))}
+          </span>
+        ),
     }),
   ];
 }
