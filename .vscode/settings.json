@@ -1,4 +1,7 @@
 {
   "css.lint.unknownAtRules": "ignore",
-  "solidity.monoRepoSupport": true
+  "solidity.monoRepoSupport": true,
+  "cSpell.words": [
+    "OPENROUTER"
+  ]
 }

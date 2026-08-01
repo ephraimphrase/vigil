@@ -1,14 +1,8 @@
 import httpx
 import json
-from openai import AsyncOpenAI
-from config import OPENROUTER_API_KEY, OPENROUTER_MODEL
-from ingestion.schemas import GovernanceSignal
-
-# Use AsyncOpenAI so governance analysis is non-blocking
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY
-) if OPENROUTER_API_KEY else None
+from config import OPENROUTER_MODEL
+from typedefs import Signal
+from integrations.llm import llm_client
 
 SNAPSHOT_GRAPHQL_URL = "https://hub.snapshot.org/graphql"
 
@@ -24,10 +18,10 @@ PROTOCOL_SPACES = {
     "balancer":  "balancer.eth",
 }
 
-_SAFE_DEFAULT: GovernanceSignal = {"governance_risk_score": 1.0}  # 1.0 = fully healthy
+_SAFE_DEFAULT: Signal = {"governance_risk_score": 1.0}  # 1.0 = fully healthy
 
 
-async def fetch_governance_risk(protocol: str) -> GovernanceSignal:
+async def fetch_governance_risk(protocol: str) -> Signal:
     """
     Innovative Signal: Queries Snapshot's GraphQL API for recent proposals.
     Uses LLM to determine if a recent proposal is an emergency measure 

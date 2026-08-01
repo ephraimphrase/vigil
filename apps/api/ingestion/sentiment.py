@@ -1,20 +1,14 @@
 import praw
 import json
-from openai import AsyncOpenAI
-from config import REDDIT_CLIENT_ID, REDDIT_SECRET, OPENROUTER_API_KEY, OPENROUTER_MODEL
-from ingestion.schemas import SentimentSignal
+from config import REDDIT_CLIENT_ID, REDDIT_SECRET, OPENROUTER_MODEL
+from typedefs import Signal
+from integrations.llm import llm_client
 
 reddit = praw.Reddit(
     client_id=REDDIT_CLIENT_ID,
     client_secret=REDDIT_SECRET,
     user_agent="vigil-health-monitor/1.0"
 ) if REDDIT_CLIENT_ID and REDDIT_SECRET else None
-
-# Use AsyncOpenAI so sentiment scoring is non-blocking
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY
-) if OPENROUTER_API_KEY else None
 
 PROTOCOL_SUBREDDITS = {
     "aave":     ["Aave", "defi"],
@@ -26,10 +20,10 @@ PROTOCOL_SUBREDDITS = {
     "yearn":    ["defi"],
 }
 
-_EMPTY: SentimentSignal = {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
+_EMPTY: Signal = {"sentiment_score": 0.5, "post_count_7d": 0, "avg_upvotes": 0, "risk_keywords": []}
 
 
-async def fetch_reddit_sentiment(protocol: str) -> SentimentSignal:
+async def fetch_reddit_sentiment(protocol: str) -> Signal:
     if not reddit:
         return _EMPTY.copy()
 

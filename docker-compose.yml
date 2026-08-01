@@ -22,7 +22,9 @@ services:
     container_name: vigil-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      # Host port 6380, not 6379 - avoids clashing with any other local
+      # redis instance already bound to the default port on this machine.
+      - "6380:6379"
     volumes:
       - vigil-redis-data:/data
     healthcheck:
@@ -38,7 +40,9 @@ services:
     environment:
       REDIS_HOSTS: local:redis:6379
     ports:
-      - "8081:8081"
+      # Host port 8082 - 8081 is already taken by something else on this
+      # machine.
+      - "8082:8081"
     depends_on:
       redis:
         condition: service_healthy

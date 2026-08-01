@@ -5,9 +5,20 @@ from typing import Dict, List
 from sqlalchemy import func
 from sqlmodel import Session, select
 
-from db.models import HealthScoreRow, SignalHistory, Trigger, UserTrigger, engine
+from db.models import HealthScoreRow, Protocol, SignalHistory, Trigger, UserTrigger, engine
 
 logger = logging.getLogger(__name__)
+
+
+def get_protocol_github_repo(protocol_id: str) -> str | None:
+    """Returns the 'org/repo' slug ingestion/github.py polls for this protocol, or None if untracked."""
+    try:
+        with Session(engine) as session:
+            protocol = session.get(Protocol, protocol_id)
+            return protocol.github_repo if protocol else None
+    except Exception as e:
+        logger.error("[DB] get_protocol_github_repo failed: %s", e)
+        return None
 
 
 def get_user_triggers(protocol: str) -> List[Dict]:

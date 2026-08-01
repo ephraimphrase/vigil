@@ -12,6 +12,11 @@ export const protocols = pgTable("protocols", {
   kind: text("kind").notNull(),
   description: text("description").notNull(),
   launchDate: text("launch_date").notNull(),
+  // "org/repo" slug apps/api/ingestion/github.py polls for commit/release
+  // signals (e.g. "aave/aave-v3-core") - distinct from links.github, which
+  // is just the org's github.com page. Null for protocols with no repo
+  // tracked yet.
+  githubRepo: text("github_repo"),
   links: jsonb("links").notNull().$type<Record<string, unknown>>(),
   market: jsonb("market").$type<Record<string, unknown> | null>(),
   assessment: jsonb("assessment").notNull().$type<Record<string, unknown>>(),

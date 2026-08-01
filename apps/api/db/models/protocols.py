@@ -32,6 +32,12 @@ class Protocol(SQLModel, table=True):
     kind: str
     description: str
     launch_date: str
+    # "org/repo" slug for the contract repo ingestion/github.py polls for
+    # commit/release signals (e.g. "aave/aave-v3-core") - distinct from
+    # links["github"], which is just the org's github.com page for display.
+    # None for protocols with no repo tracked yet; fetch_github_activity
+    # falls back to an empty signal in that case.
+    github_repo: Optional[str] = None
     links: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
     market: Optional[dict[str, Any]] = Field(default=None, sa_column=Column(JSONB))
     assessment: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))

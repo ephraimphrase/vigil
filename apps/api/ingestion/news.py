@@ -2,15 +2,9 @@ import httpx
 import json
 import feedparser
 from datetime import datetime, timedelta
-from openai import AsyncOpenAI
-from config import NEWS_API_KEY, OPENROUTER_API_KEY, OPENROUTER_MODEL
-from ingestion.schemas import NewsSignal
-
-# Use AsyncOpenAI so news classification is non-blocking
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY
-) if OPENROUTER_API_KEY else None
+from config import NEWS_API_KEY, OPENROUTER_MODEL
+from typedefs import Signal
+from integrations.llm import llm_client
 
 NEWS_BASE = "https://newsapi.org/v2/everything"
 
@@ -19,7 +13,7 @@ _news_cache: dict[str, dict] = {}
 _CACHE_TTL_SECONDS = 7200  # 2 hours
 
 
-async def fetch_news_signals(protocol: str) -> NewsSignal:
+async def fetch_news_signals(protocol: str) -> Signal:
     cached = _news_cache.get(protocol)
     if cached and (datetime.utcnow() - cached["timestamp"]).total_seconds() < _CACHE_TTL_SECONDS:
         return cached["data"]

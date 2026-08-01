@@ -4,10 +4,31 @@
       "Bash(python3 -c ' *)",
       "Bash(echo \"== .env.example ==\" && cat .env.example && echo \"== .env \\(keys only\\) ==\" && sed 's/=.*/=<redacted>/' .env)",
       "Bash(chmod +x /home/daniel/development/vigil/apps/web/start.sh)",
-      "Bash(pkill -f \"next dev\")"
+      "Bash(pkill -f \"next dev\")",
+      "Bash(sudo lsof -i :6379)",
+      "Bash(sudo ss -ltnp)",
+      "Bash(curl -s -o /dev/null -w \"redis-commander http: %{http_code}\\\\n\" http://localhost:8082)",
+      "Bash(venv/bin/python3 -c ' *)",
+      "Bash(venv/bin/pip show *)",
+      "Bash(git add *)",
+      "Bash(git commit -- apps/api/db/models.py apps/api/db/models/ apps/api/db/queries.py apps/api/ingestion/resilient_fetch.py apps/api/requirements.txt -m ' *)",
+      "Bash(git commit -m ' *)",
+      "Bash(grep -rln \"^from llm import llm_client$\\\\|^from redis_client import redis_client$\" --include=\"*.py\" .)",
+      "Bash(mkdir -p /home/daniel/development/vigil/apps/api/types)",
+      "Bash(sed -i 's/from types import TvlSignal/from types import Signal/; s/TvlSignal/Signal/g' ingestion/tvl.py)",
+      "Bash(sed -i 's/from types import LiquidationSignal/from types import Signal/; s/LiquidationSignal/Signal/g' ingestion/liquidations.py)",
+      "Bash(sed -i 's/from types import WhaleSignal/from types import Signal/; s/WhaleSignal/Signal/g' ingestion/whales.py)",
+      "Bash(sed -i 's/from types import GithubSignal/from types import Signal/; s/GithubSignal/Signal/g' ingestion/github.py)",
+      "Bash(sed -i 's/from types import SentimentSignal/from types import Signal/; s/SentimentSignal/Signal/g' ingestion/sentiment.py)",
+      "Bash(sed -i 's/^from ingestion\\\\.schemas import Signal$/from types import Signal/' ingestion/whales.py ingestion/snapshot.py ingestion/sentiment.py ingestion/liquidations.py ingestion/tvl.py ingestion/github.py ingestion/security.py ingestion/news.py ingestion/social.py)",
+      "Bash(sed -i 's/^from ingestion\\\\.schemas import RawOffchainSignals, RawOnchainSignals$/from types import RawOffchainSignals, RawOnchainSignals/' ingestion/normalizer.py)",
+      "Bash(echo \"grep exit: $?\")",
+      "Bash(sed -i 's/^from types import Signal$/from typedefs import Signal/' ingestion/tvl.py ingestion/liquidations.py ingestion/whales.py ingestion/github.py ingestion/social.py ingestion/security.py ingestion/news.py ingestion/sentiment.py ingestion/snapshot.py)",
+      "Bash(sed -i 's/^from types import RawOffchainSignals, RawOnchainSignals$/from typedefs import RawOffchainSignals, RawOnchainSignals/' ingestion/normalizer.py)"
     ],
     "additionalDirectories": [
-      "/home/daniel/development/vigil/apps/contracts"
+      "/home/daniel/development/vigil/apps/contracts",
+      "/home/daniel/development/vigil/apps/api"
     ]
   }
 }

@@ -1,4 +1,4 @@
-from ingestion.schemas import RawOffchainSignals, RawOnchainSignals
+from typedefs import RawOffchainSignals, RawOnchainSignals
 
 
 def normalize_github(raw: dict, protocol: str, history: list[dict]) -> float:

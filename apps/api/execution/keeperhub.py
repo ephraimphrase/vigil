@@ -4,18 +4,12 @@ import time
 import logging
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from execution.adapter import TriggerEvent
-from config import KEEPERHUB_API_KEY, OPENROUTER_API_KEY, OPENROUTER_MODEL
-from openai import AsyncOpenAI
+from config import KEEPERHUB_API_KEY, OPENROUTER_MODEL
+from integrations.llm import llm_client
 from mcp.client.sse import sse_client
 from mcp.client.session import ClientSession
 
 logger = logging.getLogger(__name__)
-
-# Lazy-initialize AsyncOpenAI client for the execution agent's LLM reasoning
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY,
-) if OPENROUTER_API_KEY else None
 
 
 class KeeperHubExecutionError(Exception):

@@ -1,91 +1,68 @@
 import httpx
 import json
 from datetime import datetime, timedelta
-from openai import AsyncOpenAI
-from config import GITHUB_TOKEN, OPENROUTER_API_KEY, OPENROUTER_MODEL
-from ingestion.schemas import GithubSignal
-
-PROTOCOL_REPOS = {
-    "aave":      "aave/aave-v3-core",
-    "compound":  "compound-finance/compound-protocol",
-    "uniswap":   "Uniswap/v3-core",
-    "curve":     "curvefi/curve-contract",
-    "makerdao":  "makerdao/dss",
-    "balancer":  "balancer-labs/balancer-v2-monorepo",
-    "yearn":     "yearn/yearn-vaults",
-    "lido":      "lidofinance/lido-dao",
-}
+from config import GITHUB_TOKEN, OPENROUTER_MODEL
+from db.queries import get_protocol_github_repo
+from typedefs import Signal
+from integrations.llm import llm_client
 
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
 
-# Use AsyncOpenAI so we can properly await in async functions
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY
-) if OPENROUTER_API_KEY else None
 
-
-async def fetch_github_activity(protocol: str) -> GithubSignal:
-    repo = PROTOCOL_REPOS.get(protocol)
+async def fetch_github_activity(protocol: str) -> Signal:
+    repo = get_protocol_github_repo(protocol)
     if not repo:
         return _empty_github_signal()
 
-    since_30d = (datetime.utcnow() - timedelta(days=30)).isoformat() + "Z"
-    since_7d  = (datetime.utcnow() - timedelta(days=7)).isoformat() + "Z"
-
     async with httpx.AsyncClient(timeout=10) as client:
-        # Commits in last 30 days
-        commits_r = await client.get(
-            f"https://api.github.com/repos/{repo}/commits",
-            params={"since": since_30d, "per_page": 100},
-            headers=HEADERS
-        )
-        commits_data = commits_r.json() if commits_r.status_code == 200 else []
-        if not isinstance(commits_data, list):
-            commits_data = []
-        commits_30d = len(commits_data)
+        commits_30d = await _fetch_commits(client, repo, days=30)
+        commits_7d = await _fetch_commits(client, repo, days=7)
+        repo_meta = await _fetch_repo_metadata(client, repo)
+        releases = await _fetch_releases(client, repo)
 
-        # Emergency commit check using OpenRouter LLM
-        commit_messages = [c.get("commit", {}).get("message", "") for c in commits_data[:10]]
+        commit_messages = [c.get("commit", {}).get("message", "") for c in commits_30d[:10]]
         emergency_risk = await _check_emergency_commits(commit_messages, protocol) if commit_messages else 0.0
 
-        # Commits in last 7 days (velocity signal)
-        commits_7d_r = await client.get(
-            f"https://api.github.com/repos/{repo}/commits",
-            params={"since": since_7d, "per_page": 100},
-            headers=HEADERS
-        )
-        commits_7d_data = commits_7d_r.json() if commits_7d_r.status_code == 200 else []
-        commits_7d = len(commits_7d_data) if isinstance(commits_7d_data, list) else 0
-
-        # Open issues count
-        repo_r = await client.get(
-            f"https://api.github.com/repos/{repo}",
-            headers=HEADERS
-        )
-        repo_data = repo_r.json() if repo_r.status_code == 200 else {}
-        if not isinstance(repo_data, dict):
-            repo_data = {}
-        open_issues = repo_data.get("open_issues_count", 0)
-
-        # Recent releases
-        releases_r = await client.get(
-            f"https://api.github.com/repos/{repo}/releases",
-            params={"per_page": 5},
-            headers=HEADERS
-        )
-        releases = releases_r.json() if releases_r.status_code == 200 else []
-        if not isinstance(releases, list):
-            releases = []
-        days_since_last_release = _days_since_last_release(releases)
-
     return {
-        "commits_30d":              commits_30d,
-        "commits_7d":               commits_7d,
-        "open_issues":              open_issues,
-        "days_since_last_release":  days_since_last_release,
+        "commits_30d":              len(commits_30d),
+        "commits_7d":               len(commits_7d),
+        "open_issues":              repo_meta.get("open_issues_count", 0),
+        "forks":                    repo_meta.get("forks_count", 0),
+        "stars":                    repo_meta.get("stargazers_count", 0),
+        "watchers":                 repo_meta.get("subscribers_count", 0),
+        "days_since_last_release":  _days_since_last_release(releases),
         "emergency_risk_penalty":   emergency_risk,  # 0.0 = no emergency, 1.0 = high emergency
     }
+
+
+async def _fetch_commits(client: httpx.AsyncClient, repo: str, days: int) -> list:
+    """Commits pushed to `repo` in the last `days` days."""
+    since = (datetime.utcnow() - timedelta(days=days)).isoformat() + "Z"
+    r = await client.get(
+        f"https://api.github.com/repos/{repo}/commits",
+        params={"since": since, "per_page": 100},
+        headers=HEADERS
+    )
+    data = r.json() if r.status_code == 200 else []
+    return data if isinstance(data, list) else []
+
+
+async def _fetch_repo_metadata(client: httpx.AsyncClient, repo: str) -> dict:
+    """Repo-level counters: open issues, forks, stars, watchers - one call, all free together."""
+    r = await client.get(f"https://api.github.com/repos/{repo}", headers=HEADERS)
+    data = r.json() if r.status_code == 200 else {}
+    return data if isinstance(data, dict) else {}
+
+
+async def _fetch_releases(client: httpx.AsyncClient, repo: str) -> list:
+    """Most recent releases, newest first."""
+    r = await client.get(
+        f"https://api.github.com/repos/{repo}/releases",
+        params={"per_page": 5},
+        headers=HEADERS
+    )
+    data = r.json() if r.status_code == 200 else []
+    return data if isinstance(data, list) else []
 
 
 async def _check_emergency_commits(messages: list[str], protocol: str) -> float:
@@ -95,7 +72,7 @@ async def _check_emergency_commits(messages: list[str], protocol: str) -> float:
 
     joined = "\n".join(f"- {m}" for m in messages)
     prompt = f"""Analyze these recent commit messages from the {protocol} protocol repository.
-    
+
 {joined}
 
 Return ONLY valid JSON with no other text:
@@ -130,11 +107,14 @@ def _days_since_last_release(releases: list) -> float:
         return 365.0
 
 
-def _empty_github_signal() -> GithubSignal:
+def _empty_github_signal() -> Signal:
     return {
         "commits_30d": 0,
         "commits_7d": 0,
         "open_issues": 0,
+        "forks": 0,
+        "stars": 0,
+        "watchers": 0,
         "days_since_last_release": 365.0,
         "emergency_risk_penalty": 0.0,
     }
