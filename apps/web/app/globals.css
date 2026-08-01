@@ -295,6 +295,71 @@
 }
 
 /* ═══════════════════════════════════════════════
+   ⬢ TOAST
+   ═══════════════════════════════════════════════ */
+.toast-viewport {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  width: 22rem;
+  max-width: calc(100vw - 2rem);
+  height: var(--toast-frontmost-height);
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toast-root {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: calc(1000 - var(--toast-index));
+  transform: translateY(calc(var(--toast-offset-y, 0px) * -1 - (var(--toast-index) * 10px)))
+    scale(calc(1 - var(--toast-index) * 0.06));
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+}
+
+.toast-root[data-expanded] {
+  transform: translateY(calc(var(--toast-offset-y, 0px) * -1));
+}
+
+.toast-root[data-starting-style] {
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+}
+
+.toast-root[data-ending-style] {
+  opacity: 0;
+}
+
+.toast-root[data-swiping] {
+  transition: none;
+}
+
+.toast-root[data-limited] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toast-bar {
+  animation: toast-shrink linear forwards;
+  animation-duration: var(--toast-duration, 5000ms);
+}
+
+.toast-root[data-expanded] .toast-bar {
+  animation-play-state: paused;
+}
+
+@keyframes toast-shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ═══════════════════════════════════════════════
    ⬢ BREADCRUMB
    ═══════════════════════════════════════════════ */
 .tw-breadcrumb [data-slot="breadcrumb-list"] {

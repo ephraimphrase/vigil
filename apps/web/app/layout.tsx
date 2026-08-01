@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/shared/utils";
 import { ConditionalNav } from "@/components/Landing/ConditionalNav";
 import { ThirdwebProvider } from "thirdweb/react";
+import { ToastProvider } from "@/components/ui/Toast";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -82,8 +83,10 @@ export default function RootLayout({
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThirdwebProvider>
-          <ConditionalNav />
-          {children}
+          <ToastProvider>
+            <ConditionalNav />
+            {children}
+          </ToastProvider>
         </ThirdwebProvider>
       </body>
     </html>
