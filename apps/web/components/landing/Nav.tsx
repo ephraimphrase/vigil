@@ -33,7 +33,7 @@ export function Nav() {
           ))}
         </div>
 
-        <Button href="#" variant="ghost" className="uppercase " >Get Started <MdOutlineArrowOutward size={18} ></MdOutlineArrowOutward></Button>
+        <Button href="/dashboard" variant="ghost" className="uppercase " >Get Started <MdOutlineArrowOutward size={18} ></MdOutlineArrowOutward></Button>
       </div>
     </nav>
   );

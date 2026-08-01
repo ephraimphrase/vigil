@@ -12,6 +12,7 @@ import moment from "moment";
 
 import { useStrategies } from "@/hooks/useStrategies";
 import { CornerFrame } from "@/components/ui/CornerFrame";
+import { Loader } from "@/components/ui/Loader";
 import { Chip } from "@/components/ui/Chip";
 import { WeightBar } from "@/components/ui/WeightBar";
 import { BAND_META, resolveBand, bandColor } from "@/shared/health";
@@ -53,9 +54,20 @@ function Masthead({ s }: { s: Strategy }) {
       <div className="flex flex-col gap-5 p-5 md:flex-row md:items-start md:justify-between">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-none border border-hairline bg-panel font-mono text-sm text-violet-bright">
-              {s.name.slice(0, 3).toUpperCase()}
-            </div>
+            {s.icon ? (
+              <img
+                src={s.icon}
+                alt=""
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-none border border-hairline bg-panel object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div className="grid h-11 w-11 place-items-center rounded-none border border-hairline bg-panel font-mono text-sm text-violet-bright">
+                {s.name.slice(0, 3).toUpperCase()}
+              </div>
+            )}
             <div>
               <h1 className="font-display text-2xl leading-none tracking-tight text-body">{s.name}</h1>
               <div className="mt-1 flex items-center gap-2 font-mono text-xs text-muted">
@@ -93,8 +105,16 @@ function Masthead({ s }: { s: Strategy }) {
 }
 
 export function StrategyDetailView({ id }: { id: string }) {
-  const data = useStrategies();
+  const { data, isLoading } = useStrategies();
   const s = data.strategies.find((x) => x.id === id);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center bg-base">
+        <Loader />
+      </div>
+    );
+  }
 
   if (!s) {
     return (

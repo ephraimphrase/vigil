@@ -3,6 +3,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { Sidebar } from "./Layouts/Sidebar";
 import { Topbar } from "./Layouts/Topbar";
+import { Breadcrumbs } from "./Breadcrumbs";
 import type { SystemState } from "./Layouts/StatusPill";
 
 interface AppShellProps {
@@ -25,7 +26,10 @@ export function AppShell({
       <Sidebar pathname={pathname} badges={badges} Link={Link} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar title={title} systemState={systemState} autoArmed={autoArmed} onToggleAuto={onToggleAuto} wallet={wallet} />
-        <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto">
+          <Breadcrumbs />
+          {children}
+        </main>
       </div>
     </div>
   );

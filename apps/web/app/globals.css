@@ -38,6 +38,7 @@
 
   --animate-float: float 7s ease-in-out infinite;
   --animate-ticker: ticker 22s linear infinite;
+  --animate-bar-scale: bar-scale 1s linear infinite;
 }
 
 @keyframes float {
@@ -48,6 +49,16 @@
 @keyframes ticker {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+@keyframes bar-scale {
+  20% {
+    background-color: var(--color-violet-bright);
+    transform: scaleY(1.5);
+  }
+  40% {
+    transform: scaleY(1);
+  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -214,4 +225,108 @@
   --sidebar-accent-foreground: var(--color-text);
   --sidebar-border: var(--color-border);
   --sidebar-ring: var(--color-violet);
+}
+
+
+/* ═══════════════════════════════════════════════
+   ⬢ WALLET CONNECT
+   ═══════════════════════════════════════════════ */
+   .tw-connect-wallet{
+    background:
+      linear-gradient(#1e1425, #1e1425) padding-box,
+      linear-gradient(135deg, #D9B2EF, #412D4F) border-box !important;
+    border: 1px solid transparent !important;
+    border-radius: 999px !important;
+    color: var(--color-text) !important;
+    font-family: "Hanken Grotesk", sans-serif !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+    height: 36px !important;
+    padding: 0 20px !important;
+    font-size: 12px !important;
+    min-width: 0 !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  }
+
+  .tw-connect-wallet:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 8px 28px rgba(176, 108, 225, 0.3) !important;
+  }
+
+/* connected state — pill button shown once a wallet is linked */
+.tw-connected-wallet {
+  background: linear-gradient(180deg, rgba(30, 20, 51, 0.92) 0%, rgba(19, 12, 34, 0.92) 100%) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 999px !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  padding: 3px 12px 3px 3px !important;
+  gap: 8px !important;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.tw-connected-wallet:hover {
+  border-color: rgba(176, 108, 225, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(176, 108, 225, 0.1) !important;
+}
+
+.tw-connected-wallet > div:first-child {
+  width: 26px !important;
+  height: 26px !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 0 0 1px var(--color-border-strong) !important;
+}
+
+.tw-connected-wallet__address {
+  font-family: "Hanken Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+  color: var(--color-text) !important;
+}
+
+.tw-connected-wallet__balance {
+  font-family: "JetBrains Mono", monospace !important;
+  font-weight: 400 !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  color: var(--color-text-dim) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   ⬢ BREADCRUMB
+   ═══════════════════════════════════════════════ */
+.tw-breadcrumb [data-slot="breadcrumb-list"] {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-dim);
+  row-gap: 4px;
+}
+
+.tw-breadcrumb [data-slot="breadcrumb-link"] {
+  color: var(--color-text-dim);
+  text-decoration: none;
+}
+
+.tw-breadcrumb [data-slot="breadcrumb-link"]:hover {
+  color: var(--color-violet-bright);
+}
+
+.tw-breadcrumb [data-slot="breadcrumb-page"] {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.tw-breadcrumb [data-slot="breadcrumb-separator"] {
+  color: var(--color-border-strong);
+  opacity: 1;
+}
+
+.tw-breadcrumb [data-slot="breadcrumb-separator"] svg {
+  width: 12px;
+  height: 12px;
 }

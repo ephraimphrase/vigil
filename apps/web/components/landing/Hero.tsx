@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { ConnectWallet } from "../wallet/ConnectWallet";
 import { SplineRobot } from "./SplineRobot";
 
 
@@ -50,9 +49,11 @@ export function Hero() {
             </p>
 
             <div className="mb-11 flex flex-wrap items-center gap-3.5">
-              <ConnectWallet />
-              <Button href="#pipeline" variant="ghost">
-                See how it works
+              <Button href="/dashboard" variant="primary" icon={true} >
+                Get started
+              </Button>
+              <Button href="/protocols" variant="ghost">
+                Monitor live protocols
               </Button>
             </div>
         </div>

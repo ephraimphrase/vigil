@@ -14,6 +14,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useProtocolDetail } from "@/hooks/useProtocolsDetails";
+import { Loader } from "@/components/ui/Loader";
 import { Masthead } from "@/components/MastHead";
 import { HealthAssessment } from "@/components/HealthAssessment";
 import { ScoreChart } from "@/components/ScoreChart";
@@ -25,7 +26,15 @@ import { AskPanel } from "@/components/AskPanel";
 import { MarketStrip } from "@/components/MarketStrip";
 
 export function ProtocolDetailView({ protocolId }: { protocolId: string }) {
-  const p = useProtocolDetail(protocolId);
+  const { data: p, isLoading } = useProtocolDetail(protocolId);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center bg-base">
+        <Loader />
+      </div>
+    );
+  }
 
   if (!p) {
     return (

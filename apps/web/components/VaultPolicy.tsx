@@ -5,6 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { Chip } from "@/components/ui/Chip";
+import { Section } from "@/components/Section";
 import { fmtPct } from "@/shared/format";
 import type { VaultPolicy as Policy } from "@/types";
 
@@ -21,14 +22,8 @@ function Rule({ label, value }: { label: string; value: string }) {
 // ─── MAIN ───
 export function VaultPolicy({ policy }: { policy: Policy }) {
   return (
-    <section className="rounded-none border border-hairline bg-panel/20">
-      <header className="flex items-center justify-between border-b border-hairline px-4 py-2">
-        <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-violet-bright">
-          <span className="h-1.5 w-1.5 rounded-full bg-violet" /> Policy
-        </span>
-        <Chip mono>{policy.name}</Chip>
-      </header>
-      <div className="flex flex-col gap-4 p-4">
+    <Section title="Policy" aside={<Chip mono>{policy.name}</Chip>}>
+      <div className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Rule label="Max / protocol" value={fmtPct(policy.maxWeightPerProtocol)} />
           <Rule label="Exit floor" value={`< ${policy.exitFloorScore}`} />
@@ -42,6 +37,6 @@ export function VaultPolicy({ policy }: { policy: Policy }) {
           </div>
         )}
       </div>
-    </section>
+    </Section>
   );
 }

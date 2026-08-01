@@ -1,6 +1,7 @@
 
 
 import type { ComponentType, ReactNode } from "react";
+import { PiHouseLight } from "react-icons/pi";
 import { NAV, isActive } from "../nav.config";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
@@ -44,7 +45,10 @@ export function Sidebar({ pathname, badges, Link = DefaultLink }: SidebarProps) 
                       }`}
                     >
                       {active && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 bg-violet" />}
-                      {item.label}
+                      <span className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        {item.label}
+                      </span>
                       {badge != null && badge > 0 && (
                         <span className="rounded-full border border-hairline px-1.5 font-mono text-xs text-violet-bright">
                           {badge}
@@ -58,6 +62,16 @@ export function Sidebar({ pathname, badges, Link = DefaultLink }: SidebarProps) 
           </div>
         ))}
       </nav>
+
+      <div className="border-t border-hairline px-3 py-3">
+        <Link
+          href="/"
+          className="flex items-center gap-2 rounded-none py-1.5 pl-3 pr-2 text-sm text-muted transition-colors hover:text-body"
+        >
+          <PiHouseLight className="h-4 w-4" />
+          Homepage
+        </Link>
+      </div>
     </aside>
   );
 }

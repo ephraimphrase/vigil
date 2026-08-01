@@ -15,7 +15,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: `No protocol matches "${id}"` }, { status: 404 });
   }
   const {
-    name, ticker, aliases, category, chain, settlementLayer, kind, description, launchDate,
+    name, ticker, icon, aliases, category, chain, settlementLayer, kind, description, launchDate,
     links, market, assessment, assessmentHistory, signals, risk, contracts, incidents,
     dependencies, askSuggestions,
   } = row;
@@ -49,7 +49,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
   return NextResponse.json({
     identity: {
-      id: row.id, name, ticker, aliases, category, chain, settlementLayer,
+      id: row.id, name, ticker, icon, aliases, category, chain, settlementLayer,
       kind, description, launchDate,
       ageDays: Math.round((Date.now() - Date.parse(launchDate)) / 86400000),
       links,

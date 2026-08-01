@@ -23,8 +23,6 @@ import { ProtocolsHeader } from "@/components/ProtocolsHeader";
 import { ProtocolsToolbar } from "@/components/ProtocolsToolbar";
 import { ProtocolsTable } from "@/components/ProtocolsTable";
 
-const isLoading = false;
-
 interface ProtocolsViewProps {
   // Detail links resolve to `${basePath}/${id}` - pass "/dashboard/protocols"
   // when rendering inside the dashboard shell so drilling into a protocol
@@ -34,7 +32,7 @@ interface ProtocolsViewProps {
 
 export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
   const router = useRouter();
-  const protocols = useApi<ProtocolRow[]>("/api/protocols", []);
+  const { data: protocols, isLoading } = useApi<ProtocolRow[]>("/api/protocols", []);
   const onOpenProtocol = useCallback(
     (id: string) => router.push(`${basePath}/${id}`),
     [router, basePath]

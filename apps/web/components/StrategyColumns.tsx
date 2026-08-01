@@ -13,18 +13,46 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
   return [
     col.accessor("name", {
       header: "Strategy",
-      cell: ({ row }) => (
-        <div className="flex flex-col leading-tight" title={row.original.description}>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-text">{row.original.name}</span>
-            {row.original.retired && <Chip mono dotColor="#E0715F">Retired</Chip>}
-            {!row.original.retired && row.original.paused && <Chip mono dotColor="#E0A95F">Paused</Chip>}
+      cell: ({ row }) => {
+        const canExpand = row.getCanExpand();
+        return (
+          <div
+            className="flex items-start gap-1.5 leading-tight"
+            style={{ paddingLeft: row.depth * 20 }}
+            title={canExpand ? undefined : row.original.description}
+          >
+            {canExpand && (
+              <button
+                onClick={(e) => { e.stopPropagation(); row.toggleExpanded(); }}
+                aria-label={row.getIsExpanded() ? "Collapse" : "Expand"}
+                className="mt-0.5 font-mono text-[10px] text-text-muted transition-colors hover:text-text"
+              >
+                {row.getIsExpanded() ? "▾" : "▸"}
+              </button>
+            )}
+            {canExpand && row.original.icon && (
+              <img
+                src={row.original.icon}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6 shrink-0 rounded-full"
+                loading="lazy"
+              />
+            )}
+            <div className="flex flex-col leading-tight">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-text">{row.original.name}</span>
+                {row.original.retired && <Chip mono dotColor="#E0715F">Retired</Chip>}
+                {!row.original.retired && row.original.paused && <Chip mono dotColor="#E0A95F">Paused</Chip>}
+              </div>
+              <span className="font-mono text-xs text-text-muted">
+                {canExpand ? `${row.original.category} · ${row.original.description}` : `${row.original.category} · ${row.original.want}`}
+              </span>
+            </div>
           </div>
-          <span className="font-mono text-xs text-text-muted">
-            {row.original.category} · {row.original.want}
-          </span>
-        </div>
-      ),
+        );
+      },
     }),
     col.accessor("score", {
       header: "Health",
