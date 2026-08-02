@@ -30,7 +30,9 @@ contract VigilVaultTest is Test {
     function setUp() public {
         weth = new MockERC20("Wrapped Ether", "WETH");
         oracle = new HealthOracle(admin, scorer, guardian, 6 hours);
-        vault = new VigilVault(IERC20(address(weth)), oracle, admin, keeper, guardian, "Vigil WETH", "vgWETH");
+        vault = new VigilVault(
+            IERC20(address(weth)), VigilVault.VaultKind.Single, oracle, admin, keeper, guardian, "Vigil WETH", "vgWETH"
+        );
 
         // Adapters are immutable-bound to the vault address, so they can
         // only be constructed after the vault exists.
@@ -57,12 +59,27 @@ contract VigilVaultTest is Test {
 
     function test_ConstructorRevertsOnZeroOracle() public {
         vm.expectRevert(VigilVault.ZeroAddress.selector);
-        new VigilVault(IERC20(address(weth)), HealthOracle(address(0)), admin, keeper, guardian, "n", "s");
+        new VigilVault(
+            IERC20(address(weth)),
+            VigilVault.VaultKind.Single,
+            HealthOracle(address(0)),
+            admin,
+            keeper,
+            guardian,
+            "n",
+            "s"
+        );
     }
 
     function test_ConstructorRevertsOnZeroAdmin() public {
         vm.expectRevert(VigilVault.ZeroAddress.selector);
-        new VigilVault(IERC20(address(weth)), oracle, address(0), keeper, guardian, "n", "s");
+        new VigilVault(
+            IERC20(address(weth)), VigilVault.VaultKind.Single, oracle, address(0), keeper, guardian, "n", "s"
+        );
+    }
+
+    function test_ConstructorSetsKind() public view {
+        assertEq(uint256(vault.kind()), uint256(VigilVault.VaultKind.Single));
     }
 
     function test_ConstructorGrantsRoles() public view {

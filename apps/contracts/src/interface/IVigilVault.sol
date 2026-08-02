@@ -8,6 +8,22 @@ import {IVigilProtocolAdapter} from "./IVigilProtocolAdapter.sol";
 // (deposit/withdraw/totalAssets/...) already comes from IERC4626 via
 // ERC4626, and role management from IAccessControl via AccessControl.
 interface IVigilVault {
+    // Set once at construction, immutable for the vault's life - matches
+    // the frontend's own Single/LP/Basket classification
+    // (apps/web/components/Vault/vaultFilters.ts). "All vaults" (no filter)
+    // has no on-chain representation; that's a query-layer concern only.
+    // NOTE: Basket is a label only today - VaultFactory only ever deploys
+    // this single-asset VigilVault, so a Basket-tagged vault behaves
+    // identically to any other vault until a distinct basket contract
+    // exists.
+    enum VaultKind {
+        Single,
+        LP,
+        Basket
+    }
+
+    function kind() external view returns (VaultKind);
+
     function oracle() external view returns (HealthOracle);
 
     function adapters(uint256 index) external view returns (IVigilProtocolAdapter);

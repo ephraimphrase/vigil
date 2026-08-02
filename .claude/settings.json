@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(curl -sf http://localhost:3001/dashboard/vault -o /tmp/vfinal2.html)",
+      "Bash(curl -sf http://localhost:3001/api/vaults -o /tmp/vfinal2.json)",
+      "Bash(curl -sf http://localhost:3001/dashboard/vault -o /tmp/vcap.html)",
+      "Bash(curl -s http://localhost:3001/api/vault/wbtc-core)",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s http://localhost:3001/dashboard/vault/wbtc-core)"
     ]
   }
 }

@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {HealthOracle} from "../oracle/HealthOracle.sol";
 import {VigilVault} from "../vault/VigilVault.sol";
+import {IVigilVault} from "./IVigilVault.sol";
 
 interface IVaultFactory {
     function vaults(uint256 index) external view returns (address);
@@ -14,6 +15,7 @@ interface IVaultFactory {
 
     function createVault(
         IERC20 asset,
+        IVigilVault.VaultKind kind,
         HealthOracle oracle,
         address admin,
         address keeper,

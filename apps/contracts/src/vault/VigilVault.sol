@@ -34,6 +34,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     // Bounds the cost of rebalance()/totalAssets(), both O(adapters.length).
     uint256 public constant MAX_ADAPTERS = 12;
 
+    VaultKind public immutable override kind;
     HealthOracle public immutable override oracle;
 
     IVigilProtocolAdapter[] public override adapters;
@@ -52,6 +53,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
 
     constructor(
         IERC20 _asset,
+        VaultKind _kind,
         HealthOracle _oracle,
         address admin,
         address keeper,
@@ -62,6 +64,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
         if (address(_oracle) == address(0)) revert ZeroAddress();
         if (admin == address(0)) revert ZeroAddress();
 
+        kind = _kind;
         oracle = _oracle;
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);

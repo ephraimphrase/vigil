@@ -1,4 +1,5 @@
 {
   "css.lint.unknownAtRules": "ignore",
-  "solidity.monoRepoSupport": true
+  "solidity.monoRepoSupport": true,
+  "wake.compiler.solc.remappings": []
 }
