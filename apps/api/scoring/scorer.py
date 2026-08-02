@@ -1,17 +1,12 @@
 import json
-from openai import AsyncOpenAI
 from .prompt import SYSTEM_PROMPT, build_user_prompt
-from config import OPENROUTER_API_KEY, OPENROUTER_MODEL
+from config import OPENROUTER_MODEL
 from db.models import HealthScore
+from integrations.llm import llm_client
 from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
-
-llm_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=OPENROUTER_API_KEY
-) if OPENROUTER_API_KEY else None
 
 async def calculate_global_score(protocol: str, dynamic_tree: dict) -> dict:
     """

@@ -1,45 +1,46 @@
-import httpx
 from datetime import datetime, timedelta
-from ingestion.schemas import SecuritySignal
-
-# Verified working endpoint (defillama.com/api/hacks returns 403 — Cloudflare blocked)
-DEFILLAMA_HACKS_URL = "https://api.llama.fi/hacks"
+from providers import llama
+from ingestion.base_fetcher import BaseFetcher
 
 _hacks_cache: list = []
 _hacks_cache_timestamp: datetime | None = None
 CACHE_TTL_HOURS = 6
 
 
-async def fetch_security_signals(protocol: str) -> SecuritySignal:
-    hacks = await _get_hacks_list()
-    cutoff_90d  = datetime.utcnow() - timedelta(days=90)
-    cutoff_180d = datetime.utcnow() - timedelta(days=180)
+class SecurityFetcher(BaseFetcher):
+    key = "security"
+    channel = "offchain"
 
-    def matches(hack: dict) -> bool:
-        name = hack.get("name", "").lower()
-        proto = protocol.lower()
-        return proto in name or name in proto
+    async def _fetch_payload(self, protocol_id: str) -> dict:
+        hacks = await _get_hacks_list()
+        cutoff_90d  = datetime.utcnow() - timedelta(days=90)
+        cutoff_180d = datetime.utcnow() - timedelta(days=180)
 
-    def parse_date(hack: dict) -> datetime:
-        ts = hack.get("date", 0)
-        try:
-            return datetime.utcfromtimestamp(int(ts)) if ts else datetime.min
-        except (ValueError, OSError):
-            return datetime.min
+        def matches(hack: dict) -> bool:
+            name = hack.get("name", "").lower()
+            proto = protocol_id.lower()
+            return proto in name or name in proto
 
-    recent_hacks_90d  = [h for h in hacks if matches(h) and parse_date(h) > cutoff_90d]
-    recent_hacks_180d = [h for h in hacks if matches(h) and parse_date(h) > cutoff_180d]
-    # Use USD value field — field name varies across DeFiLlama API versions, try both
-    total_lost_90d = sum(
-        h.get("amountCryptocurrencies") or h.get("amount", 0) or 0
-        for h in recent_hacks_90d
-    )
+        def parse_date(hack: dict) -> datetime:
+            ts = hack.get("date", 0)
+            try:
+                return datetime.utcfromtimestamp(int(ts)) if ts else datetime.min
+            except (ValueError, OSError):
+                return datetime.min
 
-    return {
-        "hack_count_90d":  len(recent_hacks_90d),
-        "hack_count_180d": len(recent_hacks_180d),
-        "total_lost_90d":  float(total_lost_90d),
-    }
+        recent_hacks_90d  = [h for h in hacks if matches(h) and parse_date(h) > cutoff_90d]
+        recent_hacks_180d = [h for h in hacks if matches(h) and parse_date(h) > cutoff_180d]
+        # Use USD value field — field name varies across DeFiLlama API versions, try both
+        total_lost_90d = sum(
+            h.get("amountCryptocurrencies") or h.get("amount", 0) or 0
+            for h in recent_hacks_90d
+        )
+
+        return {
+            "hack_count_90d":  len(recent_hacks_90d),
+            "hack_count_180d": len(recent_hacks_180d),
+            "total_lost_90d":  float(total_lost_90d),
+        }
 
 
 async def _get_hacks_list() -> list:
@@ -49,15 +50,10 @@ async def _get_hacks_list() -> list:
     if _hacks_cache_timestamp and (now - _hacks_cache_timestamp).total_seconds() < CACHE_TTL_HOURS * 3600:
         return _hacks_cache
 
-    async with httpx.AsyncClient(timeout=15) as client:
-        try:
-            r = await client.get(DEFILLAMA_HACKS_URL)
-            if r.status_code == 200:
-                data = r.json()
-                if isinstance(data, list):
-                    _hacks_cache = data
-                    _hacks_cache_timestamp = now
-        except Exception as e:
-            print(f"[WARN] Failed to fetch hacks list: {e}")
+    try:
+        _hacks_cache = await llama.get_hacks()
+        _hacks_cache_timestamp = now
+    except Exception as e:
+        print(f"[WARN] Failed to fetch hacks list: {e}")
 
     return _hacks_cache

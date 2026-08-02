@@ -1,4 +1,4 @@
-from ingestion.schemas import RawOffchainSignals, RawOnchainSignals
+from typedefs import RawOffchainSignals, RawOnchainSignals
 
 
 def normalize_github(raw: dict, protocol: str, history: list[dict]) -> float:
@@ -7,10 +7,10 @@ def normalize_github(raw: dict, protocol: str, history: list[dict]) -> float:
     
     velocity_ratio = min(raw.get("commits_30d", 0) / 10.0, 1.0)
     
-    release_score = max(0.0, 1.0 - (raw.get("days_since_last_release", 365) / 180))
-    
+    push_score = max(0.0, 1.0 - (raw.get("days_since_last_push", 365) / 180))
+
     # Base score without penalty
-    base_score = (velocity_ratio * 0.7) + (release_score * 0.3)
+    base_score = (velocity_ratio * 0.7) + (push_score * 0.3)
     
     # Apply emergency penalty from Claude analysis (if any)
     penalty = raw.get("emergency_risk_penalty", 0.0)
@@ -54,13 +54,20 @@ def normalize_offchain(raw_offchain: RawOffchainSignals, protocol: str, history:
     Takes raw fetched values from all offchain sources.
     Returns a dict of clean 0-1 floats ready for the health scorer.
     """
+    github_data = raw_offchain.get("github", {}).get("payload", {})
+    sentiment_data = raw_offchain.get("sentiment", {}).get("payload", {})
+    snapshot_data = raw_offchain.get("snapshot", {}).get("payload", {})
+    security_data = raw_offchain.get("security", {}).get("payload", {})
+    news_data = raw_offchain.get("news", {}).get("payload", {})
+    social_data = raw_offchain.get("social", {}).get("payload", {})
+
     return {
-        "github_velocity":  normalize_github(raw_offchain.get("github", {}), protocol, history),
-        "sentiment_score":  raw_offchain.get("sentiment", {}).get("sentiment_score", 0.5),
-        "governance_risk":  raw_offchain.get("snapshot", {}).get("governance_risk_score", 1.0),
-        "security_score":   normalize_security(raw_offchain.get("security", {})),
-        "news_sentiment":   raw_offchain.get("news", {}).get("news_sentiment", 0.5),
-        "social_score":     normalize_social(raw_offchain.get("social", {}), history),
+        "github_velocity":  normalize_github(github_data, protocol, history),
+        "sentiment_score":  sentiment_data.get("sentiment_score", 0.5),
+        "governance_risk":  snapshot_data.get("governance_risk_score", 1.0),
+        "security_score":   normalize_security(security_data),
+        "news_sentiment":   news_data.get("news_sentiment", 0.5),
+        "social_score":     normalize_social(social_data, history),
     }
 
 def normalize_onchain(raw_onchain: RawOnchainSignals) -> dict:
@@ -70,19 +77,19 @@ def normalize_onchain(raw_onchain: RawOnchainSignals) -> dict:
     1.0 = highly healthy, 0.0 = critical danger
     """
     # 1. TVL
-    tvl_data = raw_onchain.get("tvl", {})
+    tvl_data = raw_onchain.get("tvl", {}).get("payload", {})
     tvl_delta_24h = tvl_data.get("tvl_delta_24h", 0.0)
     # If TVL drops by >20% (-0.20), it's 0.0 health. If it's 0 or positive, 1.0 health.
     tvl_score = max(0.0, min(1.0, 1.0 + (tvl_delta_24h * 5)))
 
     # 2. Liquidations
-    liq_data = raw_onchain.get("liquidations", {})
+    liq_data = raw_onchain.get("liquidations", {}).get("payload", {})
     liq_vol = liq_data.get("liquidation_volume_24h", 0)
     # > $100M liquidations is 0.0. $0 is 1.0.
     liq_score = max(0.0, 1.0 - (liq_vol / 100_000_000.0))
-    
+
     # 3. Whales
-    whale_data = raw_onchain.get("whales", {})
+    whale_data = raw_onchain.get("whales", {}).get("payload", {})
     whale_outflow = whale_data.get("net_outflow_24h", 0)
     team_transfers = whale_data.get("suspicious_team_transfers", 0)
     # > $20M outflow is 0.0 health. 

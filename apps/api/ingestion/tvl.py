@@ -1,92 +1,82 @@
-import httpx
-from ingestion.schemas import TvlSignal
-
-# Slugs verified live against https://api.llama.fi/protocols on 2026-07-22
-_SLUG_MAP = {
-    "aave":      "aave",
-    "compound":  "compound-v3",   # compound-v3 has the most TVL ($1.17B)
-    "uniswap":   "uniswap-v3",   # uniswap-v3 has the most TVL ($1.52B)
-    "curve":     "curve-dex",
-    "makerdao":  "makerdao",
-    "lido":      "lido",
-}
-
-# Protocols whose /protocol/{slug} response is large (>500KB) and will timeout.
-# For these we use the /tvl/{slug} fast endpoint instead and skip delta calculation.
-_LARGE_PROTOCOL_SLUGS = {"uniswap-v3"}
+from db.models import Protocol, engine
+from providers import llama
+from ingestion.base_fetcher import BaseFetcher
+from sqlmodel import Session
 
 
-async def fetch_tvl(protocol: str) -> TvlSignal:
+def _get_protocol_defillama_slug(protocol_id: str) -> tuple[str, bool]:
+    """Returns (slug, use_fast_endpoint) for `protocol_id`. Falls back to
+    the protocol id itself as the slug when defillama_slug isn't set -
+    that already matches DeFiLlama for most protocols."""
+    with Session(engine) as session:
+        protocol = session.get(Protocol, protocol_id)
+        if not protocol:
+            return protocol_id, False
+        return protocol.defillama_slug or protocol_id, protocol.defillama_use_fast_endpoint
+
+
+class TvlFetcher(BaseFetcher):
     """
-    Fetches TVL using DeFiLlama API.
+    Fetches TVL (and everything else DeFiLlama exposes about a protocol -
+    see providers/llama.py) via the DeFiLlama API.
 
     Uses two endpoints:
     - /tvl/{slug}       — fast, returns current TVL only (used for large protocols)
-    - /protocol/{slug}  — full time-series, used to calculate 24h/7d deltas
+    - /protocol/{slug}  — full time-series + metadata, used to calculate 24h/7d deltas
 
     Verified endpoints (2026-07-22):
       aave.fi/protocol/aave            ~100KB  OK
       api.llama.fi/protocol/compound-v3 ~80KB  OK
       api.llama.fi/protocol/uniswap-v3  ~1.6MB TIMEOUT at 10s -> use /tvl instead
     """
-    slug = _SLUG_MAP.get(protocol, protocol)
-    empty: TvlSignal = {"tvl_current": 0, "tvl_delta_24h": 0.0, "tvl_delta_7d": 0.0}
 
-    if slug in _LARGE_PROTOCOL_SLUGS:
-        return await _fetch_tvl_simple(slug, empty)
-    else:
-        return await _fetch_tvl_with_deltas(slug, empty, protocol)
+    key = "tvl"
+    channel = "onchain"
 
-
-async def _fetch_tvl_simple(slug: str, empty: TvlSignal) -> TvlSignal:
-    """Uses /tvl/{slug} — returns just current TVL, no delta calculation."""
-    async with httpx.AsyncClient(timeout=10) as client:
-        try:
-            r = await client.get(f"https://api.llama.fi/tvl/{slug}")
-            if r.status_code != 200:
-                return empty
-            current_tvl = float(r.text.strip())
-            return {
-                "tvl_current":   current_tvl,
-                "tvl_delta_24h": 0.0,  # Not available from this endpoint
-                "tvl_delta_7d":  0.0,
-            }
-        except Exception as e:
-            print(f"[WARN] TVL (simple) fetch failed for slug={slug}: {e}")
-            return empty
+    async def _fetch_payload(self, protocol_id: str) -> dict:
+        slug, use_fast_endpoint = _get_protocol_defillama_slug(protocol_id)
+        if use_fast_endpoint:
+            return await _fetch_tvl_simple(slug)
+        return await _fetch_tvl_with_deltas(slug)
 
 
-async def _fetch_tvl_with_deltas(slug: str, empty: TvlSignal, protocol: str) -> TvlSignal:
-    """Uses /protocol/{slug} — full time-series, calculates real 24h/7d deltas."""
-    async with httpx.AsyncClient(timeout=15) as client:
-        try:
-            r = await client.get(f"https://api.llama.fi/protocol/{slug}")
-            if r.status_code != 200:
-                return empty
+async def _fetch_tvl_simple(slug: str) -> dict:
+    """Uses /tvl/{slug} — returns just current TVL, no delta calculation
+    and none of the extra metadata below (the fast endpoint is a bare
+    number, not the full protocol payload)."""
+    current_tvl = await llama.get_tvl(slug)
+    return {
+        "tvl_current":   current_tvl,
+        "tvl_delta_24h": 0.0,  # Not available from this endpoint
+        "tvl_delta_7d":  0.0,
+    }
 
-            data = r.json()
-            tvl_series = data.get("tvl", [])
 
-            if not tvl_series or not isinstance(tvl_series, list):
-                return empty
+async def _fetch_tvl_with_deltas(slug: str) -> dict:
+    """Uses /protocol/{slug} — full time-series, calculates real 24h/7d deltas,
+    plus everything else providers/llama.py's extract_metadata() pulls
+    off the same payload for free."""
+    data = await llama.get_protocol(slug)
 
-            current_tvl = tvl_series[-1].get("totalLiquidityUSD", 0) or 0
+    tvl_series = data.get("tvl", [])
+    if not tvl_series or not isinstance(tvl_series, list):
+        raise RuntimeError(f"DeFiLlama /protocol/{slug} returned no tvl series")
 
-            tvl_delta_24h = 0.0
-            if len(tvl_series) >= 2:
-                prev = tvl_series[-2].get("totalLiquidityUSD", current_tvl) or current_tvl
-                tvl_delta_24h = ((current_tvl - prev) / prev) if prev else 0.0
+    current_tvl = tvl_series[-1].get("totalLiquidityUSD", 0) or 0
 
-            tvl_delta_7d = 0.0
-            if len(tvl_series) >= 8:
-                prev7 = tvl_series[-8].get("totalLiquidityUSD", current_tvl) or current_tvl
-                tvl_delta_7d = ((current_tvl - prev7) / prev7) if prev7 else 0.0
+    tvl_delta_24h = 0.0
+    if len(tvl_series) >= 2:
+        prev = tvl_series[-2].get("totalLiquidityUSD", current_tvl) or current_tvl
+        tvl_delta_24h = ((current_tvl - prev) / prev) if prev else 0.0
 
-            return {
-                "tvl_current":   current_tvl,
-                "tvl_delta_24h": round(tvl_delta_24h, 6),
-                "tvl_delta_7d":  round(tvl_delta_7d, 6),
-            }
-        except Exception as e:
-            print(f"[WARN] TVL fetch failed for {protocol}: {e}")
-            return empty
+    tvl_delta_7d = 0.0
+    if len(tvl_series) >= 8:
+        prev7 = tvl_series[-8].get("totalLiquidityUSD", current_tvl) or current_tvl
+        tvl_delta_7d = ((current_tvl - prev7) / prev7) if prev7 else 0.0
+
+    return {
+        "tvl_current":   current_tvl,
+        "tvl_delta_24h": round(tvl_delta_24h, 6),
+        "tvl_delta_7d":  round(tvl_delta_7d, 6),
+        **llama.extract_metadata(data),
+    }

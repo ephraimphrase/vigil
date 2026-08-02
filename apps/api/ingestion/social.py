@@ -1,8 +1,6 @@
-import httpx
 from config import LUNARCRUSH_KEY
-from ingestion.schemas import SocialSignal
-
-LUNARCRUSH_BASE = "https://lunarcrush.com/api4/public/coins"
+from providers import lunarcrush
+from ingestion.base_fetcher import BaseFetcher
 
 PROTOCOL_SYMBOLS = {
     "aave":     "AAVE",
@@ -15,34 +13,22 @@ PROTOCOL_SYMBOLS = {
     "balancer": "BAL",
 }
 
-async def fetch_social_signals(protocol: str) -> SocialSignal:
-    symbol = PROTOCOL_SYMBOLS.get(protocol)
-    if not symbol or not LUNARCRUSH_KEY:
-        return _empty_social()
 
-    async with httpx.AsyncClient(timeout=10) as client:
-        try:
-            r = await client.get(
-                f"{LUNARCRUSH_BASE}/{symbol.lower()}/v1",
-                headers={"Authorization": f"Bearer {LUNARCRUSH_KEY}"}
-            )
-            if r.status_code != 200:
-                return _empty_social()
-            data = r.json().get("data", {})
-        except Exception:
-            return _empty_social()
+class SocialFetcher(BaseFetcher):
+    key = "social"
+    channel = "offchain"
 
-    return {
-        "social_volume_24h": data.get("social_volume_24h", 0),
-        "influence_score":   data.get("galaxy_score", 50),       # LunarCrush Galaxy Score, 0-100
-        "sentiment_score":   data.get("sentiment", 3) / 5,       # normalize 1-5 -> 0-1
-        "social_dominance":  data.get("social_dominance", 0),    # % of total crypto social
-    }
+    async def _fetch_payload(self, protocol_id: str) -> dict:
+        symbol = PROTOCOL_SYMBOLS.get(protocol_id)
+        if not symbol or not LUNARCRUSH_KEY:
+            return {}
 
-def _empty_social() -> SocialSignal:
-    return {
-        "social_volume_24h": 0,
-        "influence_score":   50,
-        "sentiment_score":   0.5,
-        "social_dominance":  0,
-    }
+        data = await lunarcrush.get_coin(symbol)
+
+        return {
+            **lunarcrush.extract_metadata(data),
+            "social_volume_24h": data.get("social_volume_24h", 0),
+            "influence_score":   data.get("galaxy_score", 50),       # LunarCrush Galaxy Score, 0-100
+            "sentiment_score":   data.get("sentiment", 3) / 5,       # normalize 1-5 -> 0-1
+            "social_dominance":  data.get("social_dominance", 0),    # % of total crypto social
+        }
