@@ -1,19 +1,32 @@
 """
-One universal type for every ingestion signal, instead of a bespoke
-TypedDict per provider. Every fetcher (tvl, github, sentiment, ...)
-returns a Signal; which fields live inside it differs per signal, same as
-it always did - the point isn't to type-check those fields, it's that
-every fetcher, normalizer.py, resilient_fetch.py, and run_simulation.py's
-mocks all speak the same one type instead of nine unrelated ones.
+The universal envelope every ingestion signal is returned in (see
+ingestion.base_fetcher.BaseFetcher). `payload` is the only part that
+varies per provider - key/channel/status/fetched_at/error are identical in
+shape across every signal, which is what lets normalizer.py,
+resilient_fetch.py, and the registry treat all nine signals identically
+instead of nine unrelated shapes.
 """
 
-from typing import Any, Literal
+from typing import Any, Literal, Optional, TypedDict
 
-Signal = dict[str, Any]
+SignalChannel = Literal["onchain", "offchain"]
 
 OnchainSignalKey = Literal["tvl", "liquidations", "whales"]
 OffchainSignalKey = Literal["github", "sentiment", "security", "news", "social", "snapshot"]
 SignalKey = Literal[OnchainSignalKey, OffchainSignalKey]
+
+SignalStatus = Literal["ok", "error"]
+
+
+class Signal(TypedDict):
+    key: SignalKey
+    channel: SignalChannel
+    protocol_id: str
+    status: SignalStatus
+    fetched_at: float
+    error: Optional[str]
+    payload: dict[str, Any]
+
 
 RawOnchainSignals = dict[OnchainSignalKey, Signal]
 RawOffchainSignals = dict[OffchainSignalKey, Signal]

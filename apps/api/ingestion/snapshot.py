@@ -1,8 +1,5 @@
 import httpx
-import json
-from config import OPENROUTER_MODEL
-from typedefs import Signal
-from integrations.llm import llm_client
+from ingestion.base_fetcher import BaseFetcher
 
 SNAPSHOT_GRAPHQL_URL = "https://hub.snapshot.org/graphql"
 
@@ -18,90 +15,59 @@ PROTOCOL_SPACES = {
     "balancer":  "balancer.eth",
 }
 
-_SAFE_DEFAULT: Signal = {"governance_risk_score": 1.0}  # 1.0 = fully healthy
+_PROPOSALS_QUERY = """
+query Proposals($space: String!) {
+  proposals(
+    first: 5,
+    skip: 0,
+    where: { space: $space },
+    orderBy: "created",
+    orderDirection: desc
+  ) {
+    id
+    title
+    body
+    state
+  }
+}
+"""
 
 
-async def fetch_governance_risk(protocol: str) -> Signal:
+class SnapshotFetcher(BaseFetcher):
     """
-    Innovative Signal: Queries Snapshot's GraphQL API for recent proposals.
-    Uses LLM to determine if a recent proposal is an emergency measure 
-    (e.g., pausing contracts, emergency upgrades, treasury freezing) which heavily indicates risk.
-    """
-    space = PROTOCOL_SPACES.get(protocol)
-    if not space:
-        return _SAFE_DEFAULT.copy()
-
-    query = """
-    query Proposals($space: String!) {
-      proposals(
-        first: 5,
-        skip: 0,
-        where: { space: $space },
-        orderBy: "created",
-        orderDirection: desc
-      ) {
-        id
-        title
-        body
-        state
-      }
-    }
+    Ingestion only - queries Snapshot's GraphQL API for recent governance
+    proposals and returns them as raw text. Judging whether a proposal is
+    an emergency measure (pausing contracts, freezing treasury, etc.) is
+    scoring's job, not this fetcher's; see scoring/ for that. An empty
+    payload (no space tracked, or no recent proposals) is a legitimate
+    "nothing to flag" result - normalizer.py already defaults
+    governance_risk_score to 1.0 (fully healthy) when it's absent.
     """
 
-    async with httpx.AsyncClient(timeout=10) as client:
-        try:
+    key = "snapshot"
+    channel = "offchain"
+
+    async def _fetch_payload(self, protocol_id: str) -> dict:
+        space = PROTOCOL_SPACES.get(protocol_id)
+        if not space:
+            return {}
+
+        async with httpx.AsyncClient(timeout=10) as client:
             r = await client.post(
                 SNAPSHOT_GRAPHQL_URL,
-                json={"query": query, "variables": {"space": space}}
+                json={"query": _PROPOSALS_QUERY, "variables": {"space": space}}
             )
             if r.status_code != 200:
-                return _SAFE_DEFAULT.copy()
+                raise RuntimeError(f"Snapshot API returned {r.status_code}")
             proposals_raw = r.json().get("data", {}).get("proposals", [])
-        except Exception as e:
-            print(f"[WARN] Snapshot fetch failed for {protocol}: {e}")
-            return _SAFE_DEFAULT.copy()
 
-    if not proposals_raw:
-        return _SAFE_DEFAULT.copy()
+        if not proposals_raw:
+            return {}
 
-    # Build text summaries — this is the missing variable that caused the NameError
-    proposals_text = []
-    for p in proposals_raw:
-        title = p.get("title", "Untitled")
-        body_snippet = (p.get("body") or "")[:200].replace("\n", " ")
-        proposals_text.append(f"Title: {title}\nBody: {body_snippet}")
+        proposals_text = []
+        for p in proposals_raw:
+            title = p.get("title", "Untitled")
+            body_snippet = (p.get("body") or "")[:200].replace("\n", " ")
+            proposals_text.append(f"Title: {title}\nBody: {body_snippet}")
 
-    risk_score = await _analyze_proposals_with_llm(proposals_text, protocol)
-    return {"governance_risk_score": risk_score}
-
-
-async def _analyze_proposals_with_llm(proposals: list[str], protocol: str) -> float:
-    """Uses OpenRouter LLM to classify Snapshot governance proposals for emergency risk."""
-    if not llm_client:
-        return 1.0
-
-    joined = "\n\n".join(proposals)
-    prompt = f"""You are a risk analyst for {protocol}. Analyze these recent governance proposals from Snapshot.
-
-{joined}
-
-Return ONLY valid JSON:
-{{"health_score": <float 0.0-1.0>}}
-
-Scoring Guide:
-1.0 = Normal governance (grants, parameter tweaks, standard upgrades)
-0.5 = Elevated risk (arguments over treasury, controversial forks)
-0.0 = Emergency governance (emergency pause, freezing assets, compensating exploit victims)
-"""
-    try:
-        response = await llm_client.chat.completions.create(
-            model=OPENROUTER_MODEL,
-            max_tokens=100,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        result = json.loads(response.choices[0].message.content)
-        score = float(result.get("health_score", 1.0))
-        # Clamp to valid range
-        return max(0.0, min(1.0, score))
-    except Exception:
-        return 1.0
+        return {"recent_proposals": proposals_text}

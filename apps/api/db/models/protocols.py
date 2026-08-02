@@ -35,9 +35,18 @@ class Protocol(SQLModel, table=True):
     # "org/repo" slug for the contract repo ingestion/github.py polls for
     # commit/release signals (e.g. "aave/aave-v3-core") - distinct from
     # links["github"], which is just the org's github.com page for display.
-    # None for protocols with no repo tracked yet; fetch_github_activity
-    # falls back to an empty signal in that case.
+    # None for protocols with no repo tracked yet; GithubFetcher falls
+    # back to an empty payload in that case.
     github_repo: Optional[str] = None
+    # DeFiLlama slug ingestion/tvl.py polls (e.g. "compound-v3", not
+    # "compound" - some protocols' DeFiLlama slug differs from their own
+    # id). None falls back to using the protocol id itself as the slug,
+    # since that already matches DeFiLlama for most protocols.
+    defillama_slug: Optional[str] = None
+    # True for protocols whose /protocol/{slug} response is large enough
+    # (>500KB) to time out - those use the fast /tvl/{slug} endpoint
+    # instead and skip 24h/7d delta calculation.
+    defillama_use_fast_endpoint: bool = False
     links: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
     market: Optional[dict[str, Any]] = Field(default=None, sa_column=Column(JSONB))
     assessment: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))

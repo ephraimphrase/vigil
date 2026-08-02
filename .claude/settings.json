@@ -24,7 +24,11 @@
       "Bash(sed -i 's/^from ingestion\\\\.schemas import RawOffchainSignals, RawOnchainSignals$/from types import RawOffchainSignals, RawOnchainSignals/' ingestion/normalizer.py)",
       "Bash(echo \"grep exit: $?\")",
       "Bash(sed -i 's/^from types import Signal$/from typedefs import Signal/' ingestion/tvl.py ingestion/liquidations.py ingestion/whales.py ingestion/github.py ingestion/social.py ingestion/security.py ingestion/news.py ingestion/sentiment.py ingestion/snapshot.py)",
-      "Bash(sed -i 's/^from types import RawOffchainSignals, RawOnchainSignals$/from typedefs import RawOffchainSignals, RawOnchainSignals/' ingestion/normalizer.py)"
+      "Bash(sed -i 's/^from types import RawOffchainSignals, RawOnchainSignals$/from typedefs import RawOffchainSignals, RawOnchainSignals/' ingestion/normalizer.py)",
+      "Bash(venv/bin/python3 run_simulation.py --scenario nominal --protocol aave)",
+      "Bash(curl -s \"https://api.llama.fi/protocol/aave\")",
+      "Bash(curl -s \"https://api.llama.fi/protocol/compound-v3\")",
+      "Bash(python3 -c \"import sys; print\\([p for p in sys.path if p]\\)\")"
     ],
     "additionalDirectories": [
       "/home/daniel/development/vigil/apps/contracts",

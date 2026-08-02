@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
 
 export const protocols = pgTable("protocols", {
   id: text("id").primaryKey(),
@@ -17,6 +17,13 @@ export const protocols = pgTable("protocols", {
   // is just the org's github.com page. Null for protocols with no repo
   // tracked yet.
   githubRepo: text("github_repo"),
+  // DeFiLlama slug apps/api/ingestion/tvl.py polls (e.g. "compound-v3",
+  // not "compound"). Null falls back to using the protocol id itself.
+  defillamaSlug: text("defillama_slug"),
+  // True for protocols whose DeFiLlama /protocol/{slug} response is too
+  // large to fetch in time - those use the fast /tvl/{slug} endpoint
+  // instead and skip 24h/7d delta calculation.
+  defillamaUseFastEndpoint: boolean("defillama_use_fast_endpoint").notNull(),
   links: jsonb("links").notNull().$type<Record<string, unknown>>(),
   market: jsonb("market").$type<Record<string, unknown> | null>(),
   assessment: jsonb("assessment").notNull().$type<Record<string, unknown>>(),

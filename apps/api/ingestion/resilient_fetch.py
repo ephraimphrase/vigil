@@ -1,31 +1,33 @@
 import json
 from datetime import datetime
-from typing import Awaitable, Callable, TypeVar
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlmodel import Session, select
 
 from db.models import SignalCache, engine
+from ingestion.base_fetcher import BaseFetcher
+from typedefs import Signal
 
-T = TypeVar("T")
 
-async def safe_fetch(fetch_fn: Callable[[str], Awaitable[T]], protocol: str, signal_key: str, fallback: T | None = None) -> T:
+async def safe_fetch(fetcher: BaseFetcher, protocol: str) -> Signal:
     """
-    Wraps any fetch function with a fallback to the last known good value.
-    This prevents transient API failures from crashing the scoring loop.
+    Wraps a BaseFetcher with a fallback to the last known good payload when
+    the fetch comes back status="error" - prevents a single transient
+    upstream failure from resetting a signal to its empty defaults.
+    BaseFetcher.fetch() never raises, so this checks `status` rather than
+    catching an exception.
     """
-    if fallback is None:
-        # Default fallback is typically a neutral dict or float
-        fallback = 0.5
+    result = await fetcher.fetch(protocol)
 
-    try:
-        result = await fetch_fn(protocol)
-        _store_last_good(protocol, signal_key, result)
+    if result["status"] == "error":
+        last_good = _get_last_good(protocol, result["key"])
+        if last_good is not None:
+            print(f"[WARN] {result['key']} fetch failed for {protocol} ({result['error']}), using last known good")
+            return {**result, "status": "ok", "payload": last_good}
         return result
-    except Exception as e:
-        print(f"[WARN] {signal_key} fetch failed for {protocol}: {e}")
-        last_good = _get_last_good(protocol, signal_key)
-        return last_good if last_good is not None else fallback
+
+    _store_last_good(protocol, result["key"], result["payload"])
+    return result
 
 def _store_last_good(protocol: str, key: str, value):
     # Store complex types as JSON strings
