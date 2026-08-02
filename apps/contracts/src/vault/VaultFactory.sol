@@ -5,6 +5,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {HealthOracle} from "../oracle/HealthOracle.sol";
 import {VigilVault} from "./VigilVault.sol";
 import {IVaultFactory} from "../interface/IVaultFactory.sol";
+import {IVigilVault} from "../interface/IVigilVault.sol";
 
 // Deploys one VigilVault per underlying asset. Keeping a single canonical
 // vault per asset (rather than allowing many) matches how VigilZapRouter is
@@ -20,6 +21,7 @@ contract VaultFactory is IVaultFactory {
 
     function createVault(
         IERC20 asset,
+        IVigilVault.VaultKind kind,
         HealthOracle oracle,
         address admin,
         address keeper,
@@ -30,7 +32,7 @@ contract VaultFactory is IVaultFactory {
         if (address(asset) == address(0)) revert ZeroAddress();
         if (vaultByAsset[address(asset)] != address(0)) revert VaultAlreadyExists(address(asset));
 
-        vault = new VigilVault(asset, oracle, admin, keeper, guardian, name, symbol);
+        vault = new VigilVault(asset, kind, oracle, admin, keeper, guardian, name, symbol);
 
         vaultByAsset[address(asset)] = address(vault);
         vaults.push(address(vault));

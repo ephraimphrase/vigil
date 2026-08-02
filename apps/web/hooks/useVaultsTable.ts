@@ -18,7 +18,7 @@ import {
 } from "@tanstack/react-table";
 
 import type { VaultSummary } from "../types";
-import { buildVaultColumns } from "../components/VaultsColumns";
+import { buildVaultColumns } from "../components/Vault/VaultsColumns";
 import { useDebouncedValue } from "./useDebouncedValue";
 
 // ─── CONSTANTS ───

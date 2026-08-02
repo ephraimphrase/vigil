@@ -1,7 +1,5 @@
 {
   "css.lint.unknownAtRules": "ignore",
   "solidity.monoRepoSupport": true,
-  "cSpell.words": [
-    "OPENROUTER"
-  ]
+  "wake.compiler.solc.remappings": []
 }

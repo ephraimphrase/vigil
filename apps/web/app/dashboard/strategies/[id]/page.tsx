@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import { StrategyDetailView } from "@/components/StrategyDetailView";
+import { StrategyDetailView } from "@/components/Strategy/StrategyDetailView";
 
 export default function DashboardStrategyDetailPage() {
   const params = useParams<{ id: string }>();

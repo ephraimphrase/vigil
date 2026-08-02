@@ -79,16 +79,16 @@ export function aggregate(strategies: Strategy[]): StrategyAggregate {
 /**
  * Folds a flat Strategy[] into one row per protocol for the strategies
  * table - every strategy sits under its protocol, always, even a protocol
- * with a single strategy contract (Aave, Lido, ...) still gets a parent
- * row with one child, so the table's top level is uniformly "protocols,"
- * never a mix of bare strategies and expandable groups. Every field on the
+ * with a single strategy contract (Aave, Lido, ...) still gets a protocol
+ * row, so the table's top level is uniformly "protocols," and every
+ * protocol row is expandable (subRows always attached) so its metrics -
+ * which StrategyColumns.tsx only renders on strategy rows, never on the
+ * protocol row itself - are always one click away. Every field on the
  * synthetic parent is a real aggregate of its children (dollar-weighted
  * for apy/fees, same weighting `aggregate()` above uses; summed for
  * weight/TVL/maxWithdraw; "any child" for paused/retired/harvestable -
  * worst-first, same philosophy as DEFAULT_SORT in useProtocolsTable) -
- * never a placeholder, so every column keeps working on the parent row
- * with no special-casing except the Name cell (which needs the expand
- * caret).
+ * used for sort/filter even though the parent row doesn't display it.
  */
 export function groupByProtocol(strategies: Strategy[]): Strategy[] {
   const byProtocol = new Map<string, Strategy[]>();
