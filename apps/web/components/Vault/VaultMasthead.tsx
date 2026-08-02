@@ -9,7 +9,8 @@
 
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
-import { UsdcIcon } from "@/components/ui/UsdcIcon";
+import { TokenIconStack } from "@/components/Vault/TokenIcon";
+import { assetsOf } from "@/components/Vault/vaultFilters";
 import { fmtUsd, fmtUsdFull } from "@/shared/format";
 import type { UserPosition, VaultInfo, VaultPolicy } from "@/types";
 
@@ -36,7 +37,7 @@ export function VaultMasthead({ info, policy, position, apy }: VaultMastheadProp
     <CornerFrame>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3 p-5">
-          <UsdcIcon className="size-9" />
+          <TokenIconStack symbols={assetsOf(info)} size="lg" />
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-3">
               <h1 className="font-display text-3xl leading-none tracking-tight text-body">{info.name}</h1>

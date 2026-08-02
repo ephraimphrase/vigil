@@ -17,7 +17,7 @@ import { useMemo, useState } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
-import { UsdcIcon } from "@/components/ui/UsdcIcon";
+import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
 import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull, fmtFeePct } from "@/shared/format";
@@ -96,7 +96,7 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
               className="font-mono text-lg tabular-nums text-body placeholder:text-muted/40"
             />
             <InputGroupAddon align="inline-end" className="gap-1.5">
-              <UsdcIcon className="!size-6" />
+              <TokenIcon symbol={info.asset} className="!size-6" />
               <InputGroupText className="font-mono text-xs uppercase tracking-wider text-muted">
                 {info.asset}
               </InputGroupText>

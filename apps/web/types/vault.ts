@@ -14,7 +14,14 @@ export interface VaultPolicy {
 export interface VaultInfo {
   slug: string;
   name: string;
+  /** The vault's single deposit/accounting asset (ERC-4626 style - one token in, shares out). */
   asset: string;
+  /**
+   * For LP/pool-token vaults, the constituent tokens `asset` is actually a
+   * claim on (e.g. `asset: "stETH-ETH LP"`, `underlyingAssets: ["stETH", "ETH"]`).
+   * Absent for ordinary single-token vaults, where `asset` alone is the whole story.
+   */
+  underlyingAssets?: string[];
   totalAssets: number;
   totalShares: number;
   sharePrice: number;
@@ -85,13 +92,15 @@ export interface VaultData {
   history: VaultHistoryPoint[];
 }
 
-// Row shape for the /dashboard/vault picker. `apy` is derived from the
-// vault's own allocation (vaultAggregate, shared/vault.ts); `riskFlagged`
-// from its own riskChecks; `positionValueUsd` from its own position - all
-// computed once at seed-build time from that same vault's VaultData, never
-// hand-entered a second time.
+// Row shape for the /dashboard/vault picker. `apy` and `score` are both
+// derived from the vault's own allocation (vaultAggregate, shared/vault.ts
+// - score is its dollar-weighted health); `riskFlagged` from its own
+// riskChecks; `positionValueUsd` from its own position - all computed once
+// at seed-build time from that same vault's VaultData, never hand-entered
+// a second time.
 export interface VaultSummary extends VaultInfo {
   apy: number;
+  score: number;
   riskFlagged: number;
   positionValueUsd: number | null;
 }

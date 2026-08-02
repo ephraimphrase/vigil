@@ -13,27 +13,19 @@
 // never another vault's. No data logic of its own beyond that composition.
 //
 // Rendered from both /dashboard/vault/[slug] and the bare public
-// /vault/[slug] route (see the thin wrappers there). The breadcrumb only
-// makes sense inside the dashboard shell (Home/Vaults nav exists there),
-// so it's conditional on the current path rather than always rendered.
+// /vault/[slug] route (see the thin wrappers there). No breadcrumb of its
+// own - inside the dashboard shell that's AppShell's Breadcrumbs
+// (components/Layouts/Breadcrumbs.tsx, which resolves this same vault's
+// name for the last crumb); the bare public route has no dashboard nav to
+// build one from, so it goes without.
 // ─────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from "react";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
 
 import { useVault } from "@/hooks/useVault";
 import { vaultAggregate } from "@/shared/vault";
 import { Loader } from "@/components/ui/Loader";
 import { Tabs } from "@/components/ui/Tabs";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { VaultMasthead } from "@/components/Vault/VaultMasthead";
 import { VaultPositionSummary } from "@/components/Vault/VaultPositionSummary";
 import { VaultPerformanceChart } from "@/components/Vault/VaultPerformanceChart";
@@ -90,8 +82,6 @@ function useScrollSpy(ids: DetailTab[], ready: boolean): DetailTab {
 
 export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (tab: Tab, amount: number) => void }) {
   const { data: vault, isLoading } = useVault(slug);
-  const pathname = usePathname();
-  const inDashboard = pathname.startsWith("/dashboard");
   const activeTab = useScrollSpy(SECTION_IDS, !isLoading && vault != null);
 
   if (isLoading) {
@@ -116,24 +106,6 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 bg-base p-4">
-      {inDashboard && (
-        <Breadcrumb className="tw-breadcrumb">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink render={<NextLink href="/dashboard">Home</NextLink>} />
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink render={<NextLink href="/dashboard/vault">Vaults</NextLink>} />
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{info.name}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      )}
-
       <VaultMasthead info={info} policy={policy} position={position} apy={agg.weightedApy} />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_360px]">

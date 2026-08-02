@@ -1,11 +1,10 @@
 // ─────────────────────────────────────────────────────────────
 // useProtocolsTable — builds the headless table instance.
-// Owns sort defaults, global search filter, watch-only pre-filter.
-// Returns the instance so both the toolbar (counts) and table (rows)
-// read one source of truth.
+// Owns sort defaults, global search filter. Returns the instance so both
+// the toolbar (counts) and table (rows) read one source of truth.
 // ─────────────────────────────────────────────────────────────
 
-import { useMemo, useState, useCallback, type MouseEvent } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -36,49 +35,16 @@ const searchFilter: FilterFn<ProtocolRow> = (row, _id, value) => {
 };
 
 // ─── MAIN ───
-interface UseProtocolsTableArgs {
-  data: ProtocolRow[];
-  watchlisted: Set<string>;
-  onToggleWatch: (id: string) => void;
-}
-
-export function useProtocolsTable({
-  data,
-  watchlisted,
-  onToggleWatch,
-}: UseProtocolsTableArgs) {
+export function useProtocolsTable({ data }: { data: ProtocolRow[] }) {
   // state
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
   const [rawQuery, setRawQuery] = useState("");
-  const [watchOnly, setWatchOnly] = useState(false);
   const query = useDebouncedValue(rawQuery, 200);
 
-  // handlers
-  const handleToggleWatch = useCallback(
-    (id: string, e: MouseEvent) => {
-      e.stopPropagation(); // row click must not fire on the star
-      onToggleWatch(id);
-    },
-    [onToggleWatch]
-  );
-
-  // derived — watch-only narrows the dataset before the table sees it
-  const rows = useMemo(
-    () => (watchOnly ? data.filter((d) => watchlisted.has(d.id)) : data),
-    [data, watchOnly, watchlisted]
-  );
-
-  const columns = useMemo(
-    () =>
-      buildColumns({
-        isWatched: (id) => watchlisted.has(id),
-        onToggleWatch: handleToggleWatch,
-      }),
-    [watchlisted, handleToggleWatch]
-  );
+  const columns = useMemo(() => buildColumns(), []);
 
   const table = useReactTable({
-    data: rows,
+    data,
     columns,
     state: { sorting, globalFilter: query },
     onSortingChange: setSorting,
@@ -93,8 +59,6 @@ export function useProtocolsTable({
     // toolbar bindings
     rawQuery,
     setRawQuery,
-    watchOnly,
-    setWatchOnly,
     query,
     // counts
     visibleCount: table.getRowModel().rows.length,

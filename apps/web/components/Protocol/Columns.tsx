@@ -1,36 +1,16 @@
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
-import type { MouseEvent } from "react";
 
 import type { ProtocolRow } from "../../types";
 import { fmtUsd } from "../../shared/format";
-import { WatchDot } from "../ui/WatchDot";
 import { ScoreCell } from "../Health/ScoreCell";
 import { DeltaCell } from "../Health/DeltaCell";
 import { BandLabel } from "../Health/BandLabel";
 import { RiskChips } from "./RiskChips";
 
-interface ColumnDeps {
-  isWatched: (id: string) => boolean;
-  onToggleWatch: (id: string, e: MouseEvent) => void;
-}
-
 const col = createColumnHelper<ProtocolRow>();
 
-export function buildColumns({
-  isWatched,
-  onToggleWatch,
-}: ColumnDeps): ColumnDef<ProtocolRow, any>[] {
+export function buildColumns(): ColumnDef<ProtocolRow, any>[] {
   return [
-    col.display({
-      id: "watch",
-      header: () => null,
-      cell: ({ row }) => (
-        <WatchDot
-          active={isWatched(row.original.id)}
-          onToggle={(e) => onToggleWatch(row.original.id, e)}
-        />
-      ),
-    }),
     col.accessor("name", {
       header: "Protocol",
       cell: ({ row }) => (
@@ -57,7 +37,7 @@ export function buildColumns({
       cell: ({ getValue }) => <ScoreCell score={getValue()} />,
     }),
     col.accessor("delta24h", {
-      header: "24h \u0394",
+      header: "24h Δ",
       cell: ({ getValue }) => <DeltaCell value={getValue()} />,
     }),
     col.accessor("tvl", {

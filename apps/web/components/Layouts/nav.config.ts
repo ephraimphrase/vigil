@@ -23,14 +23,9 @@ export const NAV: NavSection[] = [
     label: "Monitor",
     items: [
       { label: "Overview", href: "/dashboard", icon: PiSquaresFourLight },
+      { label: "Vault", href: "/dashboard/vault", icon: PiVaultLight },
       { label: "Protocols", href: "/dashboard/protocols", icon: PiStackLight },
       { label: "Strategies", href: "/dashboard/strategies", icon: PiFlowArrowLight },
-    ],
-  },
-  {
-    label: "Manage",
-    items: [
-      { label: "Vault", href: "/dashboard/vault", icon: PiVaultLight },
     ],
   },
   {

@@ -1,18 +1,18 @@
 "use client";
 
 // ─────────────────────────────────────────────────────────────
-// ProtocolsView — composition only. Owns watchlist state (local for now),
-// wires the table hook to header / toolbar / table. Shared between the
-// public /protocols route (no dashboard chrome) and /dashboard/protocols
-// (rendered inside AppShell) so the two never drift apart - see
-// app/protocols/page.tsx and app/dashboard/protocols/page.tsx, which are
-// both thin wrappers around this.
+// ProtocolsView — composition only. Wires the table hook to header /
+// toolbar / table. Shared between the public /protocols route (no
+// dashboard chrome) and /dashboard/protocols (rendered inside AppShell)
+// so the two never drift apart - see app/protocols/page.tsx and
+// app/dashboard/protocols/page.tsx, which are both thin wrappers around
+// this.
 //
 // Data: fetched from /api/protocols - no mock import here, so the raw
 // dataset never ships in the client bundle.
 // ─────────────────────────────────────────────────────────────
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { useApi } from "@/hooks/useApi";
@@ -38,41 +38,14 @@ export function ProtocolsView({ basePath = "/protocols" }: ProtocolsViewProps) {
     [router, basePath]
   );
 
-  // watchlist — local optimistic state; lift to persistence later
-  const [watchlisted, setWatchlisted] = useState<Set<string>>(new Set());
-  const toggleWatch = useCallback((id: string) => {
-    setWatchlisted((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
-
-  const {
-    table,
-    rawQuery,
-    setRawQuery,
-    watchOnly,
-    setWatchOnly,
-    query,
-    visibleCount,
-    totalCount,
-  } = useProtocolsTable({
+  const { table, rawQuery, setRawQuery, query, visibleCount, totalCount } = useProtocolsTable({
     data: protocols,
-    watchlisted,
-    onToggleWatch: toggleWatch,
   });
 
   return (
     <div className="flex h-full flex-col gap-4 bg-base p-4">
       <ProtocolsHeader visibleCount={visibleCount} totalCount={totalCount} />
-      <ProtocolsToolbar
-        query={rawQuery}
-        onQueryChange={setRawQuery}
-        watchOnly={watchOnly}
-        onWatchOnlyToggle={() => setWatchOnly((v) => !v)}
-      />
+      <ProtocolsToolbar query={rawQuery} onQueryChange={setRawQuery} />
       <CornerFrame className="min-h-0 flex-1">
         <div className="flex h-full flex-col" style={{ maxHeight: "calc(100vh - 220px)" }}>
           <ProtocolsTable
