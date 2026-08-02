@@ -15,9 +15,10 @@
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
-import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultHistoryPoint, VaultSummary, ActivityData } from "../types";
+import type { OverviewData, StrategiesData, ProtocolRow, VaultData, VaultHistoryPoint, VaultSummary, ActivityData, TransactionsData } from "../types";
 import { vaultAggregate } from "../shared/vault";
 import { ACTIVITY_ENTRIES } from "./activity";
+import { TRANSACTION_ENTRIES } from "./transactions";
 
 import strategiesData from "./strategies.json";
 import protocolsData from "./protocols.json";
@@ -570,13 +571,15 @@ const vaultList: VaultSummary[] = Object.values(VAULT_MOCKS).map((v) => ({
   score: vaultAggregate(v.allocation).weightedHealth,
   riskFlagged: v.riskChecks.filter((c) => !c.passed).length,
   positionValueUsd: v.position?.valueUsd ?? null,
+  positionPnlUsd: v.position?.pnlUsd ?? null,
 }));
 
 const strategies = strategiesData as StrategiesData;
 const protocols = protocolsData as ProtocolRow[];
 const activity: ActivityData = { entries: ACTIVITY_ENTRIES };
+const transactions: TransactionsData = { entries: TRANSACTION_ENTRIES };
 
 // No protocolDetail here - app/api/protocols/[id]/route.ts queries the
 // `protocols` table in Postgres directly. protocol-detail/*.json still
 // exists as seed input for scripts/seed-db.ts, not served from here.
-export const SEED = { overview, vaultList, strategies, protocols, activity };
+export const SEED = { overview, vaultList, strategies, protocols, activity, transactions };

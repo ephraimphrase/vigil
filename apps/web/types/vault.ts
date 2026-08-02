@@ -103,4 +103,5 @@ export interface VaultSummary extends VaultInfo {
   score: number;
   riskFlagged: number;
   positionValueUsd: number | null;
+  positionPnlUsd: number | null;
 }
