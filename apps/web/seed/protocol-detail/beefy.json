@@ -13,6 +13,9 @@
     "description": "Auto-compounding yield aggregator running thousands of strategy contracts across 20+ chains - the same strategy pattern this repo's own beefy_strategies/ contracts are built from. Beefy itself doesn't originate yield; it harvests and compounds whatever the underlying protocol produces.",
     "launchDate": "2020-09-01",
     "ageDays": 2158,
+    "snapshotSpace": ["beefydao.eth"],
+    "coingeckoId": "beefy-finance",
+    "githubRepo": "beefyfinance/beefy-contracts",
     "links": {
       "website": "https://beefy.com",
       "docs": "https://docs.beefy.finance",

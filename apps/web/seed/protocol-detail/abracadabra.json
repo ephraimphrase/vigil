@@ -14,6 +14,8 @@
     "description": "Issues MIM (Magic Internet Money), a stablecoin minted against yield-bearing collateral (interest-bearing tokens, LP positions) through isolated 'Cauldron' markets. Has a real, repeated history of depeg events and a March 2025 exploit, making its risk profile materially different from more conservative CDP issuers.",
     "launchDate": "2021-05-01",
     "ageDays": 1916,
+    "coingeckoId": "spell-token",
+    "githubRepo": "Abracadabra-money/abracadabra-money-contracts",
     "links": {
       "website": "https://abracadabra.money",
       "docs": "https://docs.abracadabra.money",

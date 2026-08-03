@@ -15,10 +15,11 @@
     "launchDate": "2020-09-16",
     "ageDays": 2140,
     "defillamaUseFastEndpoint": true,
+    "githubRepo": "Uniswap/v3-core",
     "whaleTokenAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
     "lunarcrushSymbol": "UNI",
     "sentimentSubreddits": ["Uniswap", "defi"],
-    "snapshotSpace": "uniswapgovernance.eth",
+    "snapshotSpace": ["uniswapgovernance.eth"],
     "links": {
       "website": "https://uniswap.org",
       "docs": "https://docs.uniswap.org",

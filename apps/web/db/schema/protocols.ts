@@ -17,6 +17,11 @@ export const protocols = pgTable("protocols", {
   // is just the org's github.com page. Null for protocols with no repo
   // tracked yet.
   githubRepo: text("github_repo"),
+  // CoinGecko coin id apps/api/ingestion/market.py polls (e.g.
+  // "compound-governance-token", not "compound"). Null falls back to
+  // using the protocol id itself, since that already matches CoinGecko
+  // for some protocols.
+  coingeckoId: text("coingecko_id"),
   // DeFiLlama slug(s) apps/api/ingestion/tvl.py polls (e.g.
   // ["compound-finance"], not "compound"). More than one sums their TVL
   // together, for protocols split across multiple DeFiLlama entries
@@ -36,9 +41,11 @@ export const protocols = pgTable("protocols", {
   // Subreddits apps/api/ingestion/sentiment.py searches for mentions (e.g.
   // ["Aave", "defi"]). Null falls back to searching just ["defi"].
   sentimentSubreddits: jsonb("sentiment_subreddits").$type<string[] | null>(),
-  // Snapshot.org governance space ENS name apps/api/ingestion/snapshot.py
-  // polls (e.g. "aavedao.eth").
-  snapshotSpace: text("snapshot_space"),
+  // Snapshot.org governance space ENS name(s) apps/api/ingestion/snapshot.py
+  // polls (e.g. ["aavedao.eth"]) - more than one queries all of them
+  // together in a single call, for protocols governed across multiple
+  // spaces.
+  snapshotSpace: jsonb("snapshot_space").$type<string[] | null>(),
   links: jsonb("links").notNull().$type<Record<string, unknown>>(),
   market: jsonb("market").$type<Record<string, unknown> | null>(),
   assessment: jsonb("assessment").notNull().$type<Record<string, unknown>>(),

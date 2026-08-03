@@ -12,6 +12,8 @@
     "launchDate": "2024-12-01",
     "ageDays": 606,
     "defillamaSlug": ["shadow-exchange"],
+    "coingeckoId": "shadow-2",
+    "githubRepo": "Shadow-Exchange/shadow-core",
     "links": {
       "website": "https://www.shadow.so",
       "docs": "https://docs.shadow.so",

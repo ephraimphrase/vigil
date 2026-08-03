@@ -14,10 +14,12 @@
     "description": "Largest Ethereum liquid-staking protocol; stETH is the most widely integrated LST and a dominant collateral asset across DeFi. Dual Governance protects stETH holders from contentious LDO votes.",
     "launchDate": "2020-12-19",
     "ageDays": 2046,
+    "githubRepo": "lidofinance/core",
     "whaleTokenAddress": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
     "lunarcrushSymbol": "LDO",
     "sentimentSubreddits": ["defi"],
-    "snapshotSpace": "lido-snapshot.eth",
+    "snapshotSpace": ["lido-snapshot.eth"],
+    "coingeckoId": "lido-dao",
     "links": {
       "website": "https://lido.fi",
       "docs": "https://docs.lido.fi",

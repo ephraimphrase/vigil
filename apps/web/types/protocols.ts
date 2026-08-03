@@ -100,12 +100,13 @@ export interface Identity {
   // Ingestion config apps/api's fetchers read straight off this row -
   // see apps/api/db/models/protocols.py for what each polls.
   githubRepo?: string | null;
+  coingeckoId?: string | null;
   defillamaSlug?: string[] | null;
   defillamaUseFastEndpoint?: boolean;
   whaleTokenAddress?: string | null;
   lunarcrushSymbol?: string | null;
   sentimentSubreddits?: string[] | null;
-  snapshotSpace?: string | null;
+  snapshotSpace?: string[] | null;
   links: Links;
 }
 

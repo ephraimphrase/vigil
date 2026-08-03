@@ -14,6 +14,8 @@
     "description": "Morpho Blue is a minimal, immutable isolated-market lending primitive. MetaMorpho vaults (ERC-4626) sit on top, letting curators (Steakhouse, Gauntlet, B.Protocol, etc.) allocate deposits across markets on a user's behalf - this repo's strategy deposits into one such curated vault.",
     "launchDate": "2022-01-25",
     "ageDays": 1647,
+    "githubRepo": "morpho-org/morpho-blue",
+    "snapshotSpace": ["morpho.eth"],
     "links": {
       "website": "https://morpho.org",
       "docs": "https://docs.morpho.org",

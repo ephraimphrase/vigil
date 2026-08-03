@@ -14,6 +14,9 @@
     "description": "Unified-liquidity cross-chain bridge built on LayerZero messaging. V2 introduced Hydra pools and a unified USDC/USDT liquidity model across chains, reducing the slippage and fragmentation of V1's per-chain pools.",
     "launchDate": "2022-03-17",
     "ageDays": 1596,
+    "snapshotSpace": ["stgdao.eth"],
+    "coingeckoId": "stargate-finance",
+    "githubRepo": "stargate-protocol/stargate-v2",
     "links": {
       "website": "https://stargate.finance",
       "docs": "https://stargateprotocol.gitbook.io",

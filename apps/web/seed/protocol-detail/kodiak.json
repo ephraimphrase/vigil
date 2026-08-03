@@ -13,6 +13,7 @@
     "description": "Berachain's flagship native DEX. Kodiak Islands are auto-managed concentrated liquidity vaults (Uniswap V3-style ranges, automatically rebalanced). Deeply tied to Berachain's Proof-of-Liquidity consensus design, which is itself a new, unproven mechanism.",
     "launchDate": "2025-02-01",
     "ageDays": 544,
+    "coingeckoId": "kodiak-finance",
     "links": {
       "website": "https://kodiak.finance",
       "docs": "https://docs.kodiak.finance",

@@ -14,6 +14,9 @@
     "launchDate": "2021-09-01",
     "ageDays": 1793,
     "defillamaSlug": ["silo-v2"],
+    "snapshotSpace": ["silofinance.eth"],
+    "coingeckoId": "silo-finance-2",
+    "githubRepo": "silo-finance/silo-contracts-v3",
     "links": {
       "website": "https://silo.finance",
       "docs": "https://docs.silo.finance",

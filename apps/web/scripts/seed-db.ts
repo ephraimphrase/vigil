@@ -54,6 +54,7 @@ function protocolRow(detail: (typeof PROTOCOL_DETAILS)[number], icon: string | n
     settlementLayer: identity.settlementLayer, kind: identity.kind, description: identity.description,
     launchDate: identity.launchDate, links: identity.links, market: market ?? null,
     githubRepo: identity.githubRepo ?? null,
+    coingeckoId: identity.coingeckoId ?? null,
     defillamaSlug: identity.defillamaSlug ?? null,
     defillamaUseFastEndpoint: identity.defillamaUseFastEndpoint ?? false,
     whaleTokenAddress: identity.whaleTokenAddress ?? null,

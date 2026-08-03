@@ -15,10 +15,12 @@
     "launchDate": "2018-09-01",
     "ageDays": 2889,
     "defillamaSlug": ["compound-finance"],
+    "githubRepo": "compound-finance/comet",
     "whaleTokenAddress": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
     "lunarcrushSymbol": "COMP",
     "sentimentSubreddits": ["compound_finance", "defi"],
-    "snapshotSpace": "comp-vote.eth",
+    "snapshotSpace": ["comp-vote.eth"],
+    "coingeckoId": "compound-governance-token",
     "links": {
       "website": "https://compound.finance",
       "docs": "https://docs.compound.finance",

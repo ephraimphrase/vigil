@@ -13,6 +13,7 @@
     "description": "Splits yield-bearing assets into Principal Tokens (PT, redeemable 1:1 at maturity) and Yield Tokens (YT, claim on the yield stream). Lets users fix yield, speculate on yield direction, or trade discounted principal. TVL has grown enormously alongside points/airdrop farming demand.",
     "launchDate": "2021-06-01",
     "ageDays": 1885,
+    "githubRepo": "pendle-finance/pendle-core-v2-public",
     "links": {
       "website": "https://pendle.finance",
       "docs": "https://docs.pendle.finance",

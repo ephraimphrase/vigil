@@ -14,8 +14,9 @@
     "launchDate": "2020-03-23",
     "ageDays": 2320,
     "defillamaSlug": ["balancer-v3"],
+    "githubRepo": "balancer/balancer-v3-monorepo",
     "lunarcrushSymbol": "BAL",
-    "snapshotSpace": "balancer.eth",
+    "snapshotSpace": ["balancer.eth"],
     "links": {
       "website": "https://balancer.fi",
       "docs": "https://docs.balancer.fi",

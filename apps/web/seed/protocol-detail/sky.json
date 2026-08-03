@@ -18,6 +18,7 @@
     "launchDate": "2017-12-18",
     "ageDays": 3143,
     "defillamaSlug": ["sky-lending"],
+    "githubRepo": "sky-ecosystem/dss",
     "whaleTokenAddress": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
     "lunarcrushSymbol": "MKR",
     "sentimentSubreddits": ["MakerDAO", "defi"],
