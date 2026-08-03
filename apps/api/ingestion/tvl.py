@@ -78,6 +78,7 @@ class TvlFetcher(BaseFetcher):
         # Self-tracked, independent of which DeFiLlama endpoint answered -
         # both give a current tvl_current to diff against our own last poll.
         payload["tvl_delta_15m"] = round(_delta_since_last_poll(protocol_id, payload["tvl_current"]), 6)
+        payload["source"] = "defillama"
         return payload
 
 

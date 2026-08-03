@@ -15,7 +15,8 @@ from ingestion.sentiment import SentimentFetcher
 from ingestion.security import SecurityFetcher
 from ingestion.news import NewsFetcher
 from ingestion.social import SocialFetcher
-from ingestion.snapshot import SnapshotFetcher
+from ingestion.dao import DaoFetcher
+from ingestion.market import MarketFetcher
 
 ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
     "tvl": TvlFetcher(),
@@ -24,12 +25,13 @@ ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
 }
 
 OFFCHAIN_FETCHERS: dict[OffchainSignalKey, BaseFetcher] = {
-#     "github": GithubFetcher(),
-      "sentiment": SentimentFetcher(),
-#     "security": SecurityFetcher(),
+     "github": GithubFetcher(),
+     "sentiment": SentimentFetcher(),
+     "security": SecurityFetcher(),
      "news": NewsFetcher(),
      "social": SocialFetcher(),
-#     "snapshot": SnapshotFetcher(),
+     "market": MarketFetcher(),
+     "dao": DaoFetcher(),
 }
 
 

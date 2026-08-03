@@ -4,7 +4,7 @@ import time
 from unittest.mock import patch
 from datetime import datetime
 
-from ingestion.normalizer import normalize_offchain, normalize_onchain
+from simulation.normalizer import normalize_offchain, normalize_onchain
 # score_protocol never existed in scoring.scorer (the real function is
 # calculate_global_score, with an unrelated signature) - pre-existing bug,
 # not introduced by this migration. Aliased so the name is importable and

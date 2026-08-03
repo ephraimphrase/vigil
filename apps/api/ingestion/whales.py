@@ -46,5 +46,6 @@ class WhalesFetcher(BaseFetcher):
         return {
             "net_outflow_24h": whale_outflow,
             "suspicious_team_transfers": 1 if whale_outflow > 5_000_000 else 0,
-            "largest_single_transfer": max_transfer
+            "largest_single_transfer": max_transfer,
+            "source": "etherscan",
         }

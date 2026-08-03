@@ -2,12 +2,13 @@
 End-to-end smoke test for TVL ingestion only. Fetches real TVL data for
 one protocol via TvlFetcher (through resilient_fetch.safe_fetch, so the
 Postgres last-known-good cache path gets exercised too), then stores it
-under the same Redis key convention routers/webhook/ingest.py and
-routers/webhook/tree.py expect (vigil:data:{protocol}:{domain}:{category}).
+under the same Redis key convention routers/webhook/ingest.py's
+build_dynamic_tree expects (vigil:data:{protocol}:{domain}:{category}).
 
-Nothing in the app currently wires fetchers -> Redis on a schedule -
-this script is that missing glue, scoped to just the "tvl" signal, so it
-can be checked end-to-end in Redis Commander (localhost:8082).
+scheduler.py now wires every fetcher -> Redis on a schedule; this script
+predates that and stays useful for checking just the "tvl" signal
+end-to-end in Redis Commander (localhost:8082) without waiting on a full
+sweep or the other fetchers' API keys.
 
 Run with: python test_tvl_ingest.py [protocol_id]
 """

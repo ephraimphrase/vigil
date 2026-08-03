@@ -38,6 +38,12 @@ class Protocol(SQLModel, table=True):
     # None for protocols with no repo tracked yet; GithubFetcher falls
     # back to an empty payload in that case.
     github_repo: Optional[str] = None
+    # CoinGecko coin id ingestion/market.py polls (e.g. "compound-governance-token",
+    # not "compound" - CoinGecko's own slug often differs from the protocol id,
+    # sometimes because of an unrelated coin claiming the plain name first).
+    # None falls back to using the protocol id itself, since that already
+    # matches CoinGecko for some protocols.
+    coingecko_id: Optional[str] = None
     # DeFiLlama slug(s) ingestion/tvl.py polls (e.g. ["compound-finance"],
     # not "compound" - some protocols' DeFiLlama slug differs from their
     # own id). Some protocols are split across multiple DeFiLlama entries
@@ -60,9 +66,11 @@ class Protocol(SQLModel, table=True):
     # Subreddits ingestion/sentiment.py searches for mentions (e.g.
     # ["Aave", "defi"]). None falls back to searching just ["defi"].
     sentiment_subreddits: Optional[List[str]] = Field(default=None, sa_column=Column(JSONB))
-    # Snapshot.org governance space ENS name ingestion/snapshot.py polls
-    # (e.g. "aavedao.eth"). None falls back to an empty payload.
-    snapshot_space: Optional[str] = None
+    # Snapshot.org governance space ENS name(s) ingestion/dao.py polls
+    # (e.g. ["aavedao.eth"]) - more than one queries all of them together
+    # in a single providers/dao.py call (space_in), for protocols governed
+    # across multiple spaces. None/empty falls back to an empty payload.
+    snapshot_space: Optional[List[str]] = Field(default=None, sa_column=Column(JSONB))
     links: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
     market: Optional[dict[str, Any]] = Field(default=None, sa_column=Column(JSONB))
     assessment: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))

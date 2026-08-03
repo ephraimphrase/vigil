@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 def get_user_triggers(protocol: str) -> List[Dict]:
     """Returns user-configured alert conditions for a protocol - each dict has
-    condition/action_slug/wallet_address, matching what routers/webhook/triggers.py evaluates."""
+    condition/action_slug/wallet_address. Not currently evaluated anywhere;
+    ingest.py only fetches signals into Redis, no scoring/trigger dispatch."""
     try:
         with Session(engine) as session:
             rows = session.exec(

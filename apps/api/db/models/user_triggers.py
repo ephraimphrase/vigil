@@ -5,8 +5,8 @@ from sqlmodel import Field, SQLModel
 
 
 # User-configured alert conditions (distinct from Trigger, which logs
-# actions that already fired). routers/webhook/triggers.py evaluates these
-# against a freshly computed score on every /webhook/score/{protocol} call.
+# actions that already fired). Not currently evaluated anywhere - ingest.py
+# only fetches signals into Redis, no scoring/trigger dispatch wired up.
 # Mirrors apps/web/db/schema/userTriggers.ts field-for-field.
 class UserTrigger(SQLModel, table=True):
     __tablename__ = "user_triggers"

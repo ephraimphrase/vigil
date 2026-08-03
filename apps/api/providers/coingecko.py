@@ -15,12 +15,20 @@ def _headers() -> dict:
     return {"x-cg-demo-api-key": COINGECKO_API_KEY} if COINGECKO_API_KEY else {}
 
 
-async def get_coin(coin_id: str) -> dict:
+async def get_coin(
+    coin_id: str, *, community_data: bool = False, developer_data: bool = False
+) -> dict:
     """
     Full /coins/{id} payload - description, links, and market_data
     (current price, market cap, fdv, ATH/ATL, 24h/7d/30d/1y price change,
-    circulating/total/max supply, and more). `coin_id` is CoinGecko's own
-    slug (e.g. "aave"), not a ticker symbol.
+    circulating/total/max supply, and more) always included. `coin_id` is
+    CoinGecko's own slug (e.g. "aave"), not a ticker symbol.
+
+    community_data/developer_data default off (market.py's normal call
+    doesn't need either, and both add payload size/latency for nothing)
+    - social.py and github.py opt in when using this as their
+    LunarCrush/GitHub-API fallback; see extract_community_metadata and
+    extract_developer_metadata.
     """
     async with httpx.AsyncClient(timeout=15) as client:
         r = await client.get(
@@ -29,8 +37,8 @@ async def get_coin(coin_id: str) -> dict:
                 "localization": "false",
                 "tickers": "false",
                 "market_data": "true",
-                "community_data": "false",
-                "developer_data": "false",
+                "community_data": "true" if community_data else "false",
+                "developer_data": "true" if developer_data else "false",
             },
             headers=_headers(),
         )
@@ -93,3 +101,46 @@ def extract_metadata(data: dict) -> dict:
     metadata["symbol"] = data.get("symbol")
     metadata["market_cap_rank"] = data.get("market_cap_rank")
     return metadata
+
+
+# Raw counts only - CoinGecko doesn't compute a sentiment score or
+# LunarCrush-style galaxy/influence score, so there's no field here to
+# rename into social.py's "sentiment_score"/"influence_score" without
+# fabricating a number CoinGecko never gave us.
+_COMMUNITY_DATA_KEYS = (
+    "reddit_subscribers", "reddit_accounts_active_48h",
+    "reddit_average_posts_48h", "reddit_average_comments_48h",
+    "telegram_channel_user_count", "facebook_likes",
+)
+
+
+def extract_community_metadata(data: dict) -> dict:
+    """Pulls every extractable scalar off a get_coin(community_data=True)
+    payload's community_data - raw pass-through only. Fallback source for
+    social.py when LunarCrush isn't configured/tracked or its call fails;
+    several of these fields read 0 or null for most coins (CoinGecko's
+    own social tracking is inconsistent), not necessarily a fetch bug."""
+    community_data = data.get("community_data", {}) or {}
+    return {k: community_data.get(k) for k in _COMMUNITY_DATA_KEYS}
+
+
+# Same raw-pass-through approach as _COMMUNITY_DATA_KEYS - no scoring or
+# reshaping into github.py's field names, since this is usually a single
+# linked repo, not the full aggregated-across-the-org picture github.py
+# builds from the real GitHub API.
+_DEVELOPER_DATA_KEYS = (
+    "forks", "stars", "subscribers", "total_issues", "closed_issues",
+    "pull_requests_merged", "pull_request_contributors",
+    "commit_count_4_weeks",
+)
+
+
+def extract_developer_metadata(data: dict) -> dict:
+    """Pulls every extractable scalar off a get_coin(developer_data=True)
+    payload's developer_data - raw pass-through only. Fallback source for
+    github.py when a protocol has no github_repo tracked or the GitHub
+    API call fails; coarser than github.py's real result (CoinGecko
+    tracks one linked repo per coin, not every repo in the protocol's
+    org)."""
+    developer_data = data.get("developer_data", {}) or {}
+    return {k: developer_data.get(k) for k in _DEVELOPER_DATA_KEYS}

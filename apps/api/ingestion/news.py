@@ -23,6 +23,7 @@ class NewsFetcher(BaseFetcher):
 
         from_date = (datetime.utcnow() - timedelta(days=7)).strftime("%Y-%m-%d")
         articles = []
+        source = "newsapi"
 
         if NEWS_API_KEY:
             try:
@@ -35,6 +36,7 @@ class NewsFetcher(BaseFetcher):
             # Fallback to Google News RSS (no API key needed) - same dict
             # shape as get_everything()'s articles, so the headline-building
             # below doesn't care which source actually answered.
+            source = "google_news_rss"
             articles = await newsapi.get_google_news_rss(f"{protocol_id} DeFi")
 
         if not articles:
@@ -51,6 +53,7 @@ class NewsFetcher(BaseFetcher):
         result = {
             "article_count_7d": len(articles),
             "headlines":         headlines,
+            "source":            source,
         }
         _news_cache[protocol_id] = {"data": result, "timestamp": datetime.utcnow()}
         return result

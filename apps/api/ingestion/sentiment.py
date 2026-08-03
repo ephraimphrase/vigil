@@ -52,4 +52,5 @@ class SentimentFetcher(BaseFetcher):
             "post_count_7d":  len(posts),
             "avg_upvotes":    avg_upvotes,
             "post_samples":   samples,
+            "source":         "reddit",
         }

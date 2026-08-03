@@ -12,7 +12,7 @@ from typing import Any, Literal, Optional, TypedDict
 SignalChannel = Literal["onchain", "offchain"]
 
 OnchainSignalKey = Literal["tvl", "liquidations", "whales"]
-OffchainSignalKey = Literal["github", "sentiment", "security", "news", "social", "snapshot"]
+OffchainSignalKey = Literal["github", "sentiment", "security", "news", "social", "snapshot", "market"]
 SignalKey = Literal[OnchainSignalKey, OffchainSignalKey]
 
 SignalStatus = Literal["ok", "error"]
