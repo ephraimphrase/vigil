@@ -19,17 +19,17 @@ from ingestion.snapshot import SnapshotFetcher
 
 ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
     "tvl": TvlFetcher(),
-    "liquidations": LiquidationsFetcher(),
-    "whales": WhalesFetcher(),
+    # "liquidations": LiquidationsFetcher(),
+    # "whales": WhalesFetcher(),
 }
 
 OFFCHAIN_FETCHERS: dict[OffchainSignalKey, BaseFetcher] = {
-    "github": GithubFetcher(),
-    "sentiment": SentimentFetcher(),
-    "security": SecurityFetcher(),
-    "news": NewsFetcher(),
-    "social": SocialFetcher(),
-    "snapshot": SnapshotFetcher(),
+#     "github": GithubFetcher(),
+      "sentiment": SentimentFetcher(),
+#     "security": SecurityFetcher(),
+     "news": NewsFetcher(),
+     "social": SocialFetcher(),
+#     "snapshot": SnapshotFetcher(),
 }
 
 

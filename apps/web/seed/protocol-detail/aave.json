@@ -14,6 +14,10 @@
     "description": "Largest DeFi lending protocol. V3 across 21+ chains, V4 hub-and-spoke rolling out. Issues the GHO stablecoin; backstopped by the Safety Module.",
     "launchDate": "2020-12-01",
     "ageDays": 2064,
+    "whaleTokenAddress": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+    "lunarcrushSymbol": "AAVE",
+    "sentimentSubreddits": ["Aave", "defi"],
+    "snapshotSpace": "aavedao.eth",
     "links": {
       "website": "https://aave.com",
       "docs": "https://docs.aave.com",

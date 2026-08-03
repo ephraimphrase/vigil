@@ -1,36 +1,15 @@
-import httpx
+from db.models import Protocol, engine
 from ingestion.base_fetcher import BaseFetcher
+from providers import snapshot as snapshot_api
+from sqlmodel import Session
 
-SNAPSHOT_GRAPHQL_URL = "https://hub.snapshot.org/graphql"
 
-# Space IDs verified live against hub.snapshot.org on 2026-07-22
-# aave.eth is stale — active space is aavedao.eth
-# uniswap is stale — active space is uniswapgovernance.eth
-# makerdao.eth has no proposals — MakerDAO/Sky moved to on-chain governance (excluded)
-PROTOCOL_SPACES = {
-    "aave":      "aavedao.eth",
-    "compound":  "comp-vote.eth",
-    "uniswap":   "uniswapgovernance.eth",
-    "lido":      "lido-snapshot.eth",
-    "balancer":  "balancer.eth",
-}
-
-_PROPOSALS_QUERY = """
-query Proposals($space: String!) {
-  proposals(
-    first: 5,
-    skip: 0,
-    where: { space: $space },
-    orderBy: "created",
-    orderDirection: desc
-  ) {
-    id
-    title
-    body
-    state
-  }
-}
-"""
+def _get_protocol_snapshot_space(protocol_id: str) -> str | None:
+    """Returns the Snapshot.org space ENS name `protocol_id` polls, or None
+    if untracked (no space, or the protocol moved to on-chain governance)."""
+    with Session(engine) as session:
+        protocol = session.get(Protocol, protocol_id)
+        return protocol.snapshot_space if protocol else None
 
 
 class SnapshotFetcher(BaseFetcher):
@@ -48,19 +27,11 @@ class SnapshotFetcher(BaseFetcher):
     channel = "offchain"
 
     async def _fetch_payload(self, protocol_id: str) -> dict:
-        space = PROTOCOL_SPACES.get(protocol_id)
+        space = _get_protocol_snapshot_space(protocol_id)
         if not space:
             return {}
 
-        async with httpx.AsyncClient(timeout=10) as client:
-            r = await client.post(
-                SNAPSHOT_GRAPHQL_URL,
-                json={"query": _PROPOSALS_QUERY, "variables": {"space": space}}
-            )
-            if r.status_code != 200:
-                raise RuntimeError(f"Snapshot API returned {r.status_code}")
-            proposals_raw = r.json().get("data", {}).get("proposals", [])
-
+        proposals_raw = await snapshot_api.get_proposals(space)
         if not proposals_raw:
             return {}
 

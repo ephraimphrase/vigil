@@ -1,22 +1,18 @@
-from config import REDDIT_CLIENT_ID, REDDIT_SECRET
+from db.models import Protocol, engine
 from ingestion.base_fetcher import BaseFetcher
-import praw
+from providers import reddit
+from sqlmodel import Session
 
-reddit = praw.Reddit(
-    client_id=REDDIT_CLIENT_ID,
-    client_secret=REDDIT_SECRET,
-    user_agent="vigil-health-monitor/1.0"
-) if REDDIT_CLIENT_ID and REDDIT_SECRET else None
 
-PROTOCOL_SUBREDDITS = {
-    "aave":     ["Aave", "defi"],
-    "compound": ["compound_finance", "defi"],
-    "uniswap":  ["Uniswap", "defi"],
-    "curve":    ["defi"],
-    "makerdao": ["MakerDAO", "defi"],
-    "lido":     ["defi"],
-    "yearn":    ["defi"],
-}
+def _get_protocol_subreddits(protocol_id: str) -> list[str]:
+    """Returns the subreddits `protocol_id` searches for mentions. Falls
+    back to just ["defi"] when untracked - that already covers general
+    DeFi discussion for protocols without a dedicated subreddit."""
+    with Session(engine) as session:
+        protocol = session.get(Protocol, protocol_id)
+        if not protocol or not protocol.sentiment_subreddits:
+            return ["defi"]
+        return protocol.sentiment_subreddits
 
 
 class SentimentFetcher(BaseFetcher):
@@ -28,17 +24,15 @@ class SentimentFetcher(BaseFetcher):
     channel = "offchain"
 
     async def _fetch_payload(self, protocol_id: str) -> dict:
-        if not reddit:
+        if not reddit.is_configured():
             return {}
 
-        subreddits = PROTOCOL_SUBREDDITS.get(protocol_id, ["defi"])
+        subreddits = _get_protocol_subreddits(protocol_id)
         posts = []
 
         for sub_name in subreddits:
             try:
-                sub = reddit.subreddit(sub_name)
-                results = list(sub.search(protocol_id, time_filter="week", limit=15, sort="new"))
-                posts.extend(results)
+                posts.extend(reddit.search_subreddit(sub_name, protocol_id))
             except Exception as e:
                 print(f"[WARN] Reddit fetch failed for {sub_name}: {e}")
                 continue
@@ -48,12 +42,12 @@ class SentimentFetcher(BaseFetcher):
 
         samples = []
         for p in posts[:10]:
-            snippet = p.title
-            if p.selftext:
-                snippet += ". " + p.selftext[:150]
+            snippet = p["title"]
+            if p["selftext"]:
+                snippet += ". " + p["selftext"][:150]
             samples.append(snippet)
 
-        avg_upvotes = sum(p.score for p in posts) / len(posts) if posts else 0
+        avg_upvotes = sum(p["score"] for p in posts) / len(posts) if posts else 0
         return {
             "post_count_7d":  len(posts),
             "avg_upvotes":    avg_upvotes,

@@ -50,7 +50,7 @@ Create a `.env` file in the root directory. You can run Vigil without keys (it w
 OPENROUTER_API_KEY=your_openrouter_api_key
 
 # Required for On-Chain Telemetry (Whales & Liquidations)
-ALCHEMY_API_KEY=your_alchemy_api_key
+ETHERSCAN_API_KEY=your_etherscan_api_key
 
 # Required for Autonomous Execution via KeeperHub MCP
 KEEPERHUB_API_KEY=your_keeperhub_api_key

@@ -12,7 +12,11 @@ NEWS_API_KEY = os.getenv("NEWS_API_KEY", "")
 LUNARCRUSH_KEY = os.getenv("LUNARCRUSH_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-3.5-sonnet")
+ETHERSCAN_API_KEY = os.getenv("ETHERSCAN_API_KEY", "")
 ALCHEMY_API_KEY = os.getenv("ALCHEMY_API_KEY", "")
+DUNE_API_KEY = os.getenv("DUNE_API_KEY", "")
+THEGRAPH_API_KEY = os.getenv("THEGRAPH_API_KEY", "")
+COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
 KEEPERHUB_API_KEY = os.getenv("KEEPERHUB_API_KEY", "")
 
 # App Config

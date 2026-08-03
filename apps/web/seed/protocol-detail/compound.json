@@ -14,6 +14,11 @@
     "description": "One of DeFi's original lending protocols. V3 (\"Comet\") redesigned around one borrowable base asset per deployment (e.g. a USDC market) with multiple collateral types, simplifying risk accounting versus V2's pooled-everything model. This repo's strategy supplies directly to a Comet USDC market.",
     "launchDate": "2018-09-01",
     "ageDays": 2889,
+    "defillamaSlug": ["compound-finance"],
+    "whaleTokenAddress": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+    "lunarcrushSymbol": "COMP",
+    "sentimentSubreddits": ["compound_finance", "defi"],
+    "snapshotSpace": "comp-vote.eth",
     "links": {
       "website": "https://compound.finance",
       "docs": "https://docs.compound.finance",

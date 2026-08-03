@@ -13,6 +13,7 @@
     "description": "Every asset gets its own isolated lending market (\"silo\") paired against a bridge asset, so a bad listing or oracle failure in one silo can't directly cause bad debt in another - a similar isolation philosophy to Morpho Blue, arrived at independently and earlier.",
     "launchDate": "2021-09-01",
     "ageDays": 1793,
+    "defillamaSlug": ["silo-v2"],
     "links": {
       "website": "https://silo.finance",
       "docs": "https://docs.silo.finance",

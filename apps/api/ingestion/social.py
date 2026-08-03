@@ -1,17 +1,15 @@
 from config import LUNARCRUSH_KEY
+from db.models import Protocol, engine
 from providers import lunarcrush
 from ingestion.base_fetcher import BaseFetcher
+from sqlmodel import Session
 
-PROTOCOL_SYMBOLS = {
-    "aave":     "AAVE",
-    "compound": "COMP",
-    "uniswap":  "UNI",
-    "curve":    "CRV",
-    "makerdao": "MKR",
-    "lido":     "LDO",
-    "yearn":    "YFI",
-    "balancer": "BAL",
-}
+
+def _get_protocol_lunarcrush_symbol(protocol_id: str) -> str | None:
+    """Returns the LunarCrush ticker symbol `protocol_id` polls, or None if untracked."""
+    with Session(engine) as session:
+        protocol = session.get(Protocol, protocol_id)
+        return protocol.lunarcrush_symbol if protocol else None
 
 
 class SocialFetcher(BaseFetcher):
@@ -19,7 +17,7 @@ class SocialFetcher(BaseFetcher):
     channel = "offchain"
 
     async def _fetch_payload(self, protocol_id: str) -> dict:
-        symbol = PROTOCOL_SYMBOLS.get(protocol_id)
+        symbol = _get_protocol_lunarcrush_symbol(protocol_id)
         if not symbol or not LUNARCRUSH_KEY:
             return {}
 

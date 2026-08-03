@@ -13,6 +13,9 @@
     "description": "Generalized AMM supporting arbitrary weighted pools (not just 50/50), boosted pools that route idle liquidity into yield, and veBAL vote-locking for emission direction. V3 rebuilt the core around a singleton vault design.",
     "launchDate": "2020-03-23",
     "ageDays": 2320,
+    "defillamaSlug": ["balancer-v3"],
+    "lunarcrushSymbol": "BAL",
+    "snapshotSpace": "balancer.eth",
     "links": {
       "website": "https://balancer.fi",
       "docs": "https://docs.balancer.fi",

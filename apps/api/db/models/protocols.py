@@ -38,15 +38,31 @@ class Protocol(SQLModel, table=True):
     # None for protocols with no repo tracked yet; GithubFetcher falls
     # back to an empty payload in that case.
     github_repo: Optional[str] = None
-    # DeFiLlama slug ingestion/tvl.py polls (e.g. "compound-v3", not
-    # "compound" - some protocols' DeFiLlama slug differs from their own
-    # id). None falls back to using the protocol id itself as the slug,
+    # DeFiLlama slug(s) ingestion/tvl.py polls (e.g. ["compound-finance"],
+    # not "compound" - some protocols' DeFiLlama slug differs from their
+    # own id). Some protocols are split across multiple DeFiLlama entries
+    # for the same protocol (e.g. Velodrome's v2/v3 aren't rolled up under
+    # one slug there) - listing more than one sums their TVL together.
+    # None falls back to using the protocol id itself as the sole slug,
     # since that already matches DeFiLlama for most protocols.
-    defillama_slug: Optional[str] = None
+    defillama_slug: Optional[List[str]] = Field(default=None, sa_column=Column(JSONB))
     # True for protocols whose /protocol/{slug} response is large enough
     # (>500KB) to time out - those use the fast /tvl/{slug} endpoint
     # instead and skip 24h/7d delta calculation.
     defillama_use_fast_endpoint: bool = False
+    # ERC20 token contract ingestion/whales.py (and liquidations.py) query
+    # via Alchemy's Transfers/Logs APIs. None for protocols with no token
+    # tracked yet; both fetchers fall back to an empty payload in that case.
+    whale_token_address: Optional[str] = None
+    # LunarCrush ticker symbol ingestion/social.py polls (e.g. "AAVE").
+    # None falls back to an empty payload.
+    lunarcrush_symbol: Optional[str] = None
+    # Subreddits ingestion/sentiment.py searches for mentions (e.g.
+    # ["Aave", "defi"]). None falls back to searching just ["defi"].
+    sentiment_subreddits: Optional[List[str]] = Field(default=None, sa_column=Column(JSONB))
+    # Snapshot.org governance space ENS name ingestion/snapshot.py polls
+    # (e.g. "aavedao.eth"). None falls back to an empty payload.
+    snapshot_space: Optional[str] = None
     links: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
     market: Optional[dict[str, Any]] = Field(default=None, sa_column=Column(JSONB))
     assessment: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
