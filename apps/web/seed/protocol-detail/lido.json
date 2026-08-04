@@ -17,9 +17,20 @@
     "githubRepo": "lidofinance/core",
     "whaleTokenAddress": "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
     "lunarcrushSymbol": "LDO",
-    "sentimentSubreddits": ["defi"],
-    "snapshotSpace": ["lido-snapshot.eth"],
+    "sentimentSubreddits": [
+      "defi"
+    ],
+    "snapshotSpace": [
+      "lido-snapshot.eth"
+    ],
     "coingeckoId": "lido-dao",
+    "typedSignalCatalog": {
+      "marketShare": "Share of staked ETH",
+      "slashingEvents": "Slashing events (all-time)",
+      "operatorConcentration": "Node operator concentration",
+      "dualGovernance": "stETH-holder safeguard",
+      "effectiveFee": "DAO effective take rate"
+    },
     "links": {
       "website": "https://lido.fi",
       "docs": "https://docs.lido.fi",

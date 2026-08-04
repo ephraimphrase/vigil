@@ -17,11 +17,22 @@
     "description": "Longest-running crypto-collateralized stablecoin issuer. Rebranded from MakerDAO to Sky in Aug 2024 (DAI\u2192USDS 1:1, MKR\u2192SKY 1:24,000). Backs ~$13B of USDS+DAI with crypto vaults, a USDC Peg Stability Module, and $1.5B+ of tokenized US Treasuries.",
     "launchDate": "2017-12-18",
     "ageDays": 3143,
-    "defillamaSlug": ["sky-lending"],
+    "defillamaSlug": [
+      "sky-lending"
+    ],
     "githubRepo": "sky-ecosystem/dss",
     "whaleTokenAddress": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
     "lunarcrushSymbol": "MKR",
-    "sentimentSubreddits": ["MakerDAO", "defi"],
+    "sentimentSubreddits": [
+      "MakerDAO",
+      "defi"
+    ],
+    "typedSignalCatalog": {
+      "collateralRatio": "Global collateralization",
+      "rwaShare": "RWA collateral share",
+      "psmDepth": "PSM (USDC) backing share",
+      "savingsRate": "Sky Savings Rate (SSR)"
+    },
     "links": {
       "website": "https://sky.money",
       "docs": "https://docs.sky.money",

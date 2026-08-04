@@ -17,8 +17,20 @@
     "githubRepo": "aave-dao/aave-v3-origin",
     "whaleTokenAddress": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
     "lunarcrushSymbol": "AAVE",
-    "sentimentSubreddits": ["Aave", "defi"],
-    "snapshotSpace": ["aavedao.eth"],
+    "sentimentSubreddits": [
+      "Aave",
+      "defi"
+    ],
+    "snapshotSpace": [
+      "aavedao.eth"
+    ],
+    "typedSignalCatalog": {
+      "utilization": "Utilization",
+      "activeLoans": "Active loans",
+      "badDebt": "Bad debt",
+      "safetyModule": "Safety Module coverage",
+      "oracleHealth": "Oracle health (Chainlink)"
+    },
     "links": {
       "website": "https://aave.com",
       "docs": "https://docs.aave.com",

@@ -13,9 +13,17 @@
     "description": "The dominant native DEX on the OP Superchain, combining Solidly's ve(3,3) design (vote-locked emissions directing liquidity) with both stable and volatile pool types. Deeply embedded in Optimism ecosystem incentive programs.",
     "launchDate": "2022-06-01",
     "ageDays": 1520,
-    "defillamaSlug": ["velodrome-v2", "velodrome-v3"],
+    "defillamaSlug": [
+      "velodrome-v2",
+      "velodrome-v3"
+    ],
     "coingeckoId": "velodrome-finance",
     "githubRepo": "velodrome-finance/contracts",
+    "typedSignalCatalog": {
+      "opChainConcentration": "OP Superchain TVL share",
+      "emissionInflation": "VELO emission dilution rate",
+      "veLockedShare": "Supply locked as veVELO"
+    },
     "links": {
       "website": "https://velodrome.finance",
       "docs": "https://docs.velodrome.finance",

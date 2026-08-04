@@ -1,11 +1,11 @@
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from sqlalchemy import func
 from sqlmodel import Session, select
 
-from db.models import HealthScoreRow, SignalHistory, Trigger, UserTrigger, engine
+from db.models import HealthScoreRow, Protocol, SignalHistory, Trigger, UserTrigger, engine
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +82,62 @@ def save_signal_history(protocol: str, signals: dict) -> None:
             session.commit()
     except Exception as e:
         logger.error("[DB] save_signal_history failed: %s", e)
+
+
+def get_previous_signal_value(protocol: str, key: str) -> Optional[float]:
+    """Most recent stored value for (protocol, key) from before this
+    sweep's write - used by scoring/signals.py to compute trend direction
+    (up/down/flat) by comparing against what this sweep just computed."""
+    try:
+        with Session(engine) as session:
+            row = session.exec(
+                select(SignalHistory)
+                .where(SignalHistory.protocol == protocol, SignalHistory.key == key)
+                .order_by(SignalHistory.timestamp.desc())
+                .limit(1)
+            ).first()
+        return row.value if row else None
+    except Exception as e:
+        logger.error("[DB] get_previous_signal_value failed: %s", e)
+        return None
+
+
+def save_signals(protocol: str, onchain: dict, offchain: dict) -> None:
+    """Merges freshly-scored onchain/offchain signal groups into
+    protocols.signals - only those two keys are touched, "typed" is left
+    as whatever's already there (seed data, or ingestion/typed_signals.py's
+    output once that's registered) since a scoring sweep doesn't produce it."""
+    try:
+        with Session(engine) as session:
+            row = session.get(Protocol, protocol)
+            if not row:
+                return
+            merged = dict(row.signals or {})
+            merged["onchain"] = onchain
+            merged["offchain"] = offchain
+            row.signals = merged
+            session.add(row)
+            session.commit()
+    except Exception as e:
+        logger.error("[DB] save_signals failed: %s", e)
+
+
+def save_typed_signals(protocol: str, typed: dict) -> None:
+    """Merges freshly-scored typed signals into protocols.signals["typed"] -
+    only that key is touched, "onchain"/"offchain" are left as whatever
+    save_signals last wrote for them."""
+    try:
+        with Session(engine) as session:
+            row = session.get(Protocol, protocol)
+            if not row:
+                return
+            merged = dict(row.signals or {})
+            merged["typed"] = typed
+            row.signals = merged
+            session.add(row)
+            session.commit()
+    except Exception as e:
+        logger.error("[DB] save_typed_signals failed: %s", e)
 
 
 def save_trigger(protocol: str, action: str, reason: str, tx_hash: str) -> None:

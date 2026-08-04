@@ -13,10 +13,19 @@
     "description": "Every asset gets its own isolated lending market (\"silo\") paired against a bridge asset, so a bad listing or oracle failure in one silo can't directly cause bad debt in another - a similar isolation philosophy to Morpho Blue, arrived at independently and earlier.",
     "launchDate": "2021-09-01",
     "ageDays": 1793,
-    "defillamaSlug": ["silo-v2"],
-    "snapshotSpace": ["silofinance.eth"],
+    "defillamaSlug": [
+      "silo-v2"
+    ],
+    "snapshotSpace": [
+      "silofinance.eth"
+    ],
     "coingeckoId": "silo-finance-2",
     "githubRepo": "silo-finance/silo-contracts-v3",
+    "typedSignalCatalog": {
+      "marketIsolation": "Cross-silo contagion protection",
+      "permissionlessListing": "Silo creation permission",
+      "badDebt": "Bad debt across silos"
+    },
     "links": {
       "website": "https://silo.finance",
       "docs": "https://docs.silo.finance",

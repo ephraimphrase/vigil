@@ -14,13 +14,24 @@
     "description": "The dominant AMM for stable/pegged-asset swaps, using a low-slippage stableswap invariant. veCRV vote-locking directs CRV emissions to specific pools ('gauge wars'), and Convex has become the largest aggregator of vote-locked CRV, adding a real dependency layer on top of Curve itself.",
     "launchDate": "2020-01-19",
     "ageDays": 2384,
-    "defillamaSlug": ["curve-finance"],
+    "defillamaSlug": [
+      "curve-finance"
+    ],
     "githubRepo": "curvefi/curve-stablecoin",
     "whaleTokenAddress": "0xD533a949740bb3306d119CC777fa900bA034cd52",
     "lunarcrushSymbol": "CRV",
-    "sentimentSubreddits": ["defi"],
-    "snapshotSpace": ["curve.eth"],
+    "sentimentSubreddits": [
+      "defi"
+    ],
+    "snapshotSpace": [
+      "curve.eth"
+    ],
     "coingeckoId": "curve-dao-token",
+    "typedSignalCatalog": {
+      "convexDependency": "veCRV controlled via Convex",
+      "founderLoanExposure": "Founder CRV-collateralized loans",
+      "pegStability": "Major pool peg stability"
+    },
     "links": {
       "website": "https://curve.fi",
       "docs": "https://docs.curve.fi",

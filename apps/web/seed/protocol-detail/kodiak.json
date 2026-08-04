@@ -14,6 +14,10 @@
     "launchDate": "2025-02-01",
     "ageDays": 544,
     "coingeckoId": "kodiak-finance",
+    "typedSignalCatalog": {
+      "polConsensusRisk": "Proof-of-Liquidity track record",
+      "rangeManagerRisk": "Auto-range-manager complexity"
+    },
     "links": {
       "website": "https://kodiak.finance",
       "docs": "https://docs.kodiak.finance",

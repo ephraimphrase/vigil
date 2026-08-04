@@ -11,9 +11,15 @@
     "description": "Sonic chain's leading native DEX, combining Solidly-style ve(3,3) emission mechanics with Uniswap V3-style concentrated liquidity. Tightly coupled to Sonic's growth (formerly Fantom, relaunched with a new VM and incentive program in 2025).",
     "launchDate": "2024-12-01",
     "ageDays": 606,
-    "defillamaSlug": ["shadow-exchange"],
+    "defillamaSlug": [
+      "shadow-exchange"
+    ],
     "coingeckoId": "shadow-2",
     "githubRepo": "Shadow-Exchange/shadow-core",
+    "typedSignalCatalog": {
+      "emissionDependency": "TVL sensitivity to emissions",
+      "veLockedShare": "Supply locked as ve(3,3)"
+    },
     "links": {
       "website": "https://www.shadow.so",
       "docs": "https://docs.shadow.so",

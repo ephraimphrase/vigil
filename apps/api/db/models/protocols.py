@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSONB
@@ -71,6 +71,15 @@ class Protocol(SQLModel, table=True):
     # in a single providers/dao.py call (space_in), for protocols governed
     # across multiple spaces. None/empty falls back to an empty payload.
     snapshot_space: Optional[List[str]] = Field(default=None, sa_column=Column(JSONB))
+    # {signal_key: label} for "typed" (category-specific) signals with no
+    # real API source - ingestion/typed_signals.py answers these via a
+    # search-grounded LLM question built from the label (e.g.
+    # {"badDebt": "Bad debt"}). None/empty means this protocol has none
+    # tracked. See ingestion/typed_signals.py for which signals were
+    # deliberately excluded here because a real API covers them instead
+    # (peg deviation, market maturity, volume/fees, exploit history,
+    # collateral concentration).
+    typed_signal_catalog: Optional[Dict[str, str]] = Field(default=None, sa_column=Column(JSONB))
     links: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))
     market: Optional[dict[str, Any]] = Field(default=None, sa_column=Column(JSONB))
     assessment: dict[str, Any] = Field(default={}, sa_column=Column(JSONB, nullable=False))

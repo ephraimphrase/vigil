@@ -46,6 +46,10 @@ export const protocols = pgTable("protocols", {
   // together in a single call, for protocols governed across multiple
   // spaces.
   snapshotSpace: jsonb("snapshot_space").$type<string[] | null>(),
+  // {signal_key: label} for "typed" (category-specific) signals with no
+  // real API source - apps/api/ingestion/typed_signals.py answers these
+  // via a search-grounded LLM question built from the label.
+  typedSignalCatalog: jsonb("typed_signal_catalog").$type<Record<string, string> | null>(),
   links: jsonb("links").notNull().$type<Record<string, unknown>>(),
   market: jsonb("market").$type<Record<string, unknown> | null>(),
   assessment: jsonb("assessment").notNull().$type<Record<string, unknown>>(),

@@ -11,6 +11,10 @@
     "description": "One of Base's earliest native DEXs, forked from Uniswap V2/V3 mechanics with its own BSX emissions and yield-farming layer. Small relative to Ethereum mainnet DEXs, but a meaningful piece of Base's early liquidity.",
     "launchDate": "2023-08-01",
     "ageDays": 1094,
+    "typedSignalCatalog": {
+      "auditCoverage": "Independent audits",
+      "emissionDependency": "TVL sensitivity to BSX emissions"
+    },
     "links": {
       "website": "https://baseswap.fi",
       "docs": "https://docs.baseswap.fi",

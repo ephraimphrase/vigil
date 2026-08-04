@@ -15,7 +15,16 @@
     "launchDate": "2022-01-25",
     "ageDays": 1647,
     "githubRepo": "morpho-org/morpho-blue",
-    "snapshotSpace": ["morpho.eth"],
+    "snapshotSpace": [
+      "morpho.eth"
+    ],
+    "typedSignalCatalog": {
+      "curatorConcentration": "Top-curator TVL share",
+      "isolatedMarketCount": "Active isolated markets",
+      "badDebt": "Protocol-wide bad debt",
+      "immutability": "Core contract upgradability",
+      "oracleHealth": "Oracle health (per-market)"
+    },
     "links": {
       "website": "https://morpho.org",
       "docs": "https://docs.morpho.org",

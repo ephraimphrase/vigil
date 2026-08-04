@@ -18,8 +18,19 @@
     "githubRepo": "Uniswap/v3-core",
     "whaleTokenAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
     "lunarcrushSymbol": "UNI",
-    "sentimentSubreddits": ["Uniswap", "defi"],
-    "snapshotSpace": ["uniswapgovernance.eth"],
+    "sentimentSubreddits": [
+      "Uniswap",
+      "defi"
+    ],
+    "snapshotSpace": [
+      "uniswapgovernance.eth"
+    ],
+    "typedSignalCatalog": {
+      "volumeTvlRatio": "Volume / TVL ratio",
+      "poolConcentration": "Liquidity concentration",
+      "unichainShare": "Volume share on Unichain",
+      "hookRisk": "V4 hook surface"
+    },
     "links": {
       "website": "https://uniswap.org",
       "docs": "https://docs.uniswap.org",

@@ -107,6 +107,7 @@ export interface Identity {
   lunarcrushSymbol?: string | null;
   sentimentSubreddits?: string[] | null;
   snapshotSpace?: string[] | null;
+  typedSignalCatalog?: Record<string, string> | null;
   links: Links;
 }
 

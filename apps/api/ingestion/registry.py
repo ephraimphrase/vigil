@@ -20,6 +20,7 @@ from ingestion.market import MarketFetcher
 from ingestion.fees import FeesFetcher
 from ingestion.volume import VolumeFetcher
 from ingestion.yields import YieldsFetcher
+from ingestion.typed_signals import TypedSignalsFetcher
 
 ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
     "tvl": TvlFetcher(),
@@ -27,7 +28,6 @@ ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
     "fees": FeesFetcher(),
     "volume": VolumeFetcher(),
     "yields": YieldsFetcher(),
-    # "liquidations": LiquidationsFetcher(),  # needs ETHERSCAN_API_KEY, not configured - would always return {}
 }
 
 OFFCHAIN_FETCHERS: dict[OffchainSignalKey, BaseFetcher] = {
@@ -38,6 +38,24 @@ OFFCHAIN_FETCHERS: dict[OffchainSignalKey, BaseFetcher] = {
      "social": SocialFetcher(),
      "market": MarketFetcher(),
      "dao": DaoFetcher(),
+}
+
+# Kept separate from OFFCHAIN_FETCHERS, not because it fetches
+# differently (routers/webhook/ingest.py still sweeps it the same way,
+# see TYPED_FETCHERS usage there), but because everything downstream of
+# ingestion treats it differently: TypedSignalsFetcher.channel is "typed"
+# (its own Redis root - vigil:data:{protocol}:typed:typed_signals -
+# alongside onchain/offchain, not nested under either), scoring/scorer.py
+# excludes it from the tree it sends to the scoring LLM (it already
+# carries its own normalized/raw/confidence from
+# ingestion/typed_signals.py's search-grounded call, so re-scoring it
+# would be redundant), and scoring/signals.py writes it into
+# protocols.signals["typed"] instead of ["onchain"/"offchain"]. Its own
+# per-signal TTL cache (see ingestion/typed_signals.py) means most sweeps
+# make zero or few real calls even though this runs on every sweep
+# alongside everything else.
+TYPED_FETCHERS: dict[str, BaseFetcher] = {
+    "typed_signals": TypedSignalsFetcher(),
 }
 
 

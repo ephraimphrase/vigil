@@ -11,8 +11,14 @@
     "description": "Wraps Uniswap V3/V4 concentrated liquidity positions into fungible, auto-managed vault tokens. Suffered a real exploit in September 2024 caused by a rounding/precision bug in its liquidity-density math, not a simple reentrancy or access-control bug.",
     "launchDate": "2022-11-01",
     "ageDays": 1367,
-    "snapshotSpace": ["bunni.eth"],
+    "snapshotSpace": [
+      "bunni.eth"
+    ],
     "githubRepo": "Bunniapp/bunni-v2",
+    "typedSignalCatalog": {
+      "postIncidentAudit": "Post-incident re-audit",
+      "hookSurface": "V4 hook usage"
+    },
     "links": {
       "website": "https://bunni.xyz",
       "docs": "https://docs.bunni.xyz",

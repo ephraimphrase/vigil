@@ -13,8 +13,15 @@
     "description": "BNB Chain's largest lending market, forked from Compound/Aave design. Issues VAI, an overcollateralized stablecoin. Recovered from a major 2021 bad-debt event and has since added Isolated Pools to contain future oracle-driven losses to a single market.",
     "launchDate": "2020-10-01",
     "ageDays": 2128,
-    "snapshotSpace": ["venus-xvs.eth"],
+    "snapshotSpace": [
+      "venus-xvs.eth"
+    ],
     "githubRepo": "VenusProtocol/venus-protocol",
+    "typedSignalCatalog": {
+      "isolatedPoolCoverage": "TVL in Isolated Pools",
+      "badDebt": "Current bad debt",
+      "bnbChainConcentration": "Single-chain exposure"
+    },
     "links": {
       "website": "https://venus.io",
       "docs": "https://docs.venus.io",

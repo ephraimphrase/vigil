@@ -9,11 +9,12 @@ instead of nine unrelated shapes.
 
 from typing import Any, Literal, Optional, TypedDict
 
-SignalChannel = Literal["onchain", "offchain"]
+SignalChannel = Literal["onchain", "offchain", "typed"]
 
 OnchainSignalKey = Literal["tvl", "liquidations", "whales", "fees", "volume", "yields"]
 OffchainSignalKey = Literal["github", "sentiment", "security", "news", "social", "snapshot", "market"]
-SignalKey = Literal[OnchainSignalKey, OffchainSignalKey]
+TypedSignalKey = Literal["typed_signals"]
+SignalKey = Literal[OnchainSignalKey, OffchainSignalKey, TypedSignalKey]
 
 SignalStatus = Literal["ok", "error"]
 

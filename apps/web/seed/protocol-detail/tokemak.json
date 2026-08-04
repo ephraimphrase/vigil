@@ -14,8 +14,14 @@
     "description": "Auto-pools accept a single deposit asset and algorithmically route it across multiple underlying DEX/lending venues to optimize risk-adjusted yield, rebalancing as conditions change. Pivoted to this design in V2 after V1's original 'liquidity reactor' model struggled to sustain itself.",
     "launchDate": "2021-06-01",
     "ageDays": 1885,
-    "snapshotSpace": ["tokemak.eth"],
+    "snapshotSpace": [
+      "tokemak.eth"
+    ],
     "githubRepo": "Tokemak/tokemak-smart-contracts-public",
+    "typedSignalCatalog": {
+      "strategyComplexity": "Cross-venue rebalancing surface",
+      "v1LegacyOverhang": "V1-to-V2 migration status"
+    },
     "links": {
       "website": "https://tokemak.xyz",
       "docs": "https://docs.tokemak.xyz",

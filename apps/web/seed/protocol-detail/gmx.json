@@ -14,8 +14,15 @@
     "description": "Leading on-chain perpetuals venue. Liquidity providers (GM pools in V2, GLP in V1) act as the counterparty to all trader positions, earning fees but also absorbing net trader PnL. V2 moved to isolated per-market GM pools instead of V1's single shared GLP pool.",
     "launchDate": "2021-09-01",
     "ageDays": 1793,
-    "snapshotSpace": ["gmx.eth"],
+    "snapshotSpace": [
+      "gmx.eth"
+    ],
     "githubRepo": "gmx-io/gmx-synthetics",
+    "typedSignalCatalog": {
+      "counterpartyExposure": "LP net-PnL exposure to traders",
+      "marketIsolation": "V2 isolated GM pools",
+      "openInterestSkew": "Long/short OI skew"
+    },
     "links": {
       "website": "https://gmx.io",
       "docs": "https://docs.gmx.io",

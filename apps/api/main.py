@@ -41,6 +41,17 @@ def api_get_protocols():
     return {"protocols": get_latest_scores()}
 
 
+@app.get("/api/scores", tags=["Protocols"])
+def api_get_scores():
+    """Returns every protocol's latest health score, ranked highest to
+    lowest - same underlying data as /api/protocols, just sorted by score
+    instead of alphabetically, for an at-a-glance view of what needs
+    attention."""
+    scores = get_latest_scores()
+    scores.sort(key=lambda s: s["score"], reverse=True)
+    return {"scores": scores}
+
+
 @app.get("/api/protocols/{protocol}/history", tags=["Protocols"])
 def api_get_protocol_history(protocol: str, limit: int = 24):
     """Returns chronological health score history for a specific protocol.

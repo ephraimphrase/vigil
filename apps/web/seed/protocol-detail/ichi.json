@@ -13,8 +13,14 @@
     "description": "ICHI Vaults let projects and users provide single-sided concentrated liquidity (deposit only one token) into a Uniswap V3-style range that's automatically managed. Niche relative to major DEXs, with TVL concentrated in a smaller set of partner-token vaults.",
     "launchDate": "2020-11-01",
     "ageDays": 2097,
-    "snapshotSpace": ["ichi.eth"],
+    "snapshotSpace": [
+      "ichi.eth"
+    ],
     "coingeckoId": "ichi-farm",
+    "typedSignalCatalog": {
+      "vaultConcentration": "TVL in top-3 vaults",
+      "exitLiquidity": "ICHI token trading depth"
+    },
     "links": {
       "website": "https://ichi.org",
       "docs": "https://docs.ichi.org",

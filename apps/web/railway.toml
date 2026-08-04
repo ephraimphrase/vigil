@@ -1,0 +1,15 @@
+# Root Directory for this service must stay the monorepo root (not
+# apps/web) - apps/web depends on "@repo/ui": "workspace:*", which only
+# resolves with the full pnpm workspace checked out. Set this file as the
+# service's Config File Path (apps/web/railway.toml) while leaving Root
+# Directory as "/".
+[build]
+builder = "RAILPACK"
+buildCommand = "pnpm install --frozen-lockfile && pnpm --filter web build"
+
+[deploy]
+startCommand = "cd apps/web && next start -p $PORT"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

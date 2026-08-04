@@ -16,6 +16,10 @@
     "ageDays": 1916,
     "coingeckoId": "spell-token",
     "githubRepo": "Abracadabra-money/abracadabra-money-contracts",
+    "typedSignalCatalog": {
+      "depegHistory": "Prior depeg events",
+      "collateralQuality": "Cauldron collateral risk"
+    },
     "links": {
       "website": "https://abracadabra.money",
       "docs": "https://docs.abracadabra.money",

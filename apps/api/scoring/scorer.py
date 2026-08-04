@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Tuple
 from sqlmodel import Session, select
 
 from .prompt import SYSTEM_PROMPT, build_user_prompt
+from .signals import build_and_persist_signals, build_and_persist_typed_signals
 from config import OPENROUTER_MODEL
 from db.models import Protocol, engine
 from db.queries import save_health_score
@@ -23,7 +24,8 @@ async def calculate_global_score(protocol: str, dynamic_tree: dict) -> dict:
         return {
             "score": 50.0,
             "reasoning": "Neutral fallback score (No API key configured for AI scoring)",
-            "risk_flags": ["NO_AI_AVAILABLE"]
+            "risk_flags": ["NO_AI_AVAILABLE"],
+            "signals": {},
         }
 
     try:
@@ -50,7 +52,8 @@ async def calculate_global_score(protocol: str, dynamic_tree: dict) -> dict:
         return {
             "score": score,
             "reasoning": data.get("reasoning", "No reasoning provided"),
-            "risk_flags": data.get("risk_flags", [])
+            "risk_flags": data.get("risk_flags", []),
+            "signals": data.get("signals", {}),
         }
 
     except json.JSONDecodeError as e:
@@ -66,7 +69,8 @@ def _failure_score(reason: str) -> dict:
     return {
         "score": 50.0,
         "reasoning": f"Scoring failed: {reason}",
-        "risk_flags": ["SCORING_FAILURE"]
+        "risk_flags": ["SCORING_FAILURE"],
+        "signals": {},
     }
 
 
@@ -91,6 +95,12 @@ async def _build_dynamic_tree(protocol: str) -> Tuple[Dict[str, Any], List[str]]
 
         parts = key.split(":")
         domain, category = parts[3], parts[4]
+        if category == "typed_signals":
+            # Already carries its own normalized/raw/confidence from a
+            # search-grounded call (ingestion/typed_signals.py) - handled
+            # separately by scoring/signals.py's build_and_persist_typed_signals,
+            # not re-scored by the general LLM breakdown here.
+            continue
         dynamic_tree.setdefault(domain, {}).setdefault(category, {})
 
         hash_data = await redis_client.hgetall(key)
@@ -125,3 +135,5 @@ async def run_scoring_sweep() -> None:
 
         result = await calculate_global_score(protocol_id, dynamic_tree)
         save_health_score(protocol_id, result["score"], result["reasoning"])
+        build_and_persist_signals(protocol_id, dynamic_tree, result["signals"])
+        await build_and_persist_typed_signals(protocol_id)

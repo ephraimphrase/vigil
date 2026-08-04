@@ -61,6 +61,7 @@ function protocolRow(detail: (typeof PROTOCOL_DETAILS)[number], icon: string | n
     lunarcrushSymbol: identity.lunarcrushSymbol ?? null,
     sentimentSubreddits: identity.sentimentSubreddits ?? null,
     snapshotSpace: identity.snapshotSpace ?? null,
+    typedSignalCatalog: identity.typedSignalCatalog ?? null,
     assessment: health.assessment, assessmentHistory: health.assessmentHistory,
     signals, risk, contracts, incidents, dependencies, askSuggestions,
     updatedAt: new Date(),

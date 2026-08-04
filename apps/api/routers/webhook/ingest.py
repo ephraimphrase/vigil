@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import Session, select
 
 from db.models import Protocol, engine
-from ingestion.registry import OFFCHAIN_FETCHERS, ONCHAIN_FETCHERS
+from ingestion.registry import OFFCHAIN_FETCHERS, ONCHAIN_FETCHERS, TYPED_FETCHERS
 from ingestion.resilient_fetch import safe_fetch
 from integrations.redis_client import redis_client
 from scoring.scorer import run_scoring_sweep
@@ -44,22 +44,25 @@ async def ingest_status():
 async def ingest_all_signals():
     """
     Runs every registered fetcher (ingestion/registry.py's
-    ONCHAIN_FETCHERS + OFFCHAIN_FETCHERS - tvl, liquidations, whales,
-    github, sentiment, security, news, social, snapshot) for every
+    ONCHAIN_FETCHERS + OFFCHAIN_FETCHERS + TYPED_FETCHERS - tvl,
+    liquidations, whales, fees, volume, yields, github, sentiment,
+    security, news, social, snapshot, market, typed_signals) for every
     protocol in the `protocols` table, through the Postgres
     last-known-good cache (safe_fetch). Each result lands in Redis
-    (vigil:data:{protocol}:{channel}:{key}). Once every protocol has been
-    fetched, runs scoring/scorer.py's run_scoring_sweep against that
-    freshly written data - done here rather than left to the caller so a
-    manual/on-demand call gets the same ingest+score behavior every time.
-    Nothing calls this on a schedule in-process right now (main.py has no
-    lifespan hook for it) - an external cron hitting this endpoint every
-    15 minutes would match the cadence scoring/prompt.py's SYSTEM_PROMPT
-    assumes, but that's not currently set up. Refuses to start a second
-    run while one is already active (see is_ingest_active) - an
-    overlapping run would double the load on the already-slow per-repo
-    GitHub calls and could interleave its writes with the run in
-    progress.
+    (vigil:data:{protocol}:{channel}:{key}). typed_signals runs here too
+    but rarely does real work - its own per-signal TTL cache (see
+    ingestion/typed_signals.py) means most sweeps make zero or few actual
+    search-LLM calls. Once every protocol has been fetched, runs
+    scoring/scorer.py's run_scoring_sweep against that freshly written
+    data - done here rather than left to the caller so a manual/on-demand
+    call gets the same ingest+score behavior every time. Nothing calls
+    this on a schedule in-process right now (main.py has no lifespan hook
+    for it) - an external cron hitting this endpoint every 15 minutes
+    would match the cadence scoring/prompt.py's SYSTEM_PROMPT assumes,
+    but that's not currently set up. Refuses to start a second run while
+    one is already active (see is_ingest_active) - an overlapping run
+    would double the load on the already-slow per-repo GitHub calls and
+    could interleave its writes with the run in progress.
     """
     if await is_ingest_active():
         raise HTTPException(status_code=409, detail="Ingestion already in progress")
@@ -70,7 +73,7 @@ async def ingest_all_signals():
         with Session(engine) as session:
             protocol_ids = session.exec(select(Protocol.id)).all()
 
-        fetchers = {**ONCHAIN_FETCHERS, **OFFCHAIN_FETCHERS}
+        fetchers = {**ONCHAIN_FETCHERS, **OFFCHAIN_FETCHERS, **TYPED_FETCHERS}
         results = []
 
         for protocol_id in protocol_ids:

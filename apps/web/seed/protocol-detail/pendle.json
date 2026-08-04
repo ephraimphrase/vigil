@@ -14,6 +14,11 @@
     "launchDate": "2021-06-01",
     "ageDays": 1885,
     "githubRepo": "pendle-finance/pendle-core-v2-public",
+    "typedSignalCatalog": {
+      "pointsFarmingDependency": "TVL tied to points/airdrop cycles",
+      "underlyingAssetDiversity": "Tokenized yield-source diversity",
+      "maturityConcentration": "TVL concentration by maturity"
+    },
     "links": {
       "website": "https://pendle.finance",
       "docs": "https://docs.pendle.finance",
