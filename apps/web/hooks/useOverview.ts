@@ -44,6 +44,7 @@ export function useEventStream(initial: FeedEvent[], max = 40): FeedEvent[] {
     const t = setInterval(() => {
       const s = SAMPLE[i % SAMPLE.length];
       i += 1;
+      if (!s) return;
       setEvents((prev) =>
         [{ ...s, id: `live-${Date.now()}`, ts: new Date().toISOString() }, ...prev].slice(0, max)
       );

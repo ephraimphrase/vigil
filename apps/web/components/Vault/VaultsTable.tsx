@@ -18,7 +18,7 @@ function SortCaret({ dir }: { dir: false | "asc" | "desc" }) {
 function HeaderRow({ table }: { table: Table<VaultSummary> }) {
   return (
     <div className="grid items-center border-b border-hairline px-3 py-2" style={{ gridTemplateColumns: VAULT_GRID_COLS }}>
-      {table.getHeaderGroups()[0].headers.map((header) => {
+      {(table.getHeaderGroups()[0]?.headers ?? []).map((header) => {
         const canSort = header.column.getCanSort();
         return (
           <div

@@ -32,6 +32,19 @@ const theme = darkTheme({
 });
 
 export function ConnectWallet() {
+  if (!thirdwebClient) {
+    return (
+      <button
+        type="button"
+        disabled
+        title="Wallet connect is not configured (missing NEXT_PUBLIC_THIRDWEB_CLIENT_ID)"
+        className="cursor-not-allowed rounded-full bg-[#1e1433] px-6 py-1.5 font-body text-sm uppercase text-text/40"
+      >
+        Connect Wallet
+      </button>
+    );
+  }
+
   return (
     <ConnectButton
       client={thirdwebClient}

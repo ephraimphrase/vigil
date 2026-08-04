@@ -23,7 +23,7 @@ function HeaderRow({ table }: { table: Table<ProtocolRow> }) {
       className="grid items-center border-b border-[#CAC0D5]/20 px-3 py-2"
       style={{ gridTemplateColumns: GRID_COLS }}
     >
-      {table.getHeaderGroups()[0].headers.map((header) => {
+      {(table.getHeaderGroups()[0]?.headers ?? []).map((header) => {
         const canSort = header.column.getCanSort();
         return (
           <div
@@ -83,6 +83,7 @@ export function ProtocolsTable({
           <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
             {virtualizer.getVirtualItems().map((vr) => {
               const row = rows[vr.index];
+              if (!row) return null;
               return (
                 <div
                   key={row.id}
