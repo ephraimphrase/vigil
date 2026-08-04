@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from db.models import Protocol, SignalHistory, engine
 from providers import llama
@@ -115,6 +115,9 @@ async def _fetch_tvl_with_deltas(slugs: list[str]) -> dict:
     tvl_by_day: dict[int, float] = {}
     chain_tvls: dict[str, float] = {}
     current_tvl = 0.0
+    hallmarks: list[tuple[int, str]] = []
+    raises_count = 0
+    raises_total_musd = 0.0
 
     for slug in slugs:
         data = await llama.get_protocol(slug)
@@ -133,16 +136,41 @@ async def _fetch_tvl_with_deltas(slugs: list[str]) -> dict:
         for chain, value in _extract_chain_tvls(data).items():
             chain_tvls[chain] = chain_tvls.get(chain, 0.0) + value
 
+        # hallmarks/raises are already part of the /protocol/{slug} payload
+        # this loop downloads anyway - free to surface, no extra API call.
+        for ts, event in (data.get("hallmarks") or []):
+            hallmarks.append((ts, event))
+        for raise_ in (data.get("raises") or []):
+            raises_count += 1
+            raises_total_musd += raise_.get("amount") or 0  # DefiLlama's own convention: amount is in $M
+
     # "Yesterday" (1 day back) through the front, since today's live point
     # isn't part of this series - see current_tvl above.
     historical_series = [{"totalLiquidityUSD": v} for _, v in sorted(tvl_by_day.items())]
 
+    # Newest first, deduped (multi-slug protocols can list the same
+    # hallmark under each slug), capped the same way security.py/news.py
+    # cap their own "recent items" lists.
+    seen = set()
+    recent_hallmarks = []
+    for ts, event in sorted(hallmarks, key=lambda h: h[0], reverse=True):
+        if event in seen:
+            continue
+        seen.add(event)
+        date_str = datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d") if ts else "unknown"
+        recent_hallmarks.append(f"{date_str}: {event}")
+        if len(recent_hallmarks) >= 5:
+            break
+
     return {
-        "tvl_current":   current_tvl,
-        "tvl_delta_24h": round(_delta_at(historical_series, current_tvl, 1), 6),
-        "tvl_delta_7d":  round(_delta_at(historical_series, current_tvl, 7), 6),
-        "tvl_delta_30d": round(_delta_at(historical_series, current_tvl, 30), 6),
-        "tvl_by_chain":  chain_tvls,
+        "tvl_current":       current_tvl,
+        "tvl_delta_24h":     round(_delta_at(historical_series, current_tvl, 1), 6),
+        "tvl_delta_7d":      round(_delta_at(historical_series, current_tvl, 7), 6),
+        "tvl_delta_30d":     round(_delta_at(historical_series, current_tvl, 30), 6),
+        "tvl_by_chain":      chain_tvls,
+        "recent_hallmarks":  recent_hallmarks,
+        "raises_count":      raises_count,
+        "raises_total_musd": round(raises_total_musd, 2),
     }
 
 

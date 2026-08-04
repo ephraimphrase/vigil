@@ -51,11 +51,12 @@ async def ingest_all_signals():
     (vigil:data:{protocol}:{channel}:{key}). Once every protocol has been
     fetched, runs scoring/scorer.py's run_scoring_sweep against that
     freshly written data - done here rather than left to the caller so a
-    manual/on-demand call gets the same ingest+score behavior as the
-    scheduled one (see scheduler.py's run_ingest_loop, started from
-    main.py's lifespan hook, which just calls this every 15 minutes - the
-    cadence scoring/prompt.py's SYSTEM_PROMPT assumes). Refuses to start
-    a second run while one is already active (see is_ingest_active) - an
+    manual/on-demand call gets the same ingest+score behavior every time.
+    Nothing calls this on a schedule in-process right now (main.py has no
+    lifespan hook for it) - an external cron hitting this endpoint every
+    15 minutes would match the cadence scoring/prompt.py's SYSTEM_PROMPT
+    assumes, but that's not currently set up. Refuses to start a second
+    run while one is already active (see is_ingest_active) - an
     overlapping run would double the load on the already-slow per-repo
     GitHub calls and could interleave its writes with the run in
     progress.

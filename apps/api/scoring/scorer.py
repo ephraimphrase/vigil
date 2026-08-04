@@ -111,10 +111,10 @@ async def _build_dynamic_tree(protocol: str) -> Tuple[Dict[str, Any], List[str]]
 async def run_scoring_sweep() -> None:
     """Scores every protocol in the `protocols` table against whatever
     ingest_all_signals last wrote to Redis, persisting each result via
-    save_health_score. Called by scheduler.py right after an ingest run
-    finishes - not exposed as its own route, since scoring off data an
-    ingest run hasn't produced yet isn't meaningful. Protocols with
-    nothing ingested yet are skipped rather than failing the sweep."""
+    save_health_score. Called from inside ingest_all_signals right after
+    an ingest run finishes - not exposed as its own route, since scoring
+    off data an ingest run hasn't produced yet isn't meaningful. Protocols
+    with nothing ingested yet are skipped rather than failing the sweep."""
     with Session(engine) as session:
         protocol_ids = session.exec(select(Protocol.id)).all()
 

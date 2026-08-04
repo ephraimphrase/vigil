@@ -17,11 +17,17 @@ from ingestion.news import NewsFetcher
 from ingestion.social import SocialFetcher
 from ingestion.dao import DaoFetcher
 from ingestion.market import MarketFetcher
+from ingestion.fees import FeesFetcher
+from ingestion.volume import VolumeFetcher
+from ingestion.yields import YieldsFetcher
 
 ONCHAIN_FETCHERS: dict[OnchainSignalKey, BaseFetcher] = {
     "tvl": TvlFetcher(),
-    # "liquidations": LiquidationsFetcher(),
-    # "whales": WhalesFetcher(),
+    "whales": WhalesFetcher(),
+    "fees": FeesFetcher(),
+    "volume": VolumeFetcher(),
+    "yields": YieldsFetcher(),
+    # "liquidations": LiquidationsFetcher(),  # needs ETHERSCAN_API_KEY, not configured - would always return {}
 }
 
 OFFCHAIN_FETCHERS: dict[OffchainSignalKey, BaseFetcher] = {

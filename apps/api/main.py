@@ -1,20 +1,8 @@
-import asyncio
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from db.queries import get_latest_scores, get_score_history, get_recent_triggers
 from routers.webhook import router as webhook_router
-from scheduler import run_ingest_loop
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    ingest_task = asyncio.create_task(run_ingest_loop())
-    yield
-    ingest_task.cancel()
-
 
 app = FastAPI(
     title="Vigil - Autonomous Protocol Risk Monitor",
@@ -24,7 +12,6 @@ app = FastAPI(
         "and triggers KeeperHub MCP workflows when critical risk thresholds are breached."
     ),
     version="1.0.0",
-    lifespan=lifespan,
 )
 
 # Allow the frontend / other services to consume the API
