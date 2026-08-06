@@ -18,9 +18,26 @@ router = APIRouter()
 # who ran the previous one doesn't matter once it's done.
 STATUS_KEY = "vigil:ingest:status"
 
+# _run_ingest_sweep runs as a BackgroundTasks job inside the same process
+# that handled the triggering request - it does NOT survive that
+# container being torn down (a redeploy, a restart, an OOM kill). If that
+# happens mid-sweep, nothing ever flips "active" back to false, since
+# only the sweep's own completion/error handler does that. Past this many
+# seconds, a still-"active" flag is treated as abandoned rather than
+# trusted forever - a real sweep never legitimately takes this long, so
+# this self-heals a stuck lock instead of permanently 409-blocking every
+# future trigger.
+STALE_AFTER_SECONDS = 20 * 60
+
 
 async def is_ingest_active() -> bool:
-    return await redis_client.hget(STATUS_KEY, "active") == "true"
+    status = await redis_client.hgetall(STATUS_KEY)
+    if status.get("active") != "true":
+        return False
+    started_at = status.get("started_at")
+    if started_at and (time.time() - float(started_at)) > STALE_AFTER_SECONDS:
+        return False
+    return True
 
 
 @router.get("/webhook/ingest/status", tags=["Webhooks"])
