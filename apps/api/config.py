@@ -19,5 +19,11 @@ THEGRAPH_API_KEY = os.getenv("THEGRAPH_API_KEY", "")
 COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY", "")
 KEEPERHUB_API_KEY = os.getenv("KEEPERHUB_API_KEY", "")
 
+# Shared secret POST /webhook/ingest checks against (?secret=...) - unset
+# (the local-dev default) leaves the endpoint open, same as before this
+# was added. Set in production so a triggerable, cost-incurring sweep
+# isn't sitting on a guessable public URL with no auth.
+INGEST_WEBHOOK_SECRET = os.getenv("INGEST_WEBHOOK_SECRET", "")
+
 # App Config
 USER_WALLET = os.getenv("USER_WALLET", "0x0000000000000000000000000000000000000000")

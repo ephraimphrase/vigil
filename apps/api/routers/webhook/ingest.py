@@ -1,9 +1,10 @@
 import json
 import time
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 from sqlmodel import Session, select
 
+from config import INGEST_WEBHOOK_SECRET
 from db.models import Protocol, engine
 from ingestion.registry import OFFCHAIN_FETCHERS, ONCHAIN_FETCHERS, TYPED_FETCHERS
 from ingestion.resilient_fetch import safe_fetch
@@ -26,49 +27,40 @@ async def is_ingest_active() -> bool:
 async def ingest_status():
     """
     Whether a run kicked off by POST /webhook/ingest is currently in
-    progress, and when the last run started/finished - useful since a
-    full run walks every protocol x every fetcher sequentially and can
-    take a while (see ingest_all_signals below).
+    progress, and when the last run started/finished - the source of
+    truth for real completion state, since ingest_all_signals itself now
+    returns immediately rather than waiting for the sweep to finish (see
+    that endpoint for why).
     """
     status = await redis_client.hgetall(STATUS_KEY)
     if not status:
         return {"active": False, "started_at": None, "completed_at": None}
     return {
-        "active":       status.get("active") == "true",
-        "started_at":   float(status["started_at"]) if status.get("started_at") else None,
-        "completed_at": float(status["completed_at"]) if status.get("completed_at") else None,
+        "active":              status.get("active") == "true",
+        "started_at":          float(status["started_at"]) if status.get("started_at") else None,
+        "completed_at":        float(status["completed_at"]) if status.get("completed_at") else None,
+        "protocols_processed": int(status["protocols_processed"]) if status.get("protocols_processed") else None,
+        "signals_processed":   int(status["signals_processed"]) if status.get("signals_processed") else None,
+        "error":               status.get("error") or None,
     }
 
 
-@router.post("/webhook/ingest", tags=["Webhooks"])
-async def ingest_all_signals():
-    """
-    Runs every registered fetcher (ingestion/registry.py's
-    ONCHAIN_FETCHERS + OFFCHAIN_FETCHERS + TYPED_FETCHERS - tvl,
-    liquidations, whales, fees, volume, yields, github, sentiment,
-    security, news, social, snapshot, market, typed_signals) for every
-    protocol in the `protocols` table, through the Postgres
-    last-known-good cache (safe_fetch). Each result lands in Redis
-    (vigil:data:{protocol}:{channel}:{key}). typed_signals runs here too
-    but rarely does real work - its own per-signal TTL cache (see
-    ingestion/typed_signals.py) means most sweeps make zero or few actual
-    search-LLM calls. Once every protocol has been fetched, runs
+async def _run_ingest_sweep() -> None:
+    """The actual fetch-everything-then-score work: every registered
+    fetcher (ingestion/registry.py's ONCHAIN_FETCHERS + OFFCHAIN_FETCHERS
+    + TYPED_FETCHERS - tvl, liquidations, whales, fees, volume, yields,
+    github, sentiment, security, news, social, snapshot, market,
+    typed_signals) for every protocol in the `protocols` table, through
+    the Postgres last-known-good cache (safe_fetch). Each result lands in
+    Redis (vigil:data:{protocol}:{channel}:{key}). typed_signals runs
+    here too but rarely does real work - its own per-signal TTL cache
+    (see ingestion/typed_signals.py) means most sweeps make zero or few
+    actual search-LLM calls. Once every protocol has been fetched, runs
     scoring/scorer.py's run_scoring_sweep against that freshly written
-    data - done here rather than left to the caller so a manual/on-demand
-    call gets the same ingest+score behavior every time. Nothing calls
-    this on a schedule in-process right now (main.py has no lifespan hook
-    for it) - an external cron hitting this endpoint every 15 minutes
-    would match the cadence scoring/prompt.py's SYSTEM_PROMPT assumes,
-    but that's not currently set up. Refuses to start a second run while
-    one is already active (see is_ingest_active) - an overlapping run
-    would double the load on the already-slow per-repo GitHub calls and
-    could interleave its writes with the run in progress.
+    data. Run as a background task by ingest_all_signals rather than
+    inline, so the triggering HTTP call doesn't have to stay connected
+    for however long this takes (reliably minutes, not seconds).
     """
-    if await is_ingest_active():
-        raise HTTPException(status_code=409, detail="Ingestion already in progress")
-
-    await redis_client.hset(STATUS_KEY, mapping={"active": "true", "started_at": str(time.time())})
-
     try:
         with Session(engine) as session:
             protocol_ids = session.exec(select(Protocol.id)).all()
@@ -95,11 +87,53 @@ async def ingest_all_signals():
 
         await run_scoring_sweep()
 
-        return {
-            "status": "success",
-            "protocols_processed": len(protocol_ids),
-            "signals_processed": len(results),
-            "results": results,
-        }
-    finally:
-        await redis_client.hset(STATUS_KEY, mapping={"active": "false", "completed_at": str(time.time())})
+        await redis_client.hset(STATUS_KEY, mapping={
+            "active":              "false",
+            "completed_at":        str(time.time()),
+            "protocols_processed": str(len(protocol_ids)),
+            "signals_processed":   str(len(results)),
+            "error":               "",
+        })
+    except Exception as e:
+        await redis_client.hset(STATUS_KEY, mapping={
+            "active":       "false",
+            "completed_at": str(time.time()),
+            "error":        str(e),
+        })
+
+
+@router.post("/webhook/ingest", tags=["Webhooks"])
+async def ingest_all_signals(background_tasks: BackgroundTasks, secret: str | None = None):
+    """
+    Kicks off a full ingest+score sweep (see _run_ingest_sweep) in the
+    background and returns immediately, rather than blocking until the
+    sweep finishes - a full run walks every protocol x every registered
+    fetcher sequentially and then scores each one, which reliably takes
+    minutes. Blocking the HTTP response on that would risk the calling
+    webhook (KeeperHub, on a 15-minute schedule - see
+    scoring/prompt.py's SYSTEM_PROMPT, which assumes that cadence) timing
+    out well before the sweep is actually done, even though the sweep
+    itself completed fine. Poll GET /webhook/ingest/status for real
+    completion state instead of trusting this response's latency.
+
+    If INGEST_WEBHOOK_SECRET is set, requires ?secret=<value> to match or
+    returns 401 - unset (the local-dev default) leaves this endpoint open,
+    same as before this check existed. Set INGEST_WEBHOOK_SECRET in
+    production so this isn't a public, unauthenticated, cost-incurring
+    trigger.
+
+    Refuses to start a second run while one is already active (see
+    is_ingest_active) - an overlapping run would double the load on the
+    already-slow per-repo GitHub calls and could interleave its writes
+    with the run in progress.
+    """
+    if INGEST_WEBHOOK_SECRET and secret != INGEST_WEBHOOK_SECRET:
+        raise HTTPException(status_code=401, detail="Invalid or missing secret")
+
+    if await is_ingest_active():
+        raise HTTPException(status_code=409, detail="Ingestion already in progress")
+
+    await redis_client.hset(STATUS_KEY, mapping={"active": "true", "started_at": str(time.time())})
+    background_tasks.add_task(_run_ingest_sweep)
+
+    return {"status": "started"}
