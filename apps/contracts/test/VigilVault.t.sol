@@ -7,6 +7,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {VigilVault} from "../src/vault/VigilVault.sol";
 import {HealthOracle} from "../src/oracle/HealthOracle.sol";
 import {IVigilProtocolAdapter} from "../src/interface/IVigilProtocolAdapter.sol";
+import {IVigilVault} from "../src/interface/IVigilVault.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
 import {MockAdapter} from "./mocks/MockAdapter.sol";
 
@@ -31,7 +32,7 @@ contract VigilVaultTest is Test {
         weth = new MockERC20("Wrapped Ether", "WETH");
         oracle = new HealthOracle(admin, scorer, guardian, 6 hours);
         vault = new VigilVault(
-            IERC20(address(weth)), VigilVault.VaultKind.Single, oracle, admin, keeper, guardian, "Vigil WETH", "vgWETH"
+            IERC20(address(weth)), IVigilVault.VaultKind.Single, oracle, admin, keeper, guardian, "Vigil WETH", "vgWETH"
         );
 
         // Adapters are immutable-bound to the vault address, so they can
@@ -61,7 +62,7 @@ contract VigilVaultTest is Test {
         vm.expectRevert(VigilVault.ZeroAddress.selector);
         new VigilVault(
             IERC20(address(weth)),
-            VigilVault.VaultKind.Single,
+            IVigilVault.VaultKind.Single,
             HealthOracle(address(0)),
             admin,
             keeper,
@@ -74,12 +75,12 @@ contract VigilVaultTest is Test {
     function test_ConstructorRevertsOnZeroAdmin() public {
         vm.expectRevert(VigilVault.ZeroAddress.selector);
         new VigilVault(
-            IERC20(address(weth)), VigilVault.VaultKind.Single, oracle, address(0), keeper, guardian, "n", "s"
+            IERC20(address(weth)), IVigilVault.VaultKind.Single, oracle, address(0), keeper, guardian, "n", "s"
         );
     }
 
     function test_ConstructorSetsKind() public view {
-        assertEq(uint256(vault.kind()), uint256(VigilVault.VaultKind.Single));
+        assertEq(uint256(vault.kind()), uint256(IVigilVault.VaultKind.Single));
     }
 
     function test_ConstructorGrantsRoles() public view {
@@ -205,7 +206,9 @@ contract VigilVaultTest is Test {
 
     function test_RebalanceRevertsForNonKeeper() public {
         vm.expectRevert(
-            abi.encodeWithSelector(IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, vault.KEEPER_ROLE())
+            abi.encodeWithSelector(
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, vault.KEEPER_ROLE()
+            )
         );
         vm.prank(stranger);
         vault.rebalance();

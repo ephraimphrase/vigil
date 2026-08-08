@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 import {WETH9} from "../src/token/WETH9.sol";
+import {DeployRegistrar} from "./lib/DeployRegistrar.sol";
 
 struct TokenRecord {
     address token;
@@ -12,7 +13,7 @@ struct TokenRecord {
     string logoURI;
 }
 
-contract DeployWETHScript is Script {
+contract DeployWETHScript is DeployRegistrar {
     string constant WETH_LOGO_URI = "https://coin-images.coingecko.com/coins/images/2518/large/weth.png";
     uint256 constant LOCAL_CHAIN_ID = 31337;
 
@@ -30,15 +31,12 @@ contract DeployWETHScript is Script {
         vm.stopBroadcast();
 
         console.log("WETH9 deployed at:", address(weth));
+        _registerContract("WETH9", address(weth));
 
         _appendToTokensFile(
             _tokenRecordJson(
                 TokenRecord({
-                    token: address(weth),
-                    symbol: "WETH",
-                    name: "Wrapped Ether",
-                    decimals: 18,
-                    logoURI: WETH_LOGO_URI
+                    token: address(weth), symbol: "WETH", name: "Wrapped Ether", decimals: 18, logoURI: WETH_LOGO_URI
                 })
             )
         );

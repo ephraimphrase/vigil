@@ -3,8 +3,9 @@ pragma solidity ^0.8.24;
 
 import {Script, console} from "forge-std/Script.sol";
 import {HealthOracle} from "../src/oracle/HealthOracle.sol";
+import {DeployRegistrar} from "./lib/DeployRegistrar.sol";
 
-contract DeployHealthOracleScript is Script {
+contract DeployHealthOracleScript is DeployRegistrar {
     // Anvil default account 0 — matches the DEPLOYER_KEY documented in
     // .env.example, so a bare local run has every role held by the same
     // key without extra setup. Production deploys MUST override
@@ -30,6 +31,7 @@ contract DeployHealthOracleScript is Script {
         console.log("  stalenessWindow (0 = contract default 6h):", stalenessWindow);
 
         _writeDeploymentFile(oracle, admin, scorer, guardian);
+        _registerContract("HealthOracle", address(oracle));
     }
 
     function _writeDeploymentFile(HealthOracle oracle, address admin, address scorer, address guardian) internal {

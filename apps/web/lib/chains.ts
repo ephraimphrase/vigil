@@ -15,4 +15,3 @@ export function chainForId(chainId: string) {
     rpc: RPC_URLS[chainId] ?? RPC_URLS["31337"],
   });
 }
-// test

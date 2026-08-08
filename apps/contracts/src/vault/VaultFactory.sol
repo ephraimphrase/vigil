@@ -14,7 +14,9 @@ contract VaultFactory is IVaultFactory {
     address[] public override vaults;
     mapping(address asset => address vault) public override vaultByAsset;
 
-    event VaultCreated(address indexed asset, address indexed vault, address indexed oracle);
+    event VaultCreated(
+        address indexed asset, address indexed vault, address indexed oracle, IVigilVault.VaultKind kind
+    );
 
     error ZeroAddress();
     error VaultAlreadyExists(address asset);
@@ -37,7 +39,7 @@ contract VaultFactory is IVaultFactory {
         vaultByAsset[address(asset)] = address(vault);
         vaults.push(address(vault));
 
-        emit VaultCreated(address(asset), address(vault), address(oracle));
+        emit VaultCreated(address(asset), address(vault), address(oracle), kind);
     }
 
     function vaultCount() external view override returns (uint256) {

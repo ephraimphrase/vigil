@@ -53,4 +53,8 @@ echo "== Deploying HealthOracle =="
 forge script script/DeployHealthOracle.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
+echo "== Syncing deployed contracts to apps/web =="
+(cd ../web && npx tsx scripts/sync-contracts.ts)
+
+echo
 echo "Done. Chain stays up at $RPC_URL — run 'pnpm explorer' to visualize it."
