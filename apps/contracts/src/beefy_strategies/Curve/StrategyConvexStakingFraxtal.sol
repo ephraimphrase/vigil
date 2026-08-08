@@ -32,23 +32,23 @@ contract StrategyConvexStakingFraxtal is BaseAllToNativeFactoryStrat {
         return "ConvexStaking";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return staking.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(staking), amount);
         staking.stakeFor(address(this), amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             staking.withdraw(amount, false);
         }
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             staking.emergencyWithdraw(amount);
         }
@@ -61,5 +61,4 @@ contract StrategyConvexStakingFraxtal is BaseAllToNativeFactoryStrat {
     function _verifyRewardToken(address token) internal view override {
         require(token != address(staking), "!staking");
     }
-
 }

@@ -38,11 +38,13 @@ contract UniV4Swapper {
         native = _native;
     }
 
-    function swap(address tokenIn, address tokenOut, uint amount, uint minAmount, PathKey[] calldata path) external {
+    function swap(address tokenIn, address tokenOut, uint256 amount, uint256 minAmount, PathKey[] calldata path)
+        external
+    {
         if (tokenIn == address(0)) {
             IERC20(native).safeTransferFrom(msg.sender, address(this), amount);
             IWrappedNative(native).withdraw(amount);
-            (bool success, ) = router.call{value: amount}("");
+            (bool success,) = router.call{value: amount}("");
             if (!success) revert EthTransferFailed();
         } else {
             IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amount);
@@ -50,16 +52,13 @@ contract UniV4Swapper {
             IPermit2(permit2).approve(tokenIn, router, uint160(amount), uint48(block.timestamp));
         }
 
-        bytes memory commands = hex'10'; // V4_SWAP
+        bytes memory commands = hex"10"; // V4_SWAP
         bytes[] memory inputs = new bytes[](1);
         bytes memory actions = abi.encodePacked(uint8(0x07), uint8(0x0c), uint8(0x0f)); // SWAP_EXACT_IN, SETTLE_ALL, TAKE_ALL
         bytes[] memory params = new bytes[](3);
         params[0] = abi.encode(
             ExactInputParams({
-                currencyIn: tokenIn,
-                path: path,
-                amountIn: uint128(amount),
-                amountOutMinimum: uint128(minAmount)
+                currencyIn: tokenIn, path: path, amountIn: uint128(amount), amountOutMinimum: uint128(minAmount)
             })
         );
         params[1] = abi.encode(tokenIn, amount);
@@ -77,6 +76,8 @@ contract UniV4Swapper {
     }
 
     receive() external payable {
-        if (msg.sender != address(native) && msg.sender != address(IUniversalRouter(router).poolManager())) revert InvalidEthSender();
+        if (msg.sender != address(native) && msg.sender != address(IUniversalRouter(router).poolManager())) {
+            revert InvalidEthSender();
+        }
     }
 }

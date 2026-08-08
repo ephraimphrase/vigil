@@ -164,9 +164,7 @@ contract VigilZapRouterTest is Test {
         usdc.approve(address(router), 1_000e18);
         // minWethOut is satisfied (0), but shares (1:1 with wethOut) fall
         // short of a minSharesOut set above what the swap actually produced.
-        vm.expectRevert(
-            abi.encodeWithSelector(VigilZapRouter.InsufficientShares.selector, 1_000e18, 2_000e18)
-        );
+        vm.expectRevert(abi.encodeWithSelector(VigilZapRouter.InsufficientShares.selector, 1_000e18, 2_000e18));
         router.zapIn(address(usdc), 1_000e18, path, 0, 2_000e18, receiver, block.timestamp);
         vm.stopPrank();
     }
@@ -185,9 +183,7 @@ contract VigilZapRouterTest is Test {
         (uint8 v, bytes32 r, bytes32 s) = _signPermit(token, pk, address(router), 1_000e18, deadline);
 
         vm.prank(owner);
-        uint256 shares = router.zapInWithPermit(
-            address(token), 1_000e18, path, 0, 0, receiver, deadline, v, r, s
-        );
+        uint256 shares = router.zapInWithPermit(address(token), 1_000e18, path, 0, 0, receiver, deadline, v, r, s);
 
         assertEq(shares, 1_000e18);
         assertEq(token.allowance(owner, address(router)), 0);
@@ -281,9 +277,7 @@ contract VigilZapRouterTest is Test {
 
         vm.startPrank(user);
         vault.approve(address(router), shares);
-        vm.expectRevert(
-            abi.encodeWithSelector(VigilZapRouter.InsufficientOutput.selector, 500e18, 900e18)
-        );
+        vm.expectRevert(abi.encodeWithSelector(VigilZapRouter.InsufficientOutput.selector, 500e18, 900e18));
         router.zapOut(shares, address(usdc), path, 900e18, receiver, block.timestamp);
         vm.stopPrank();
     }

@@ -26,5 +26,10 @@ interface ICurveSwap {
 
     function exchange(uint256 i, uint256 j, uint256 dx, uint256 min_dy) external;
 
-    function exchange(address[11] calldata _route,uint[4][5] calldata _swap_params,uint _amount,uint _expected) external returns(uint);
+    function exchange(
+        address[11] calldata _route,
+        uint256[4][5] calldata _swap_params,
+        uint256 _amount,
+        uint256 _expected
+    ) external returns (uint256);
 }

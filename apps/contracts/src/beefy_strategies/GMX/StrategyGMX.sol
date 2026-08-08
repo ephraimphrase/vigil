@@ -33,11 +33,10 @@ contract StrategyGMX is StratFeeManagerInitializable {
     event Withdraw(uint256 tvl);
     event ChargedFees(uint256 callFees, uint256 beefyFees, uint256 strategistFees);
 
-    function initialize(
-        address _chef,
-        address _native,
-        CommonAddresses calldata _commonAddresses
-    ) external initializer {
+    function initialize(address _chef, address _native, CommonAddresses calldata _commonAddresses)
+        external
+        initializer
+    {
         __StratFeeManager_init(_commonAddresses);
         chef = _chef;
         native = _native;
@@ -190,7 +189,7 @@ contract StrategyGMX is StratFeeManagerInitializable {
         IBeefyVault.StratCandidate memory candidate = IBeefyVault(vault).stratCandidate();
         address stratAddress = candidate.implementation;
 
-        IERC20(rewardStorage).forceApprove(stratAddress, type(uint).max);
+        IERC20(rewardStorage).forceApprove(stratAddress, type(uint256).max);
         IGMXRouter(chef).signalTransfer(stratAddress);
         IGMXStrategy(stratAddress).acceptTransfer();
 
@@ -219,9 +218,9 @@ contract StrategyGMX is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(want).forceApprove(balanceTracker, type(uint).max);
-        IERC20(native).forceApprove(unirouter, type(uint).max);
-        IERC20(want).forceApprove(unirouter, type(uint).max);
+        IERC20(want).forceApprove(balanceTracker, type(uint256).max);
+        IERC20(native).forceApprove(unirouter, type(uint256).max);
+        IERC20(want).forceApprove(unirouter, type(uint256).max);
     }
 
     function _removeAllowances() internal {

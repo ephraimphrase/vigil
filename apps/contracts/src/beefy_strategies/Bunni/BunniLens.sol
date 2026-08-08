@@ -7,8 +7,11 @@ import "../utils/LiquidityAmounts.sol";
 import "./IBunni.sol";
 
 contract BunniLens {
-
-    function tokenBalances(address bunniToken) external view returns (uint256 amount0, uint256 amount1, uint256 totalSupply) {
+    function tokenBalances(address bunniToken)
+        external
+        view
+        returns (uint256 amount0, uint256 amount1, uint256 totalSupply)
+    {
         address hub = IBunniToken(bunniToken).hub();
         address pool = IBunniToken(bunniToken).pool();
         int24 tickLower = IBunniToken(bunniToken).tickLower();
@@ -17,10 +20,7 @@ contract BunniLens {
         (uint160 sqrtPriceX96,,,,,,) = IUniV3Pool(pool).slot0();
 
         (amount0, amount1) = LiquidityAmounts.getAmountsForLiquidity(
-            sqrtPriceX96,
-            TickMath.getSqrtRatioAtTick(tickLower),
-            TickMath.getSqrtRatioAtTick(tickUpper),
-            liquidity
+            sqrtPriceX96, TickMath.getSqrtRatioAtTick(tickLower), TickMath.getSqrtRatioAtTick(tickUpper), liquidity
         );
 
         totalSupply = IBunniToken(bunniToken).totalSupply();

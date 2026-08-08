@@ -28,23 +28,23 @@ contract StrategyERC4626Merkl is BaseAllToNativeFactoryStrat {
         return "ERC4626Merkl";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return erc4626Vault.convertToAssets(erc4626Vault.balanceOf(address(this)));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(erc4626Vault), amount);
         erc4626Vault.deposit(amount, address(this));
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             erc4626Vault.withdraw(amount, address(this), address(this));
         }
     }
 
     function _emergencyWithdraw() internal override {
-        uint bal = erc4626Vault.balanceOf(address(this));
+        uint256 bal = erc4626Vault.balanceOf(address(this));
         if (bal > 0) {
             erc4626Vault.redeem(bal, address(this), address(this));
         }
@@ -61,11 +61,7 @@ contract StrategyERC4626Merkl is BaseAllToNativeFactoryStrat {
     }
 
     /// @notice Claim rewards from the underlying platform
-    function claim(
-        address[] calldata _tokens,
-        uint256[] calldata _amounts,
-        bytes32[][] calldata _proofs
-    ) external { 
+    function claim(address[] calldata _tokens, uint256[] calldata _amounts, bytes32[][] calldata _proofs) external {
         address[] memory users = new address[](1);
         users[0] = address(this);
 

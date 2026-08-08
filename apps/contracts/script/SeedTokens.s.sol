@@ -154,11 +154,7 @@ contract SeedTokensScript is Script {
             }
             address token = factory.deployToken(tokens[i].name, tokens[i].symbol);
             deployed[count++] = TokenRecord({
-                token: token,
-                symbol: tokens[i].symbol,
-                name: tokens[i].name,
-                decimals: 18,
-                logoURI: tokens[i].logo
+                token: token, symbol: tokens[i].symbol, name: tokens[i].name, decimals: 18, logoURI: tokens[i].logo
             });
         }
         // shrink to the number actually deployed, discarding skipped duplicates

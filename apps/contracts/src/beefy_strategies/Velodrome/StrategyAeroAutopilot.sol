@@ -11,11 +11,10 @@ contract StrategyAeroAutopilot is BaseAllToNativeFactoryStrat {
     address public lpToken0;
     address public lpToken1;
 
-    function initialize(
-        bool _harvestOnDeposit,
-        address[] calldata _rewards,
-        Addresses calldata _addresses
-    ) public initializer {
+    function initialize(bool _harvestOnDeposit, address[] calldata _rewards, Addresses calldata _addresses)
+        public
+        initializer
+    {
         __BaseStrategy_init(_addresses, _rewards);
         if (_harvestOnDeposit) setHarvestOnDeposit(true);
         lpToken0 = IMellowLpWrapper(want).token0();
@@ -26,13 +25,13 @@ contract StrategyAeroAutopilot is BaseAllToNativeFactoryStrat {
         return "AeroAutopilot";
     }
 
-    function balanceOfPool() public pure override returns (uint) {
+    function balanceOfPool() public pure override returns (uint256) {
         return 0;
     }
 
-    function _deposit(uint amount) internal override {}
+    function _deposit(uint256 amount) internal override {}
 
-    function _withdraw(uint amount) internal override {}
+    function _withdraw(uint256 amount) internal override {}
 
     function _emergencyWithdraw() internal override {}
 
@@ -55,40 +54,40 @@ contract StrategyAeroAutopilot is BaseAllToNativeFactoryStrat {
         }
 
         IMellowLpWrapper lp = IMellowLpWrapper(want);
-        (uint toLp0, uint toLp1) = _splitOutputPerBalance(output, lp);
+        (uint256 toLp0, uint256 toLp1) = _splitOutputPerBalance(output, lp);
         _swap(output, lpToken0, toLp0);
         _swap(output, lpToken1, toLp1);
 
-        uint lp0Bal = IERC20(lpToken0).balanceOf(address(this));
-        uint lp1Bal = IERC20(lpToken1).balanceOf(address(this));
-        uint lpAmount = _getLpAmountToMint(lp, lp0Bal, lp1Bal);
+        uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
+        uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
+        uint256 lpAmount = _getLpAmountToMint(lp, lp0Bal, lp1Bal);
 
         IERC20(lpToken0).forceApprove(want, lp0Bal);
         IERC20(lpToken1).forceApprove(want, lp1Bal);
         lp.mint(IMellowLpWrapper.MintParams(lpAmount, lp0Bal, lp1Bal, address(this), block.timestamp));
     }
 
-    function _splitOutputPerBalance(address output, IMellowLpWrapper lp) internal view returns (uint, uint) {
-        uint totalSupply = lp.totalSupply();
-        (uint amount0, uint amount1) = lp.previewMint(totalSupply);
+    function _splitOutputPerBalance(address output, IMellowLpWrapper lp) internal view returns (uint256, uint256) {
+        uint256 totalSupply = lp.totalSupply();
+        (uint256 amount0, uint256 amount1) = lp.previewMint(totalSupply);
         (uint160 sqrtPriceX96,,,,,) = ICLPool(lp.pool()).slot0();
-        uint price = (uint(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2;
-        uint amount0inLp1 = amount0 * price / 1e36;
-        uint outputBal = IERC20(output).balanceOf(address(this));
-        uint toLp0 = outputBal * amount0inLp1 / (amount0inLp1 + amount1);
-        uint toLp1 = outputBal - toLp0;
+        uint256 price = (uint256(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2;
+        uint256 amount0inLp1 = amount0 * price / 1e36;
+        uint256 outputBal = IERC20(output).balanceOf(address(this));
+        uint256 toLp0 = outputBal * amount0inLp1 / (amount0inLp1 + amount1);
+        uint256 toLp1 = outputBal - toLp0;
         return (toLp0, toLp1);
     }
 
-    function _getLpAmountToMint(IMellowLpWrapper lp, uint lp0Bal, uint lp1Bal) internal view returns (uint) {
-        uint totalSupply = lp.totalSupply();
-        (uint total0, uint total1) = lp.previewMint(totalSupply);
-        uint lpAmount = Math.min(
-            (lp0Bal == 0 || total0 == 0) ? type(uint).max : totalSupply * lp0Bal / total0,
-            (lp1Bal == 0 || total1 == 0) ? type(uint).max : totalSupply * lp1Bal / total1
+    function _getLpAmountToMint(IMellowLpWrapper lp, uint256 lp0Bal, uint256 lp1Bal) internal view returns (uint256) {
+        uint256 totalSupply = lp.totalSupply();
+        (uint256 total0, uint256 total1) = lp.previewMint(totalSupply);
+        uint256 lpAmount = Math.min(
+            (lp0Bal == 0 || total0 == 0) ? type(uint256).max : totalSupply * lp0Bal / total0,
+            (lp1Bal == 0 || total1 == 0) ? type(uint256).max : totalSupply * lp1Bal / total1
         );
 
-        (uint actual0, uint actual1) = lp.previewMint(lpAmount);
+        (uint256 actual0, uint256 actual1) = lp.previewMint(lpAmount);
         if (lp0Bal < actual0 || lp1Bal < actual1) {
             lpAmount--;
             // TODO

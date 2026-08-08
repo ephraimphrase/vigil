@@ -8,7 +8,7 @@ interface ILockstake {
     function ilk() external view returns (bytes32);
     function open(uint256 index) external returns (address urn);
     function selectFarm(address owner, uint256 index, address farm, uint16 ref) external;
-    function ownerUrns(address owner, uint index) external view returns (address);
+    function ownerUrns(address owner, uint256 index) external view returns (address);
     function urnFarms(address urn) external view returns (address farm);
     function lock(address owner, uint256 index, uint256 wad, uint16 ref) external;
     function free(address owner, uint256 index, address to, uint256 wad) external returns (uint256 freed);
@@ -49,16 +49,16 @@ contract StrategySky is BaseAllToNativeFactoryStrat {
         return "SkyLockstakeV2";
     }
 
-    function balanceOfPool() public view override returns (uint ink) {
+    function balanceOfPool() public view override returns (uint256 ink) {
         (ink,) = vat.urns(ilk, urn);
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(lockstake), amount);
         lockstake.lock(address(this), 0, amount, 0);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             lockstake.free(address(this), 0, address(this), amount);
         }
@@ -79,7 +79,7 @@ contract StrategySky is BaseAllToNativeFactoryStrat {
         rewards.push(want);
     }
 
-    function currentFarm() external view returns(address) {
+    function currentFarm() external view returns (address) {
         return lockstake.urnFarms(urn);
     }
 

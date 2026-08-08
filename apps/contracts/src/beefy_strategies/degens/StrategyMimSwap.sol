@@ -9,12 +9,18 @@ import "../Common/BaseAllToNativeFactoryStrat.sol";
 interface IMimLp {
     function _BASE_TOKEN_() external view returns (address);
     function _QUOTE_TOKEN_() external view returns (address);
-    function getReserves() external view returns (uint baseReserve, uint quoteReserve);
+    function getReserves() external view returns (uint256 baseReserve, uint256 quoteReserve);
 }
 
 interface IMimRouter {
-    function addLiquidity(address lp, address to, uint baseInAmount, uint quoteInAmount, uint minimumShares, uint deadline)
-    external returns (uint, uint, uint);
+    function addLiquidity(
+        address lp,
+        address to,
+        uint256 baseInAmount,
+        uint256 quoteInAmount,
+        uint256 minimumShares,
+        uint256 deadline
+    ) external returns (uint256, uint256, uint256);
 }
 
 contract StrategyMimSwap is BaseAllToNativeFactoryStrat {
@@ -25,12 +31,10 @@ contract StrategyMimSwap is BaseAllToNativeFactoryStrat {
     address public lpToken0;
     address public lpToken1;
 
-    function initialize(
-        IRewardPool _gauge,
-        address _router,
-        address[] calldata _rewards,
-        Addresses calldata _addresses
-    ) public initializer  {
+    function initialize(IRewardPool _gauge, address _router, address[] calldata _rewards, Addresses calldata _addresses)
+        public
+        initializer
+    {
         __BaseStrategy_init(_addresses, _rewards);
         lpToken0 = IMimLp(want)._BASE_TOKEN_();
         lpToken1 = IMimLp(want)._QUOTE_TOKEN_();
@@ -43,21 +47,21 @@ contract StrategyMimSwap is BaseAllToNativeFactoryStrat {
         return "MimSwap";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return gauge.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(gauge), amount);
         gauge.stake(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         gauge.withdraw(amount);
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             gauge.withdraw(amount);
         }
@@ -70,7 +74,7 @@ contract StrategyMimSwap is BaseAllToNativeFactoryStrat {
     function _verifyRewardToken(address token) internal view override {}
 
     function _swapNativeToWant() internal override {
-        (uint toLp0, uint toLp1) = quoteAddLiquidity();
+        (uint256 toLp0, uint256 toLp1) = quoteAddLiquidity();
 
         if (lpToken0 != native) {
             _swap(native, lpToken0, toLp0);
@@ -79,21 +83,21 @@ contract StrategyMimSwap is BaseAllToNativeFactoryStrat {
             _swap(native, lpToken1, toLp1);
         }
 
-        uint lp0Bal = IERC20(lpToken0).balanceOf(address(this));
-        uint lp1Bal = IERC20(lpToken1).balanceOf(address(this));
+        uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
+        uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
         IERC20(lpToken0).forceApprove(mimRouter, lp0Bal);
         IERC20(lpToken1).forceApprove(mimRouter, lp1Bal);
-        IMimRouter(mimRouter).addLiquidity(want, address(this), lp0Bal, lp1Bal, 0, type(uint).max);
+        IMimRouter(mimRouter).addLiquidity(want, address(this), lp0Bal, lp1Bal, 0, type(uint256).max);
     }
 
-    function quoteAddLiquidity() internal view returns (uint toLp0, uint toLp1) {
-        uint decimals0 = 10 ** IERC20Extended(lpToken0).decimals();
-        uint decimals1 = 10 ** IERC20Extended(lpToken1).decimals();
-        (uint reserve0, uint reserve1) = IMimLp(want).getReserves();
+    function quoteAddLiquidity() internal view returns (uint256 toLp0, uint256 toLp1) {
+        uint256 decimals0 = 10 ** IERC20Extended(lpToken0).decimals();
+        uint256 decimals1 = 10 ** IERC20Extended(lpToken1).decimals();
+        (uint256 reserve0, uint256 reserve1) = IMimLp(want).getReserves();
         reserve0 = reserve0 * 1e18 / decimals0;
         reserve1 = reserve1 * 1e18 / decimals1;
 
-        uint nativeBal = IERC20(native).balanceOf(address(this));
+        uint256 nativeBal = IERC20(native).balanceOf(address(this));
         toLp0 = nativeBal * reserve0 / (reserve0 + reserve1);
         toLp1 = nativeBal - toLp0;
     }

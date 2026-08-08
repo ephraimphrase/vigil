@@ -6,7 +6,6 @@ pragma solidity ^0.8.0;
 /// @author Beefy, @kexley
 /// @notice Error list for Beefy Oracles
 contract BeefyOracleErrors {
-
     /// @dev No response from the Chainlink feed
     error NoAnswer();
 
@@ -21,5 +20,4 @@ contract BeefyOracleErrors {
 
     /// @dev Array length is not correct
     error ArrayLength();
-
 }

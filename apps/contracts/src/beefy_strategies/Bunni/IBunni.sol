@@ -28,27 +28,22 @@ interface IBunniHub {
     }
 
     function deposit(DepositParams calldata params)
-    external
-    payable
-    returns (
-        uint256 shares,
-        uint128 addedLiquidity,
-        uint256 amount0,
-        uint256 amount1
-    );
+        external
+        payable
+        returns (uint256 shares, uint128 addedLiquidity, uint256 amount0, uint256 amount1);
 }
 
 interface IUniV3Pool {
     function positions(bytes32 key)
-    external
-    view
-    returns (
-        uint128 liquidity,
-        uint256 feeGrowthInside0LastX128,
-        uint256 feeGrowthInside1LastX128,
-        uint128 tokensOwed0,
-        uint128 tokensOwed1
-    );
+        external
+        view
+        returns (
+            uint128 liquidity,
+            uint256 feeGrowthInside0LastX128,
+            uint256 feeGrowthInside1LastX128,
+            uint128 tokensOwed0,
+            uint128 tokensOwed1
+        );
 
     function slot0() external view returns (uint160, int24, uint16, uint16, uint16, uint8, bool);
     function token0() external view returns (address);

@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 interface IBeefyVault {
     struct StratCandidate {
         address implementation;
-        uint proposedTime;
+        uint256 proposedTime;
     }
     function strategy() external view returns (address);
     function stratCandidate() external view returns (StratCandidate memory);

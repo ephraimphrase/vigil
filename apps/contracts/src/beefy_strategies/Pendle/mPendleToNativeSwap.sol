@@ -13,12 +13,12 @@ contract mPendleToNativeSwap {
     address public native = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
     address public swapper = 0x62Fc95FBa4b802aC13017aAa65cA62FfcE6DF0eA;
 
-    function swap(uint amount) external {
+    function swap(uint256 amount) external {
         IERC20(mPendle).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(mPendle).approve(swapper, amount);
         IBeefySwapper(swapper).swap(mPendle, pendle, amount);
 
-        uint bal = IERC20(pendle).balanceOf(address(this));
+        uint256 bal = IERC20(pendle).balanceOf(address(this));
         IERC20(pendle).approve(swapper, bal);
         IBeefySwapper(swapper).swap(pendle, native, bal);
 

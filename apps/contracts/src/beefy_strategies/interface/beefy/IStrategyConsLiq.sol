@@ -3,7 +3,17 @@ pragma solidity ^0.8.0;
 
 interface IStrategyConcLiq {
     function balances() external view returns (uint256, uint256);
-    function balancesOfPool() external view returns (uint256 token0Bal, uint256 token1Bal, uint256 mainAmount0, uint256 mainAmount1, uint256 altAmount0, uint256 altAmount1);
+    function balancesOfPool()
+        external
+        view
+        returns (
+            uint256 token0Bal,
+            uint256 token1Bal,
+            uint256 mainAmount0,
+            uint256 mainAmount1,
+            uint256 altAmount0,
+            uint256 altAmount1
+        );
     function beforeAction() external;
     function deposit() external;
     function harvest() external;
@@ -25,6 +35,5 @@ interface IStrategyConcLiq {
     function positionWidth() external view returns (int24);
     function maxTickDeviation() external view returns (int56);
     function twapInterval() external view returns (uint32);
-    function range() external view returns (uint, uint);
-
+    function range() external view returns (uint256, uint256);
 }

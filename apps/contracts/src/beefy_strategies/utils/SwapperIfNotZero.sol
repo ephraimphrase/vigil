@@ -14,11 +14,11 @@ contract SwapperIfNotZero {
         swapper = _swapper;
     }
 
-    function swap(address from, address to, uint amount) external {
+    function swap(address from, address to, uint256 amount) external {
         if (amount == 0) return;
 
         IERC20(from).safeTransferFrom(msg.sender, address(this), amount);
-        uint bal = IERC20(from).balanceOf(address(this));
+        uint256 bal = IERC20(from).balanceOf(address(this));
 
         IERC20(from).approve(swapper, bal);
         IBeefySwapper(swapper).swap(from, to, bal);

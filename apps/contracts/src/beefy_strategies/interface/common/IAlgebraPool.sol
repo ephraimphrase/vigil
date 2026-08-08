@@ -19,10 +19,7 @@ interface IAlgebraPool {
 
 interface IAlgebraPlugin {
     function getTimepoints(uint32[] calldata secondsAgos)
-    external
-    view
-    returns (
-        int56[] memory tickCumulatives,
-        uint112[] memory volatilityCumulatives
-    );
+        external
+        view
+        returns (int56[] memory tickCumulatives, uint112[] memory volatilityCumulatives);
 }

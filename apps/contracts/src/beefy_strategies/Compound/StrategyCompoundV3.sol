@@ -13,19 +13,15 @@ contract StrategyCompoundV3 is BaseAllToNativeFactoryStrat {
     address public cToken;
     address public distributor;
 
-    function initialize(
-        address _cToken,
-        address _distributor,
-        Addresses memory _addresses
-    ) external initializer {
+    function initialize(address _cToken, address _distributor, Addresses memory _addresses) external initializer {
         cToken = _cToken;
         distributor = _distributor;
 
-        if(_addresses.want == address(0)) _addresses.want = IComet(_cToken).baseToken();
+        if (_addresses.want == address(0)) _addresses.want = IComet(_cToken).baseToken();
         address[] memory rewardTokens = new address[](1);
         (address reward,,,) = ICometRewards(distributor).rewardConfig(cToken);
         rewardTokens[0] = reward;
-        
+
         __BaseStrategy_init(_addresses, rewardTokens);
     }
 
@@ -37,12 +33,12 @@ contract StrategyCompoundV3 is BaseAllToNativeFactoryStrat {
         return IERC20(cToken).balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(cToken, amount);
         IComet(cToken).supply(want, amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         uint256 cTokenBal = IERC20(want).balanceOf(cToken);
         require(cTokenBal >= amount, "Not Enough Underlying");
         IComet(cToken).withdraw(want, amount);

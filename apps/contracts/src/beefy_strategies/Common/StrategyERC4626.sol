@@ -45,13 +45,13 @@ contract StrategyERC4626 is BaseAllToNativeFactoryStrat {
 
     /// @notice The balance of the strategy in the pool
     /// @return The balance of the strategy in the pool
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return storedBalance;
     }
 
     /// @dev Assets are deposited into the ERC4626 vault using the `mint` function to prevent dust from being lost.
     /// @param amount The amount of assets to deposit
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(erc4626), amount);
         // round down to the nearest amount of shares to mint for deposited assets
         uint256 shares = erc4626.previewDeposit(amount);
@@ -63,7 +63,7 @@ contract StrategyERC4626 is BaseAllToNativeFactoryStrat {
 
     /// @dev Assets are withdrawn from the ERC4626 vault using the `redeem` function to prevent dust from being lost.
     /// @param amount The amount of assets to withdraw
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             // round up to the nearest amount of shares to withdraw for the requested amount
             uint256 requiredShares = erc4626.previewWithdraw(amount);
@@ -76,7 +76,7 @@ contract StrategyERC4626 is BaseAllToNativeFactoryStrat {
     /// @dev Emergency withdraw is called when the strategy is panicked
     function _emergencyWithdraw() internal override {
         storedBalance = 0;
-        uint bal = erc4626.balanceOf(address(this));
+        uint256 bal = erc4626.balanceOf(address(this));
         if (bal > 0) {
             erc4626.redeem(bal, address(this), address(this));
         }
@@ -119,11 +119,7 @@ contract StrategyERC4626 is BaseAllToNativeFactoryStrat {
     /// @param _tokens The addresses of the tokens to claim
     /// @param _amounts The amounts of the tokens to claim
     /// @param _proofs The proofs of the tokens to claim
-    function claim(
-        address[] calldata _tokens,
-        uint256[] calldata _amounts,
-        bytes32[][] calldata _proofs
-    ) external {
+    function claim(address[] calldata _tokens, uint256[] calldata _amounts, bytes32[][] calldata _proofs) external {
         address[] memory users = new address[](_tokens.length);
         for (uint256 i; i < _tokens.length; ++i) {
             users[i] = address(this);

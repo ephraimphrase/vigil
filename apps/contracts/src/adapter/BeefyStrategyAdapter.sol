@@ -62,7 +62,6 @@ contract BeefyStrategyAdapter is IVigilProtocolAdapter, Pausable {
         return address(_strategy);
     }
 
-
     function totalAssets() public view override returns (uint256) {
         return _strategy.balanceOf();
     }

@@ -15,10 +15,7 @@ contract StrategyTokemak is BaseAllToNativeFactoryStrat {
     // Tokens used
     ITokemakRewarder public rewarder;
 
-    function initialize(
-        address _rewarder,
-        Addresses memory _commonAddresses
-    ) external initializer {
+    function initialize(address _rewarder, Addresses memory _commonAddresses) external initializer {
         rewarder = ITokemakRewarder(_rewarder);
         _commonAddresses.want = rewarder.stakingToken();
         _commonAddresses.depositToken = ITokemakVault(_commonAddresses.want).asset();
@@ -32,18 +29,18 @@ contract StrategyTokemak is BaseAllToNativeFactoryStrat {
         return "Tokemak";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return rewarder.balanceOf(address(this));
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         if (_amount > 0) {
             IERC20(want).forceApprove(address(rewarder), _amount);
             rewarder.stake(address(this), _amount);
         }
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (_amount > 0) rewarder.withdraw(address(this), _amount, false);
     }
 

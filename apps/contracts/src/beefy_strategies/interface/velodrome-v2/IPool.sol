@@ -30,9 +30,9 @@ interface IPool {
     event Claim(address indexed sender, address indexed recipient, uint256 amount0, uint256 amount1);
 
     function metadata()
-    external
-    view
-    returns (uint256 dec0, uint256 dec1, uint256 r0, uint256 r1, bool st, address t0, address t1);
+        external
+        view
+        returns (uint256 dec0, uint256 dec1, uint256 r0, uint256 r1, bool st, address t0, address t1);
 
     function claimFees() external returns (uint256, uint256);
 

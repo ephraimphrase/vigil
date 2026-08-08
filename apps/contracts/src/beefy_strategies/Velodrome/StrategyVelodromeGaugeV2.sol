@@ -49,7 +49,7 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
         ISolidlyRouter.Route[] calldata _outputToNativeRoute,
         ISolidlyRouter.Route[] calldata _outputToLp0Route,
         ISolidlyRouter.Route[] calldata _outputToLp1Route
-    ) external initializer  {
+    ) external initializer {
         __StratFeeManager_init(_commonAddresses);
         want = _want;
         gauge = _gauge;
@@ -58,25 +58,24 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
         factory = ISolidlyRouter(unirouter).defaultFactory();
         stable = ISolidlyPair(want).stable();
 
-        for (uint i; i < _outputToNativeRoute.length; ++i) {
+        for (uint256 i; i < _outputToNativeRoute.length; ++i) {
             outputToNativeRoute.push(_outputToNativeRoute[i]);
         }
 
-        for (uint i; i < _outputToLp0Route.length; ++i) {
+        for (uint256 i; i < _outputToLp0Route.length; ++i) {
             outputToLp0Route.push(_outputToLp0Route[i]);
         }
 
-        for (uint i; i < _outputToLp1Route.length; ++i) {
+        for (uint256 i; i < _outputToLp1Route.length; ++i) {
             outputToLp1Route.push(_outputToLp1Route[i]);
         }
 
         output = outputToNativeRoute[0].from;
-        native = outputToNativeRoute[outputToNativeRoute.length -1].to;
+        native = outputToNativeRoute[outputToNativeRoute.length - 1].to;
         lpToken0 = ISolidlyPair(want).token0();
         lpToken1 = ISolidlyPair(want).token1();
 
         _giveAllowances();
-
     }
 
     // puts the funds to work
@@ -151,7 +150,8 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
         if (router != address(0)) {
             IBeefySwapper(beefySwapper).swap(output, native, toNative);
         } else {
-            ISolidlyRouter(unirouter).swapExactTokensForTokens(toNative, 0, outputToNativeRoute, address(this), block.timestamp);
+            ISolidlyRouter(unirouter)
+                .swapExactTokensForTokens(toNative, 0, outputToNativeRoute, address(this), block.timestamp);
         }
 
         uint256 nativeBal = IERC20(native).balanceOf(address(this));
@@ -175,11 +175,18 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
         uint256 lp1Amt = outputBal - lp0Amt;
 
         if (stable) {
-            uint256 lp0Decimals = 10**IERC20Extended(lpToken0).decimals();
-            uint256 lp1Decimals = 10**IERC20Extended(lpToken1).decimals();
-            uint256 out0 = lpToken0 != output ? ISolidlyRouter(unirouter).getAmountsOut(lp0Amt, outputToLp0Route)[outputToLp0Route.length] * 1e18 / lp0Decimals : lp0Amt;
-            uint256 out1 = lpToken1 != output ? ISolidlyRouter(unirouter).getAmountsOut(lp1Amt, outputToLp1Route)[outputToLp1Route.length] * 1e18 / lp1Decimals  : lp1Amt;
-            (uint256 amountA, uint256 amountB,) = ISolidlyRouter(unirouter).quoteAddLiquidity(lpToken0, lpToken1, stable, factory, out0, out1);
+            uint256 lp0Decimals = 10 ** IERC20Extended(lpToken0).decimals();
+            uint256 lp1Decimals = 10 ** IERC20Extended(lpToken1).decimals();
+            uint256 out0 = lpToken0 != output
+                ? ISolidlyRouter(unirouter).getAmountsOut(lp0Amt, outputToLp0Route)[outputToLp0Route.length] * 1e18
+                    / lp0Decimals
+                : lp0Amt;
+            uint256 out1 = lpToken1 != output
+                ? ISolidlyRouter(unirouter).getAmountsOut(lp1Amt, outputToLp1Route)[outputToLp1Route.length] * 1e18
+                    / lp1Decimals
+                : lp1Amt;
+            (uint256 amountA, uint256 amountB,) =
+                ISolidlyRouter(unirouter).quoteAddLiquidity(lpToken0, lpToken1, stable, factory, out0, out1);
             amountA = amountA * 1e18 / lp0Decimals;
             amountB = amountB * 1e18 / lp1Decimals;
             uint256 ratio = out0 * 1e18 / out1 * amountB / amountA;
@@ -192,7 +199,8 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
             if (router != address(0)) {
                 IBeefySwapper(beefySwapper).swap(output, lpToken0, lp0Amt);
             } else {
-                ISolidlyRouter(unirouter).swapExactTokensForTokens(lp0Amt, 0, outputToLp0Route, address(this), block.timestamp);
+                ISolidlyRouter(unirouter)
+                    .swapExactTokensForTokens(lp0Amt, 0, outputToLp0Route, address(this), block.timestamp);
             }
         }
 
@@ -201,13 +209,15 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
             if (router != address(0)) {
                 IBeefySwapper(beefySwapper).swap(output, lpToken1, lp1Amt);
             } else {
-                ISolidlyRouter(unirouter).swapExactTokensForTokens(lp1Amt, 0, outputToLp1Route, address(this), block.timestamp);
+                ISolidlyRouter(unirouter)
+                    .swapExactTokensForTokens(lp1Amt, 0, outputToLp1Route, address(this), block.timestamp);
             }
         }
 
         uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
         uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
-        ISolidlyRouter(unirouter).addLiquidity(lpToken0, lpToken1, stable, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);
+        ISolidlyRouter(unirouter)
+            .addLiquidity(lpToken0, lpToken1, stable, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);
     }
 
     // calculate the total underlaying 'want' held by the strat.
@@ -236,7 +246,8 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
         uint256 outputBal = rewardsAvailable();
         uint256 nativeOut;
         if (outputBal > 0) {
-            nativeOut = ISolidlyRouter(unirouter).getAmountsOut(outputBal, outputToNativeRoute)[outputToNativeRoute.length];
+            nativeOut =
+                ISolidlyRouter(unirouter).getAmountsOut(outputBal, outputToNativeRoute)[outputToNativeRoute.length];
         }
 
         return nativeOut * fees.total / DIVISOR * fees.call / DIVISOR;
@@ -283,15 +294,15 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(want).forceApprove(gauge, type(uint).max);
-        IERC20(output).forceApprove(unirouter, type(uint).max);
-        IERC20(output).forceApprove(beefySwapper, type(uint).max);
+        IERC20(want).forceApprove(gauge, type(uint256).max);
+        IERC20(output).forceApprove(unirouter, type(uint256).max);
+        IERC20(output).forceApprove(beefySwapper, type(uint256).max);
 
         IERC20(lpToken0).forceApprove(unirouter, 0);
-        IERC20(lpToken0).forceApprove(unirouter, type(uint).max);
+        IERC20(lpToken0).forceApprove(unirouter, type(uint256).max);
 
         IERC20(lpToken1).forceApprove(unirouter, 0);
-        IERC20(lpToken1).forceApprove(unirouter, type(uint).max);
+        IERC20(lpToken1).forceApprove(unirouter, type(uint256).max);
     }
 
     function _removeAllowances() internal {
@@ -306,7 +317,7 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
     function _solidlyToRoute(ISolidlyRouter.Route[] memory _route) internal pure returns (address[] memory) {
         address[] memory route = new address[](_route.length + 1);
         route[0] = _route[0].from;
-        for (uint i; i < _route.length; ++i) {
+        for (uint256 i; i < _route.length; ++i) {
             route[i + 1] = _route[i].to;
         }
         return route;
@@ -330,7 +341,7 @@ contract StrategyVelodromeGaugeV2 is StratFeeManagerInitializable {
     function setBeefySwapper(address _beefySwapper) external onlyManager {
         IERC20(output).forceApprove(beefySwapper, 0);
         beefySwapper = _beefySwapper;
-        if (!paused()) IERC20(output).forceApprove(beefySwapper, type(uint).max);
+        if (!paused()) IERC20(output).forceApprove(beefySwapper, type(uint256).max);
         emit SetBeefySwapper(_beefySwapper);
     }
 }

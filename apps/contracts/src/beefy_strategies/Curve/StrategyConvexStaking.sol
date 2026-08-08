@@ -34,18 +34,18 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
     struct CurveRoute {
         address[9] route;
         uint256[3][4] swapParams;
-        uint minAmount; // minimum amount to be swapped to native
+        uint256 minAmount; // minimum amount to be swapped to native
     }
     CurveRoute[] public rewards;
 
     struct RewardV3 {
         address token;
         bytes toNativePath; // uniswap path
-        uint minAmount; // minimum amount to be swapped to native
+        uint256 minAmount; // minimum amount to be swapped to native
     }
     RewardV3[] public rewardsV3; // rewards swapped via unirouter
 
-    uint public curveSwapMinAmount;
+    uint256 public curveSwapMinAmount;
     bool public harvestOnDeposit;
     uint256 public lastHarvest;
 
@@ -138,7 +138,7 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
 
     function swapRewardsToNative() internal {
         if (curveSwapMinAmount > 0) {
-            uint bal = IERC20(crv).balanceOf(address(this));
+            uint256 bal = IERC20(crv).balanceOf(address(this));
             if (bal > curveSwapMinAmount) {
                 ICurveSwap(crvPool).exchange(1, 0, bal, 0);
             }
@@ -147,21 +147,21 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
                 ICurveSwap(cvxPool).exchange(1, 0, bal, 0);
             }
         }
-        for (uint i; i < rewards.length; ++i) {
-            uint bal = IERC20(rewards[i].route[0]).balanceOf(address(this));
+        for (uint256 i; i < rewards.length; ++i) {
+            uint256 bal = IERC20(rewards[i].route[0]).balanceOf(address(this));
             if (bal >= rewards[i].minAmount) {
                 ICurveRouter(curveRouter).exchange_multiple(rewards[i].route, rewards[i].swapParams, bal, 0);
             }
         }
-        for (uint i; i < rewardsV3.length; ++i) {
-            uint bal = IERC20(rewardsV3[i].token).balanceOf(address(this));
+        for (uint256 i; i < rewardsV3.length; ++i) {
+            uint256 bal = IERC20(rewardsV3[i].token).balanceOf(address(this));
             if (bal >= rewardsV3[i].minAmount) {
                 UniV3Actions.swapV3WithDeadline(unirouter, rewardsV3[i].toNativePath, bal);
             }
         }
         uint256 nativeBal = address(this).balance;
         if (nativeBal > 0) {
-            IWrappedNative(native).deposit{value : nativeBal}();
+            IWrappedNative(native).deposit{value: nativeBal}();
         }
     }
 
@@ -188,12 +188,15 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
         ICurveRouter(curveRouter).exchange_multiple(nativeToWant.route, nativeToWant.swapParams, nativeBal, 0);
     }
 
-    function setNativeToWantRoute(address[9] calldata _route, uint[3][4] calldata _swapParams) external onlyOwner {
+    function setNativeToWantRoute(address[9] calldata _route, uint256[3][4] calldata _swapParams) external onlyOwner {
         require(_route[0] == native, "!native");
         nativeToWant = CurveRoute(_route, _swapParams, 0);
     }
 
-    function addReward(address[9] calldata _rewardToNativeRoute, uint[3][4] calldata _swapParams, uint _minAmount) external onlyOwner {
+    function addReward(address[9] calldata _rewardToNativeRoute, uint256[3][4] calldata _swapParams, uint256 _minAmount)
+        external
+        onlyOwner
+    {
         address token = _rewardToNativeRoute[0];
         require(token != want, "!want");
         require(token != native, "!native");
@@ -201,10 +204,10 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
 
         rewards.push(CurveRoute(_rewardToNativeRoute, _swapParams, _minAmount));
         IERC20(token).approve(curveRouter, 0);
-        IERC20(token).approve(curveRouter, type(uint).max);
+        IERC20(token).approve(curveRouter, type(uint256).max);
     }
 
-    function addRewardV3(bytes memory _rewardToNativePath, uint _minAmount) external onlyOwner {
+    function addRewardV3(bytes memory _rewardToNativePath, uint256 _minAmount) external onlyOwner {
         address[] memory _rewardToNativeRoute = pathToRoute(_rewardToNativePath);
         address token = _rewardToNativeRoute[0];
         require(token != want, "!want");
@@ -213,7 +216,7 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
 
         rewardsV3.push(RewardV3(token, _rewardToNativePath, _minAmount));
         IERC20(token).approve(unirouter, 0);
-        IERC20(token).approve(unirouter, type(uint).max);
+        IERC20(token).approve(unirouter, type(uint256).max);
     }
 
     function resetRewards() external onlyManager {
@@ -240,12 +243,12 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
     }
 
     function curveRouteToRoute(address[9] memory _route) public pure returns (address[] memory) {
-        uint len;
+        uint256 len;
         for (; len < _route.length; len++) {
             if (_route[len] == address(0)) break;
         }
         address[] memory route = new address[](len);
-        for (uint i; i < len; i++) {
+        for (uint256 i; i < len; i++) {
             route[i] = _route[i];
         }
         return route;
@@ -255,7 +258,7 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
         return curveRouteToRoute(nativeToWant.route);
     }
 
-    function nativeToWantParams() external view returns (uint[3][4] memory) {
+    function nativeToWantParams() external view returns (uint256[3][4] memory) {
         return nativeToWant.swapParams;
     }
 
@@ -263,22 +266,22 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
         return curveRouteToRoute(rewards[0].route);
     }
 
-    function rewardToNative(uint i) external view returns (address[] memory) {
+    function rewardToNative(uint256 i) external view returns (address[] memory) {
         return curveRouteToRoute(rewards[i].route);
     }
 
-    function rewardToNativeParams(uint i) external view returns (uint[3][4] memory) {
+    function rewardToNativeParams(uint256 i) external view returns (uint256[3][4] memory) {
         return rewards[i].swapParams;
     }
 
-    function rewardsLength() external view returns (uint) {
+    function rewardsLength() external view returns (uint256) {
         return rewards.length;
     }
 
     function pathToRoute(bytes memory _path) public pure returns (address[] memory) {
-        uint numPools = _path.numPools();
+        uint256 numPools = _path.numPools();
         address[] memory route = new address[](numPools + 1);
-        for (uint i; i < numPools; i++) {
+        for (uint256 i; i < numPools; i++) {
             (address tokenA, address tokenB,) = _path.decodeFirstPool();
             route[i] = tokenA;
             route[i + 1] = tokenB;
@@ -291,15 +294,15 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
         return pathToRoute(rewardsV3[0].toNativePath);
     }
 
-    function rewardV3ToNative(uint i) external view returns (address[] memory) {
+    function rewardV3ToNative(uint256 i) external view returns (address[] memory) {
         return pathToRoute(rewardsV3[i].toNativePath);
     }
 
-    function rewardsV3Length() external view returns (uint) {
+    function rewardsV3Length() external view returns (uint256) {
         return rewardsV3.length;
     }
 
-    function setCurveSwapMinAmount(uint _minAmount) external onlyManager {
+    function setCurveSwapMinAmount(uint256 _minAmount) external onlyManager {
         curveSwapMinAmount = _minAmount;
     }
 
@@ -353,10 +356,10 @@ contract StrategyConvexStaking is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(want).approve(address(staking), type(uint).max);
-        IERC20(native).approve(curveRouter, type(uint).max);
-        IERC20(crv).approve(crvPool, type(uint).max);
-        IERC20(cvx).approve(cvxPool, type(uint).max);
+        IERC20(want).approve(address(staking), type(uint256).max);
+        IERC20(native).approve(curveRouter, type(uint256).max);
+        IERC20(crv).approve(crvPool, type(uint256).max);
+        IERC20(cvx).approve(cvxPool, type(uint256).max);
     }
 
     function _removeAllowances() internal {

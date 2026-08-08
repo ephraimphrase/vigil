@@ -34,9 +34,9 @@ contract HealthOracle is AccessControl, IHealthOracle {
     uint256 public immutable override stalenessWindow;
 
     struct Score {
-        uint16 value;      // 0-100
-        uint40 updatedAt;  // write timestamp
-        bool   registered; // distinguishes "score 0" from "never set"
+        uint16 value; // 0-100
+        uint40 updatedAt; // write timestamp
+        bool registered; // distinguishes "score 0" from "never set"
     }
 
     mapping(bytes32 => Score) private _scores;
@@ -54,12 +54,7 @@ contract HealthOracle is AccessControl, IHealthOracle {
     error ScoreOutOfRange(uint16 score);
     error TooSoon(bytes32 protocolId, uint256 nextAllowed);
 
-    constructor(
-        address admin,
-        address scorer,
-        address guardian,
-        uint256 _stalenessWindow
-    ) {
+    constructor(address admin, address scorer, address guardian, uint256 _stalenessWindow) {
         if (admin == address(0)) revert ZeroAddress();
 
         stalenessWindow = _stalenessWindow == 0 ? 6 hours : _stalenessWindow;
@@ -72,12 +67,7 @@ contract HealthOracle is AccessControl, IHealthOracle {
     /// @notice Current score and when it was written.
     /// @dev Unregistered returns (0, 0) rather than reverting — consumers
     ///      treat that as "exit", the correct failure direction.
-    function scoreOf(bytes32 protocolId)
-        external
-        view
-        override
-        returns (uint16 score, uint40 updatedAt)
-    {
+    function scoreOf(bytes32 protocolId) external view override returns (uint16 score, uint40 updatedAt) {
         Score storage s = _scores[protocolId];
         return (s.value, s.updatedAt);
     }
@@ -88,19 +78,11 @@ contract HealthOracle is AccessControl, IHealthOracle {
 
     // Admin-gated, not scorer-gated. The scorer opines on protocols a human
     // already approved — it cannot introduce new ones.
-    function registerProtocol(bytes32 protocolId, uint16 initialScore)
-        external
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function registerProtocol(bytes32 protocolId, uint16 initialScore) external override onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_scores[protocolId].registered) revert AlreadyRegistered(protocolId);
         if (initialScore > MAX_SCORE) revert ScoreOutOfRange(initialScore);
 
-        _scores[protocolId] = Score({
-            value: initialScore,
-            updatedAt: uint40(block.timestamp),
-            registered: true
-        });
+        _scores[protocolId] = Score({value: initialScore, updatedAt: uint40(block.timestamp), registered: true});
         protocolIds.push(protocolId);
 
         emit ProtocolRegistered(protocolId, initialScore);
@@ -133,11 +115,7 @@ contract HealthOracle is AccessControl, IHealthOracle {
     }
 
     /// @notice Batch write. Same bounds apply per entry.
-    function setScores(bytes32[] calldata ids, uint16[] calldata values)
-        external
-        override
-        onlyRole(SCORER_ROLE)
-    {
+    function setScores(bytes32[] calldata ids, uint16[] calldata values) external override onlyRole(SCORER_ROLE) {
         uint256 n = ids.length;
         require(n == values.length, "length mismatch");
         for (uint256 i; i < n; ++i) {

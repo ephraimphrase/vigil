@@ -35,11 +35,10 @@ contract StrategyVenus is StratFeeManagerInitializable {
     event Withdraw(uint256 tvl);
     event ChargedFees(uint256 callFees, uint256 beefyFees, uint256 strategistFees);
 
-    function initialize(
-        address _market,
-        address _native,
-        CommonAddresses calldata _commonAddresses
-    ) external initializer {
+    function initialize(address _market, address _native, CommonAddresses calldata _commonAddresses)
+        external
+        initializer
+    {
         __StratFeeManager_init(_commonAddresses);
 
         iToken = _market;
@@ -73,7 +72,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
         uint256 wantBal = balanceOfWant();
 
         if (wantBal < _amount) {
-            uint err = IVToken(iToken).redeemUnderlying(_amount - wantBal);
+            uint256 err = IVToken(iToken).redeemUnderlying(_amount - wantBal);
             require(err == 0, "Error while trying to redeem");
             _updateBalance();
             wantBal = IERC20(want).balanceOf(address(this));
@@ -148,7 +147,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
     }
 
     function _swapToNative() internal {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address reward = rewards[i];
             uint256 rewardBal = IERC20(reward).balanceOf(address(this));
             if (rewardBal > 0) IBeefySwapper(unirouter).swap(reward, native, rewardBal);
@@ -200,7 +199,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
     function retireStrat() external {
         require(msg.sender == vault, "!vault");
 
-        uint err = IVToken(iToken).redeem(IERC20(iToken).balanceOf(address(this)));
+        uint256 err = IVToken(iToken).redeem(IERC20(iToken).balanceOf(address(this)));
         require(err == 0, "Error while trying to redeem");
         _updateBalance();
 
@@ -210,7 +209,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
 
     // pauses deposits and withdraws all funds from third party systems.
     function panic() public onlyManager {
-        uint err = IVToken(iToken).redeem(IERC20(iToken).balanceOf(address(this)));
+        uint256 err = IVToken(iToken).redeem(IERC20(iToken).balanceOf(address(this)));
         require(err == 0, "Error while trying to redeem");
         _updateBalance();
 
@@ -235,7 +234,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
         IERC20(want).forceApprove(iToken, type(uint256).max);
         IERC20(native).forceApprove(unirouter, type(uint256).max);
 
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             IERC20(rewards[i]).forceApprove(unirouter, 0);
             IERC20(rewards[i]).forceApprove(unirouter, type(uint256).max);
         }
@@ -245,7 +244,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
         IERC20(want).forceApprove(iToken, 0);
         IERC20(native).forceApprove(unirouter, 0);
 
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             IERC20(rewards[i]).forceApprove(unirouter, 0);
         }
     }
@@ -259,7 +258,7 @@ contract StrategyVenus is StratFeeManagerInitializable {
     }
 
     function resetRewards() external onlyManager {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address reward = rewards[i];
             IERC20(reward).forceApprove(unirouter, 0);
         }
@@ -268,13 +267,13 @@ contract StrategyVenus is StratFeeManagerInitializable {
     }
 
     function setRewarder(address _rewarder) external onlyOwner {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address reward = rewards[i];
             IERC20(reward).forceApprove(unirouter, 0);
         }
 
         delete rewards;
-        
+
         rewarder = _rewarder;
         rewards.push(IVenusRewarder(rewarder).rewardToken());
         IERC20(rewards[0]).forceApprove(unirouter, type(uint256).max);

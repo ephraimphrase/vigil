@@ -2,11 +2,14 @@
 
 pragma solidity 0.8.19;
 
-import { SafeERC20Upgradeable, IERC20Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import {
+    SafeERC20Upgradeable,
+    IERC20Upgradeable
+} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-import { IBeefySwapper } from "../interface/beefy/IBeefySwapper.sol";
-import { IBeefyRewardPool } from "../interface/beefy/IBeefyRewardPool.sol";
-import { StratFeeManagerInitializable, IFeeConfig } from "../Common/StratFeeManagerInitializable.sol";
+import {IBeefySwapper} from "../interface/beefy/IBeefySwapper.sol";
+import {IBeefyRewardPool} from "../interface/beefy/IBeefyRewardPool.sol";
+import {StratFeeManagerInitializable, IFeeConfig} from "../Common/StratFeeManagerInitializable.sol";
 
 /// @title Strategy staking in the BIFI reward pool
 /// @author kexley, Beefy
@@ -34,7 +37,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
 
     /// @notice Timestamp of last harvest
     uint256 public lastHarvest;
-    
+
     /// @notice Total profit locked on the strategy
     uint256 public totalLocked;
 
@@ -54,7 +57,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     /// @param tvl Total amount of deposits at the time of harvest
     event StratHarvest(address indexed harvester, uint256 wantHarvested, uint256 tvl);
     /// @notice Want tokens have been deposited into the underlying platform
-    /// @param tvl Total amount of deposits at the time of deposit 
+    /// @param tvl Total amount of deposits at the time of deposit
     event Deposit(uint256 tvl);
     /// @notice Want tokens have been withdrawn by a user
     /// @param tvl Total amount of deposits at the time of withdrawal
@@ -79,12 +82,10 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     /// @param _native WETH address
     /// @param _rewardPool Reward pool address
     /// @param _commonAddresses The typical addresses required by a strategy (see StratManager)
-    function initialize(
-        address _want,
-        address _native,
-        address _rewardPool,
-        CommonAddresses calldata _commonAddresses
-    ) external initializer {
+    function initialize(address _want, address _native, address _rewardPool, CommonAddresses calldata _commonAddresses)
+        external
+        initializer
+    {
         __StratFeeManager_init(_commonAddresses);
         want = _want;
         native = _native;
@@ -144,7 +145,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     }
 
     /// @dev Harvest rewards, charge fees and compound back into more want
-    /// @param _callFeeRecipient Recipient of the call fee reward 
+    /// @param _callFeeRecipient Recipient of the call fee reward
     function _harvest(address _callFeeRecipient) internal whenNotPaused {
         IBeefyRewardPool(rewardPool).getReward();
         _swapToNative();
@@ -162,7 +163,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
 
     /// @dev Swap any extra rewards into native
     function _swapToNative() internal {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address reward = rewards[i];
             uint256 rewardBal = IERC20Upgradeable(reward).balanceOf(address(this));
             if (rewardBal > 0) IBeefySwapper(unirouter).swap(reward, native, rewardBal);
@@ -170,7 +171,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     }
 
     /// @dev Charge performance fees and send to recipients
-    /// @param _callFeeRecipient Recipient of the call fee reward 
+    /// @param _callFeeRecipient Recipient of the call fee reward
     function _chargeFees(address _callFeeRecipient) internal {
         IFeeConfig.FeeCategory memory fees = getFees();
         uint256 nativeBal = IERC20Upgradeable(native).balanceOf(address(this)) * fees.total / DIVISOR;
@@ -194,7 +195,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     }
 
     /// @notice Total want controlled by the strategy in the underlying platform and this contract
-    /// @return balance Total want controlled by the strategy 
+    /// @return balance Total want controlled by the strategy
     function balanceOf() public view returns (uint256 balance) {
         balance = balanceOfWant() + balanceOfPool() - lockedProfit();
     }
@@ -288,7 +289,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
         }
         index[_reward] = rewards.length;
         rewards.push(_reward);
-        IERC20Upgradeable(_reward).forceApprove(unirouter, type(uint).max);
+        IERC20Upgradeable(_reward).forceApprove(unirouter, type(uint256).max);
         emit SetReward(_reward);
     }
 
@@ -307,10 +308,10 @@ contract StrategyBeefy is StratFeeManagerInitializable {
 
     /// @dev Give out allowances to third party contracts
     function _giveAllowances() internal {
-        IERC20Upgradeable(want).forceApprove(rewardPool, type(uint).max);
-        IERC20Upgradeable(native).forceApprove(unirouter, type(uint).max);
-        for (uint i; i < rewards.length; ++i) {
-            IERC20Upgradeable(rewards[i]).forceApprove(unirouter, type(uint).max);
+        IERC20Upgradeable(want).forceApprove(rewardPool, type(uint256).max);
+        IERC20Upgradeable(native).forceApprove(unirouter, type(uint256).max);
+        for (uint256 i; i < rewards.length; ++i) {
+            IERC20Upgradeable(rewards[i]).forceApprove(unirouter, type(uint256).max);
         }
     }
 
@@ -318,7 +319,7 @@ contract StrategyBeefy is StratFeeManagerInitializable {
     function _removeAllowances() internal {
         IERC20Upgradeable(want).forceApprove(rewardPool, 0);
         IERC20Upgradeable(native).forceApprove(unirouter, 0);
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             IERC20Upgradeable(rewards[i]).forceApprove(unirouter, 0);
         }
     }

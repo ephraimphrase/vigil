@@ -24,7 +24,7 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
     }
 
     address public output;
-    mapping(address => uint) public minAmounts; // tokens minimum amount to be swapped
+    mapping(address => uint256) public minAmounts; // tokens minimum amount to be swapped
 
     string public stratName;
     IRewardPool public staking;
@@ -69,12 +69,10 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
         if (msg.sender != owner() && msg.sender != keeper()) revert NotManager();
     }
 
-    function initialize(
-        string memory _stratName,
-        IRewardPool _staking,
-        address _output,
-        Addresses calldata _addresses
-    ) public initializer {
+    function initialize(string memory _stratName, IRewardPool _staking, address _output, Addresses calldata _addresses)
+        public
+        initializer
+    {
         __Ownable_init();
         __Pausable_init();
         stratName = _stratName;
@@ -92,16 +90,16 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
         lockDuration = 1 days;
     }
 
-    function balanceOfPool() public view returns (uint) {
+    function balanceOfPool() public view returns (uint256) {
         return staking.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal {
+    function _deposit(uint256 amount) internal {
         IERC20(want).forceApprove(address(staking), amount);
         staking.stake(amount);
     }
 
-    function _withdraw(uint amount) internal {
+    function _withdraw(uint256 amount) internal {
         if (amount > 0) {
             staking.withdraw(amount);
         }
@@ -217,16 +215,16 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
     }
 
     function _swap(address tokenFrom, address tokenTo) internal {
-        uint bal = IERC20(tokenFrom).balanceOf(address(this));
+        uint256 bal = IERC20(tokenFrom).balanceOf(address(this));
         _swap(tokenFrom, tokenTo, bal);
     }
 
-    function _swap(address tokenFrom, address tokenTo, uint amount) internal {
+    function _swap(address tokenFrom, address tokenTo, uint256 amount) internal {
         IERC20(tokenFrom).forceApprove(swapper, amount);
         IBeefySwapper(swapper).swap(tokenFrom, tokenTo, amount);
     }
 
-    function setRewardMinAmount(address token, uint minAmount) external onlyManager {
+    function setRewardMinAmount(address token, uint256 minAmount) external onlyManager {
         minAmounts[token] = minAmount;
     }
 
@@ -266,23 +264,23 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
         }
     }
 
-    function setLockDuration(uint _duration) external onlyManager {
+    function setLockDuration(uint256 _duration) external onlyManager {
         lockDuration = _duration;
     }
 
-    function rewardsAvailable() external view virtual returns (uint) {
+    function rewardsAvailable() external view virtual returns (uint256) {
         return 0;
     }
 
-    function callReward() external view virtual returns (uint) {
+    function callReward() external view virtual returns (uint256) {
         return 0;
     }
 
-    function depositFee() public view virtual returns (uint) {
+    function depositFee() public view virtual returns (uint256) {
         return 0;
     }
 
-    function withdrawFee() public view virtual returns (uint) {
+    function withdrawFee() public view virtual returns (uint256) {
         return 0;
     }
 
@@ -340,15 +338,15 @@ contract StrategyCommonSingleStakingFactory is OwnableUpgradeable, PausableUpgra
         emit SetStrategist(_strategist);
     }
 
-    function rewardsLength() external pure returns (uint) {
+    function rewardsLength() external pure returns (uint256) {
         return 1;
     }
 
-    function rewards(uint) external view returns (address) {
+    function rewards(uint256) external view returns (address) {
         return output;
     }
 
-    receive () payable external {}
+    receive() external payable {}
 
     uint256[49] private __gap;
 }

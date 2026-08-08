@@ -16,11 +16,10 @@ contract StrategyPenpie is BaseAllToNativeFactoryStrat {
     bool public claimPNP;
     bool public skipHarvestMarket;
 
-    function initialize(
-        IPendleStaking _pendleStaking,
-        address[] calldata _rewards,
-        Addresses calldata _addresses
-    ) public initializer  {
+    function initialize(IPendleStaking _pendleStaking, address[] calldata _rewards, Addresses calldata _addresses)
+        public
+        initializer
+    {
         pendleStaking = _pendleStaking;
         masterPenpie = IMasterPenpie(pendleStaking.masterPenpie());
         (,, address _poolHelper, address _receiptToken,,) = pendleStaking.pools(_addresses.want);
@@ -34,21 +33,21 @@ contract StrategyPenpie is BaseAllToNativeFactoryStrat {
         return "Penpie";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return IERC20(receiptToken).balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(pendleStaking), amount);
         poolHelper.depositMarket(want, amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         poolHelper.withdrawMarket(want, amount);
     }
 
     function _emergencyWithdraw() internal override {
-        uint bal = IERC20(receiptToken).balanceOf(address(this));
+        uint256 bal = IERC20(receiptToken).balanceOf(address(this));
         if (bal > 0) {
             poolHelper.withdrawMarket(want, bal);
         }
@@ -56,7 +55,7 @@ contract StrategyPenpie is BaseAllToNativeFactoryStrat {
 
     function _claim() internal override {
         if (!skipHarvestMarket) {
-            (,,,, uint lastHarvestTime,) = pendleStaking.pools(want);
+            (,,,, uint256 lastHarvestTime,) = pendleStaking.pools(want);
             if ((block.timestamp - lastHarvestTime) > pendleStaking.harvestTimeGap()) {
                 poolHelper.withdrawMarket(want, 0);
             }
@@ -83,5 +82,4 @@ contract StrategyPenpie is BaseAllToNativeFactoryStrat {
     function setSkipHarvestMarket(bool _skip) external onlyManager {
         skipHarvestMarket = _skip;
     }
-
 }

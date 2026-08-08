@@ -9,11 +9,10 @@ import {IMerklClaimer} from "../interface/merkl/IMerklClaimer.sol";
 contract StrategyPendle is BaseAllToNativeFactoryStrat {
     using SafeERC20 for IERC20;
 
-    function initialize(
-        bool _harvestOnDeposit,
-        address[] calldata _rewards,
-        Addresses calldata _addresses
-    ) public initializer  {
+    function initialize(bool _harvestOnDeposit, address[] calldata _rewards, Addresses calldata _addresses)
+        public
+        initializer
+    {
         __BaseStrategy_init(_addresses, _rewards);
         if (_harvestOnDeposit) setHarvestOnDeposit(true);
     }
@@ -22,13 +21,13 @@ contract StrategyPendle is BaseAllToNativeFactoryStrat {
         return "Pendle";
     }
 
-    function balanceOfPool() public pure override returns (uint) {
+    function balanceOfPool() public pure override returns (uint256) {
         return 0;
     }
 
-    function _deposit(uint amount) internal override {}
+    function _deposit(uint256 amount) internal override {}
 
-    function _withdraw(uint amount) internal override {}
+    function _withdraw(uint256 amount) internal override {}
 
     function _emergencyWithdraw() internal override {}
 

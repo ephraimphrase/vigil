@@ -7,7 +7,6 @@ import "../Common/BaseAllToNativeStrat.sol";
 
 // CVX single staking
 contract StrategyConvexCVX is BaseAllToNativeStrat {
-
     // Tokens used
     address public constant NATIVE = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant CVX = 0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B;
@@ -19,20 +18,20 @@ contract StrategyConvexCVX is BaseAllToNativeStrat {
         __BaseStrategy_init(CVX, NATIVE, _rewards, _commonAddresses);
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return staking.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         staking.stake(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         staking.withdraw(amount, false);
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             staking.withdraw(amount, false);
         }
@@ -45,7 +44,7 @@ contract StrategyConvexCVX is BaseAllToNativeStrat {
     function _verifyRewardToken(address token) internal view override {}
 
     function _giveAllowances() internal override {
-        uint amount = type(uint).max;
+        uint256 amount = type(uint256).max;
         _approve(want, address(staking), amount);
         _approve(native, unirouter, amount);
     }

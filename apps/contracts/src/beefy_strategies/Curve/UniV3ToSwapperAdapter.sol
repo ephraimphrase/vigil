@@ -16,7 +16,11 @@ contract UniV3ToSwapperAdapter {
         swapper = _swapper;
     }
 
-    function exactInput(IUniswapRouterV3WithDeadline.ExactInputParams calldata params) external payable returns (uint amountOut) {
+    function exactInput(IUniswapRouterV3WithDeadline.ExactInputParams calldata params)
+        external
+        payable
+        returns (uint256 amountOut)
+    {
         address[] memory route = UniswapV3Utils.pathToRoute(params.path);
         address from = route[0];
         address to = route[route.length - 1];

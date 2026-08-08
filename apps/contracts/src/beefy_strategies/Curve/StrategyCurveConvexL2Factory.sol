@@ -14,23 +14,21 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
     using SafeERC20 for IERC20;
 
     // this `pid` means we using Curve gauge and not Convex rewardPool
-    uint constant public NO_PID = 42069;
+    uint256 public constant NO_PID = 42069;
 
     IConvexBoosterL2 public constant booster = IConvexBoosterL2(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
 
     address public gauge; // curve gauge
     address public rewardPool; // convex base reward pool
-    uint public pid; // convex booster poolId
+    uint256 public pid; // convex booster poolId
 
     bool public isCrvMintable; // if CRV can be minted via Minter (gauge is added to Controller)
     bool public isCurveRewardsClaimable; // if extra rewards in curve gauge should be claimed
 
-    function initialize(
-        address _gauge,
-        uint _pid,
-        address[] calldata _rewards,
-        Addresses calldata _addresses
-    ) public initializer {
+    function initialize(address _gauge, uint256 _pid, address[] calldata _rewards, Addresses calldata _addresses)
+        public
+        initializer
+    {
         gauge = _gauge;
         pid = _pid;
 
@@ -38,7 +36,7 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
             isCurveRewardsClaimable = true;
         }
         if (_pid != NO_PID) {
-            (,,rewardPool,,) = booster.poolInfo(_pid);
+            (,, rewardPool,,) = booster.poolInfo(_pid);
         } else {
             isCrvMintable = true;
         }
@@ -50,7 +48,7 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
         return "CurveConvexL2";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         if (rewardPool != address(0)) {
             return IConvexRewardPool(rewardPool).balanceOf(address(this));
         } else {
@@ -58,7 +56,7 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
         }
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         if (rewardPool != address(0)) {
             IERC20(want).forceApprove(address(booster), amount);
             booster.deposit(pid, amount);
@@ -68,7 +66,7 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
         }
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             if (rewardPool != address(0)) {
                 IConvexRewardPool(rewardPool).withdraw(amount, false);
@@ -79,7 +77,7 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             if (rewardPool != address(0)) {
                 IConvexRewardPool(rewardPool).emergencyWithdraw(amount);
@@ -107,11 +105,11 @@ contract StrategyCurveConvexL2Factory is BaseAllToNativeFactoryStrat {
         return ICrvMinter(IRewardsGauge(gauge).factory());
     }
 
-    function setConvexPid(uint _pid) external onlyManager {
+    function setConvexPid(uint256 _pid) external onlyManager {
         setConvexPid(_pid, false);
     }
 
-    function setConvexPid(uint _pid, bool claim) public onlyManager {
+    function setConvexPid(uint256 _pid, bool claim) public onlyManager {
         if (pid == _pid) return;
 
         _withdraw(balanceOfPool());

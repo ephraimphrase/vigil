@@ -39,16 +39,16 @@ contract StrategyShadow is BaseAllToNativeFactoryStrat {
         return "Shadow";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return gauge.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(gauge), amount);
         gauge.deposit(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) gauge.withdraw(amount);
     }
 
@@ -93,11 +93,12 @@ contract StrategyShadow is BaseAllToNativeFactoryStrat {
         uint256 lp1Amt = nativeBal - lp0Amt;
 
         if (stable) {
-            uint256 lp0Decimals = 10**IERC20Extended(lpToken0).decimals();
-            uint256 lp1Decimals = 10**IERC20Extended(lpToken1).decimals();
+            uint256 lp0Decimals = 10 ** IERC20Extended(lpToken0).decimals();
+            uint256 lp1Decimals = 10 ** IERC20Extended(lpToken1).decimals();
             uint256 out0 = IBeefySwapper(swapper).getAmountOut(native, lpToken0, lp0Amt) * 1e18 / lp0Decimals;
             uint256 out1 = IBeefySwapper(swapper).getAmountOut(native, lpToken1, lp1Amt) * 1e18 / lp1Decimals;
-            (uint256 amountA, uint256 amountB,) = solidlyRouter.quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
+            (uint256 amountA, uint256 amountB,) =
+                solidlyRouter.quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
             amountA = amountA * 1e18 / lp0Decimals;
             amountB = amountB * 1e18 / lp1Decimals;
             uint256 ratio = out0 * 1e18 / out1 * amountB / amountA;

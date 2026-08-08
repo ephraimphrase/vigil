@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 interface IComet {
-    function supply(address asset, uint amount) external;
-    function withdraw(address asset, uint amount) external;
+    function supply(address asset, uint256 amount) external;
+    function withdraw(address asset, uint256 amount) external;
     function baseToken() external view returns (address);
 }

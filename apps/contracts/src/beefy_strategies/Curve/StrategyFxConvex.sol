@@ -8,7 +8,6 @@ import "../Common/BaseAllToNativeStrat.sol";
 
 // f(x) protocol through Convex proxy
 contract StrategyFxConvex is BaseAllToNativeStrat {
-
     // Tokens used
     address public constant NATIVE = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     IFxnVoterProxy public constant voterProxy = IFxnVoterProxy(0xd11a4Ee017cA0BECA8FA45fF2abFe9C6267b7881);
@@ -16,19 +15,18 @@ contract StrategyFxConvex is BaseAllToNativeStrat {
 
     address public gauge; // fx gauge
     address public cvxVault; // convex proxy vault
-    uint public pid; // convex booster poolId
-
+    uint256 public pid; // convex booster poolId
 
     bool public claimFxRewards; // rewards from fx gauge
     address[] public claimTokenList; // filter claimable rewards on convex
 
     function initialize(
-        uint _pid,
+        uint256 _pid,
         address _depositToken,
         address[] calldata _rewards,
         CommonAddresses calldata _commonAddresses
     ) public initializer {
-        (,address _gauge,address want,,) = poolRegistry.poolInfo(_pid);
+        (, address _gauge, address want,,) = poolRegistry.poolInfo(_pid);
         pid = _pid;
         gauge = _gauge;
         cvxVault = voterProxy.operator().createVault(_pid);
@@ -38,15 +36,15 @@ contract StrategyFxConvex is BaseAllToNativeStrat {
         setDepositToken(_depositToken);
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return IRewardsGauge(gauge).balanceOf(cvxVault);
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IConvexVault(cvxVault).deposit(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             IConvexVault(cvxVault).withdraw(amount);
         }
@@ -70,7 +68,7 @@ contract StrategyFxConvex is BaseAllToNativeStrat {
     }
 
     function _giveAllowances() internal override {
-        uint amount = type(uint).max;
+        uint256 amount = type(uint256).max;
         _approve(want, cvxVault, amount);
         _approve(native, unirouter, amount);
     }
@@ -88,7 +86,6 @@ contract StrategyFxConvex is BaseAllToNativeStrat {
         claimTokenList = _tokenList;
     }
 
-
     // onlyOwner functions in convex vault proxy
 
     function transferTokens(address[] calldata _tokenList) external onlyOwner {
@@ -96,7 +93,11 @@ contract StrategyFxConvex is BaseAllToNativeStrat {
         IConvexVault(cvxVault).transferTokens(_tokenList);
     }
 
-    function execute(address _to, uint256 _value, bytes calldata _data) external onlyOwner returns (bool, bytes memory) {
+    function execute(address _to, uint256 _value, bytes calldata _data)
+        external
+        onlyOwner
+        returns (bool, bytes memory)
+    {
         //allow arbitrary calls. some function signatures and targets are blocked
         return IConvexVault(cvxVault).execute(_to, _value, _data);
     }

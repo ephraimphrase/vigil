@@ -127,7 +127,7 @@ contract StrategyGM is StratFeeManagerInitializable {
 
     // swap all rewards to native
     function _swapRewardsToNative() internal {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address reward = rewards[i];
             if (reward != native) {
                 uint256 amount = IERC20(reward).balanceOf(address(this));
@@ -169,7 +169,7 @@ contract StrategyGM is StratFeeManagerInitializable {
         IERC20(short).transfer(depositVault, IERC20(short).balanceOf(address(this)));
 
         address[] memory path = new address[](0);
-            
+
         IGMXExchange.CreateDepositParams memory params = IGMXExchange.CreateDepositParams({
             receiver: address(this),
             callbackContract: address(this),
@@ -189,20 +189,12 @@ contract StrategyGM is StratFeeManagerInitializable {
     }
 
     // receive permissionless callback to sync balances
-    function afterDepositExecution(
-        bytes32,
-        IGMXExchange.Props memory,
-        IGMXExchange.EventLogData memory
-    ) external {
+    function afterDepositExecution(bytes32, IGMXExchange.Props memory, IGMXExchange.EventLogData memory) external {
         _sync();
     }
 
     // receive permissionless callback when cancelling a deposit
-    function afterDepositCancellation(
-        bytes32,
-        IGMXExchange.Props memory,
-        IGMXExchange.EventLogData memory
-    ) external {}
+    function afterDepositCancellation(bytes32, IGMXExchange.Props memory, IGMXExchange.EventLogData memory) external {}
 
     // calculate the total underlaying 'want' held by the strat.
     function balanceOf() public view returns (uint256) {
@@ -275,15 +267,15 @@ contract StrategyGM is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(native).forceApprove(unirouter, type(uint).max);
-        for (uint i; i < rewards.length; ++i) {
-            IERC20(rewards[i]).forceApprove(unirouter, type(uint).max);
+        IERC20(native).forceApprove(unirouter, type(uint256).max);
+        for (uint256 i; i < rewards.length; ++i) {
+            IERC20(rewards[i]).forceApprove(unirouter, type(uint256).max);
         }
     }
 
     function _removeAllowances() internal {
         IERC20(native).forceApprove(unirouter, 0);
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             IERC20(rewards[i]).forceApprove(unirouter, 0);
         }
     }
@@ -294,7 +286,7 @@ contract StrategyGM is StratFeeManagerInitializable {
     }
 
     function setRewards(address[] calldata _rewards) external onlyOwner {
-        for (uint i; i < _rewards.length; ++i) {
+        for (uint256 i; i < _rewards.length; ++i) {
             require(_rewards[i] != want, "!want");
         }
         _removeAllowances();

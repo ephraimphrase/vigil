@@ -38,17 +38,17 @@ contract StrategyAaveSupplyOnly is BaseAllToNativeFactoryStrat {
         return "Aave";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return storedBalance;
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         storedBalance += amount;
         IERC20(want).forceApprove(lendingPool, amount);
         ILendingPool(lendingPool).deposit(want, amount, address(this), 0);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             storedBalance -= amount;
             ILendingPool(lendingPool).withdraw(want, amount, address(this));
@@ -58,7 +58,7 @@ contract StrategyAaveSupplyOnly is BaseAllToNativeFactoryStrat {
     function _emergencyWithdraw() internal override {
         storedBalance = 0;
         if (IERC20(aToken).balanceOf(address(this)) > 0) {
-            ILendingPool(lendingPool).withdraw(want, type(uint).max, address(this));
+            ILendingPool(lendingPool).withdraw(want, type(uint256).max, address(this));
         }
     }
 

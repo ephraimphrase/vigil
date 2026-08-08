@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../utils/UniV3Actions.sol";
 
 contract CurveUniV3Adapter {
-
     address public router;
     IERC20 public token;
     bytes public path;
@@ -18,10 +17,10 @@ contract CurveUniV3Adapter {
         token = IERC20(_token);
         path = _path;
         withDeadline = _deadline;
-        token.approve(_router, type(uint).max);
+        token.approve(_router, type(uint256).max);
     }
 
-    function exchange(uint, uint, uint dx, uint) external {
+    function exchange(uint256, uint256, uint256 dx, uint256) external {
         token.transferFrom(msg.sender, address(this), dx);
         if (withDeadline) {
             UniV3Actions.swapV3WithDeadline(router, path, dx, msg.sender);

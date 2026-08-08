@@ -72,7 +72,7 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         require(_nativeToLp1Route[_nativeToLp1Route.length - 1] == lpToken1, "nativeToLp1Route[last] != lpToken1");
         nativeToLp1Route = _nativeToLp1Route;
 
-        tokenId = type(uint).max;
+        tokenId = type(uint256).max;
         vestingRewards = true;
         vestingLength = 15 days;
         duration = 24 hours;
@@ -160,13 +160,15 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         if (block.timestamp > lastVestCall + 1 days) {
             uint256 indexLength = IBaseSwapVesting(escrowToken).getUserRedeemsLength(address(this));
             if (indexLength > 0) {
-                for (uint i; i < indexLength;) {
+                for (uint256 i; i < indexLength;) {
                     (,, uint256 endTime,,) = IBaseSwapVesting(escrowToken).getUserRedeem(address(this), i);
                     if (block.timestamp > endTime) {
                         IBaseSwapVesting(escrowToken).finalizeRedeem(i);
                         indexLength -= 1;
                     } else {
-                        unchecked { ++i; }
+                        unchecked {
+                            ++i;
+                        }
                     }
                 }
             }
@@ -175,7 +177,7 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
             if (vestAmount > 0) {
                 IBaseSwapVesting(escrowToken).redeem(vestAmount, vestingLength);
             }
-            
+
             lastVestCall = block.timestamp;
         }
     }
@@ -188,14 +190,16 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         }
         // convert any output to native
         uint256 outputBal = IERC20(output).balanceOf(address(this));
-        IUniswapRouterETH(unirouter).swapExactTokensForTokens(outputBal, 0, outputToNativeRoute, address(this), block.timestamp);
+        IUniswapRouterETH(unirouter)
+            .swapExactTokensForTokens(outputBal, 0, outputToNativeRoute, address(this), block.timestamp);
 
         // convert additional rewards
         if (rewardToNativeRoute.length != 0) {
-            for (uint i; i < rewardToNativeRoute.length; i++) {
+            for (uint256 i; i < rewardToNativeRoute.length; i++) {
                 uint256 toNative = IERC20(rewardToNativeRoute[i][0]).balanceOf(address(this));
                 if (toNative > 0) {
-                    IUniswapRouterETH(unirouter).swapExactTokensForTokens(toNative, 0, rewardToNativeRoute[i], address(this), block.timestamp);
+                    IUniswapRouterETH(unirouter)
+                        .swapExactTokensForTokens(toNative, 0, rewardToNativeRoute[i], address(this), block.timestamp);
                 }
             }
         }
@@ -222,22 +226,19 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
     function addLiquidity() internal {
         uint256 nativeHalf = IERC20(native).balanceOf(address(this)) / 2;
         if (lpToken0 != native) {
-            IUniswapRouterETH(unirouter).swapExactTokensForTokens(
-                nativeHalf, 0, nativeToLp0Route, address(this), block.timestamp
-            );
+            IUniswapRouterETH(unirouter)
+                .swapExactTokensForTokens(nativeHalf, 0, nativeToLp0Route, address(this), block.timestamp);
         }
 
         if (lpToken1 != native) {
-            IUniswapRouterETH(unirouter).swapExactTokensForTokens(
-                nativeHalf, 0, nativeToLp1Route, address(this), block.timestamp
-            );
+            IUniswapRouterETH(unirouter)
+                .swapExactTokensForTokens(nativeHalf, 0, nativeToLp1Route, address(this), block.timestamp);
         }
 
         uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
         uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
-        IUniswapRouterETH(unirouter).addLiquidity(
-            lpToken0, lpToken1, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp
-        );
+        IUniswapRouterETH(unirouter)
+            .addLiquidity(lpToken0, lpToken1, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);
     }
 
     // calculate the total underlaying 'want' held by the strat.
@@ -275,7 +276,7 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         uint256 nativeOut;
         if (outputBal > 0) {
             uint256[] memory amountOut = IUniswapRouterETH(unirouter).getAmountsOut(outputBal, outputToNativeRoute);
-            nativeOut = amountOut[amountOut.length -1];
+            nativeOut = amountOut[amountOut.length - 1];
         }
 
         return nativeOut * fees.total / DIVISOR * fees.call / DIVISOR;
@@ -322,20 +323,20 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(want).forceApprove(nft, type(uint).max);
-        IERC20(output).forceApprove(unirouter, type(uint).max);
-        IERC20(native).forceApprove(unirouter, type(uint).max);
+        IERC20(want).forceApprove(nft, type(uint256).max);
+        IERC20(output).forceApprove(unirouter, type(uint256).max);
+        IERC20(native).forceApprove(unirouter, type(uint256).max);
 
         IERC20(lpToken0).forceApprove(unirouter, 0);
-        IERC20(lpToken0).forceApprove(unirouter, type(uint).max);
+        IERC20(lpToken0).forceApprove(unirouter, type(uint256).max);
 
         IERC20(lpToken1).forceApprove(unirouter, 0);
-        IERC20(lpToken1).forceApprove(unirouter, type(uint).max);
+        IERC20(lpToken1).forceApprove(unirouter, type(uint256).max);
 
         if (rewardToNativeRoute.length != 0) {
-            for (uint i; i < rewardToNativeRoute.length; i++) {
+            for (uint256 i; i < rewardToNativeRoute.length; i++) {
                 IERC20(rewardToNativeRoute[i][0]).forceApprove(unirouter, 0);
-                IERC20(rewardToNativeRoute[i][0]).forceApprove(unirouter, type(uint).max);
+                IERC20(rewardToNativeRoute[i][0]).forceApprove(unirouter, type(uint256).max);
             }
         }
     }
@@ -348,7 +349,7 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         IERC20(lpToken1).forceApprove(unirouter, 0);
 
         if (rewardToNativeRoute.length != 0) {
-            for (uint i; i < rewardToNativeRoute.length; i++) {
+            for (uint256 i; i < rewardToNativeRoute.length; i++) {
                 IERC20(rewardToNativeRoute[i][0]).forceApprove(unirouter, 0);
             }
         }
@@ -356,7 +357,7 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
 
     function addRewardRoute(address[] memory _rewardToNativeRoute) external onlyOwner {
         IERC20(_rewardToNativeRoute[0]).forceApprove(unirouter, 0);
-        IERC20(_rewardToNativeRoute[0]).forceApprove(unirouter, type(uint).max);
+        IERC20(_rewardToNativeRoute[0]).forceApprove(unirouter, type(uint256).max);
         rewardToNativeRoute.push(_rewardToNativeRoute);
     }
 
@@ -389,24 +390,12 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         return rewardToNativeRoute;
     }
 
-    function onERC721Received(
-        address,
-        address,
-        uint,
-        bytes calldata
-    ) external view returns (bytes4) {
+    function onERC721Received(address, address, uint256, bytes calldata) external view returns (bytes4) {
         require(msg.sender == address(nft), "!nft");
         return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
     }
 
-    function onNFTHarvest(
-        address,
-        address,
-        uint256,
-        uint256,
-        uint256,
-        uint256
-    ) external view returns (bool) {
+    function onNFTHarvest(address, address, uint256, uint256, uint256, uint256) external view returns (bool) {
         require(msg.sender == address(nft), "!nft");
         return true;
     }
@@ -421,5 +410,5 @@ contract StrategyBaseSwap is StratFeeManagerInitializable {
         return true;
     }
 
-    receive () external payable {}
+    receive() external payable {}
 }

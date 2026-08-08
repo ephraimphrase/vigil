@@ -18,7 +18,6 @@ interface IMinter {
 
 // Strategy for Balancer/Aura
 contract StrategyBalancer is BaseAllToNativeFactoryStrat {
-
     uint256 private constant NOT_AURA = 1234567;
     bool private useAura;
 
@@ -43,14 +42,14 @@ contract StrategyBalancer is BaseAllToNativeFactoryStrat {
         pid = _pid;
         if (pid != NOT_AURA) useAura = true;
 
-        if (useAura) (,,,rewardPool,,) = booster.poolInfo(pid);
+        if (useAura) (,,, rewardPool,,) = booster.poolInfo(pid);
         if (!useAura) minter = IMinter(gauge.bal_pseudo_minter());
 
         __BaseStrategy_init(_commonAddresses, _rewards);
         _giveAllowances();
     }
 
-    function balanceOfPool() public view override returns (uint bal) {
+    function balanceOfPool() public view override returns (uint256 bal) {
         if (useAura) return IAuraRewardPool(rewardPool).balanceOf(address(this));
         else return gauge.balanceOf(address(this));
     }
@@ -59,14 +58,14 @@ contract StrategyBalancer is BaseAllToNativeFactoryStrat {
         return "Balancer";
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         if (_amount > 0) {
             if (useAura) booster.deposit(pid, _amount, true);
             else gauge.deposit(_amount);
-        } 
+        }
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (_amount > 0) {
             if (useAura) IAuraRewardPool(rewardPool).withdrawAndUnwrap(_amount, false);
             else gauge.withdraw(_amount);
@@ -78,8 +77,9 @@ contract StrategyBalancer is BaseAllToNativeFactoryStrat {
     }
 
     function _claim() internal override {
-        if (useAura) IAuraRewardPool(rewardPool).getReward();
-        else {
+        if (useAura) {
+            IAuraRewardPool(rewardPool).getReward();
+        } else {
             if (address(minter) != address(0)) minter.mint(address(this));
             gauge.claim_rewards(address(this));
         }
@@ -91,12 +91,12 @@ contract StrategyBalancer is BaseAllToNativeFactoryStrat {
 
         if (depositToken != want) {
             uint256 depositBal = IERC20(depositToken).balanceOf(address(this));
-            _balancerJoin( IBalancerPool(want).getPoolId(), depositToken, depositBal);
+            _balancerJoin(IBalancerPool(want).getPoolId(), depositToken, depositBal);
         }
     }
 
     function _giveAllowances() internal {
-        uint max = type(uint).max;
+        uint256 max = type(uint256).max;
 
         if (useAura) _approve(want, address(booster), max);
         else _approve(want, address(gauge), max);
@@ -133,27 +133,29 @@ contract StrategyBalancer is BaseAllToNativeFactoryStrat {
         _removeAllowances();
         pid = _pid;
         if (pid == NOT_AURA) gauge = IRewardsGauge(_gauge);
-        else (,,,rewardPool,,) = booster.poolInfo(pid);
+        else (,,, rewardPool,,) = booster.poolInfo(pid);
         if (_booster != address(0)) booster = IAuraBooster(_booster);
         _giveAllowances();
         deposit();
     }
 
-
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).approve(_spender, amount);
     }
 
-     function _balancerJoin(bytes32 _poolId, address _tokenIn, uint256 _amountIn) internal {
+    function _balancerJoin(bytes32 _poolId, address _tokenIn, uint256 _amountIn) internal {
         (address[] memory lpTokens,,) = balancerVault.getPoolTokens(_poolId);
         uint256[] memory amounts = new uint256[](lpTokens.length);
         for (uint256 i = 0; i < amounts.length;) {
             amounts[i] = lpTokens[i] == _tokenIn ? _amountIn : 0;
-            unchecked { ++i; }
+            unchecked {
+                ++i;
+            }
         }
         bytes memory userData = abi.encode(1, amounts, 1);
 
-        IBalancerVault.JoinPoolRequest memory request = IBalancerVault.JoinPoolRequest(lpTokens, amounts, userData, false);
+        IBalancerVault.JoinPoolRequest memory request =
+            IBalancerVault.JoinPoolRequest(lpTokens, amounts, userData, false);
         balancerVault.joinPool(_poolId, address(this), address(this), request);
     }
 

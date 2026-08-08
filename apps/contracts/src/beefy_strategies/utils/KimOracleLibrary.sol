@@ -19,7 +19,7 @@ library KimOracleLibrary {
         view
         returns (int24 arithmeticMeanTick, uint128 harmonicMeanLiquidity)
     {
-        require(secondsAgo != 0, 'BP');
+        require(secondsAgo != 0, "BP");
 
         uint32[] memory secondsAgos = new uint32[](2);
         secondsAgos[0] = secondsAgo;
@@ -42,10 +42,7 @@ library KimOracleLibrary {
     /// @param tick Tick value used to calculate the quote
     /// @param baseAmount Amount of token to be converted
     /// @return quoteAmount Amount of quoteToken received for baseAmount of baseToken
-    function getQuoteAtTick(
-        int24 tick,
-        uint256 baseAmount
-    ) internal pure returns (uint256 quoteAmount) {
+    function getQuoteAtTick(int24 tick, uint256 baseAmount) internal pure returns (uint256 quoteAmount) {
         uint160 sqrtRatioX96 = TickMath.getSqrtRatioAtTick(tick);
 
         // Calculate quoteAmount with better precision if it doesn't overflow when multiplied by itself
@@ -69,7 +66,7 @@ library KimOracleLibrary {
         pure
         returns (int256 syntheticTick)
     {
-        require(tokens.length - 1 == ticks.length, 'DL');
+        require(tokens.length - 1 == ticks.length, "DL");
         for (uint256 i = 1; i <= ticks.length; i++) {
             // check the tokens for address sort order, then accumulate the
             // ticks into the running synthetic tick, ensuring that intermediate tokens "cancel out"

@@ -191,7 +191,7 @@ contract StrategyGLP is StratFeeManagerInitializable {
         IBeefyVault.StratCandidate memory candidate = IBeefyVault(vault).stratCandidate();
         address stratAddress = candidate.implementation;
 
-        IERC20(gmxRewardStorage).forceApprove(stratAddress, type(uint).max);
+        IERC20(gmxRewardStorage).forceApprove(stratAddress, type(uint256).max);
         IGMXRouter(chef).signalTransfer(stratAddress);
         IGMXStrategy(stratAddress).acceptTransfer();
 
@@ -217,8 +217,8 @@ contract StrategyGLP is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(native).forceApprove(glpManager, type(uint).max);
-        IERC20(gmx).forceApprove(unirouter, type(uint).max);
+        IERC20(native).forceApprove(glpManager, type(uint256).max);
+        IERC20(gmx).forceApprove(unirouter, type(uint256).max);
     }
 
     function _removeAllowances() internal {

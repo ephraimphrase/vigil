@@ -16,12 +16,12 @@ contract StrategyAlienBaseBunni is BaseAllToNativeFactoryStrat {
     IMasterChef public constant chef = IMasterChef(0x52eaeCAC2402633d98b95213d0b473E069D86590);
     address public constant unirouter = 0xB20C411FC84FBB27e78608C24d0056D974ea9411;
 
-    uint public pid;
+    uint256 public pid;
     address public hub;
     IUniV3Pool public pool;
     address public lpToken0;
     address public lpToken1;
-    uint public lp0Decimals;
+    uint256 public lp0Decimals;
     int24 public tickLower;
     int24 public tickUpper;
 
@@ -29,7 +29,7 @@ contract StrategyAlienBaseBunni is BaseAllToNativeFactoryStrat {
     bytes public outputToLp1Path;
 
     function initialize(
-        uint _pid,
+        uint256 _pid,
         bool _harvestOnDeposit,
         bytes calldata _outputToLp0Path,
         bytes calldata _outputToLp1Path,
@@ -57,17 +57,17 @@ contract StrategyAlienBaseBunni is BaseAllToNativeFactoryStrat {
         return "AlienBaseBunni";
     }
 
-    function balanceOfPool() public view override returns (uint) {
-        (uint amount,) = chef.userInfo(pid, address(this));
+    function balanceOfPool() public view override returns (uint256) {
+        (uint256 amount,) = chef.userInfo(pid, address(this));
         return amount;
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(chef), amount);
         chef.deposit(pid, amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         chef.withdraw(pid, amount);
     }
 
@@ -88,36 +88,34 @@ contract StrategyAlienBaseBunni is BaseAllToNativeFactoryStrat {
         }
 
         (uint160 sqrtPriceX96,,,,,,) = pool.slot0();
-        uint price = (uint(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2 / 1e18 / (1e18 / lp0Decimals);
-        uint in0 = lp0Decimals;
-        uint in1 = price;
+        uint256 price = (uint256(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2 / 1e18 / (1e18 / lp0Decimals);
+        uint256 in0 = lp0Decimals;
+        uint256 in1 = price;
 
         (uint128 liquidity,,,,) = pool.positions(keccak256(abi.encodePacked(hub, tickLower, tickUpper)));
-        (uint amount0, uint amount1) = LiquidityAmounts.getAmountsForLiquidity(
-            sqrtPriceX96,
-            TickMath.getSqrtRatioAtTick(tickLower),
-            TickMath.getSqrtRatioAtTick(tickUpper),
-            liquidity
+        (uint256 amount0, uint256 amount1) = LiquidityAmounts.getAmountsForLiquidity(
+            sqrtPriceX96, TickMath.getSqrtRatioAtTick(tickLower), TickMath.getSqrtRatioAtTick(tickUpper), liquidity
         );
 
-        uint ratio = in0 * 1e18 / in1 * amount1 / amount0;
-        uint outputBal = IERC20(output).balanceOf(address(this));
-        uint toLp0 = outputBal * 1e18 / (ratio + 1e18);
-        uint toLp1 = outputBal - toLp0;
+        uint256 ratio = in0 * 1e18 / in1 * amount1 / amount0;
+        uint256 outputBal = IERC20(output).balanceOf(address(this));
+        uint256 toLp0 = outputBal * 1e18 / (ratio + 1e18);
+        uint256 toLp1 = outputBal - toLp0;
 
         _swapToLp(output, lpToken0, outputToLp0Path, toLp0);
         _swapToLp(output, lpToken1, outputToLp1Path, toLp1);
 
-        uint lp0Bal = IERC20(lpToken0).balanceOf(address(this));
-        uint lp1Bal = IERC20(lpToken1).balanceOf(address(this));
+        uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
+        uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
         IBunniHub.BunniKey memory key = IBunniHub.BunniKey(address(pool), tickLower, tickUpper);
-        IBunniHub.DepositParams memory params = IBunniHub.DepositParams(key, lp0Bal, lp1Bal, 0, 0, block.timestamp, address(this));
+        IBunniHub.DepositParams memory params =
+            IBunniHub.DepositParams(key, lp0Bal, lp1Bal, 0, 0, block.timestamp, address(this));
         IERC20(lpToken0).forceApprove(hub, lp0Bal);
         IERC20(lpToken1).forceApprove(hub, lp1Bal);
         IBunniHub(hub).deposit(params);
     }
 
-    function _swapToLp(address from, address to, bytes memory path, uint amount) internal {
+    function _swapToLp(address from, address to, bytes memory path, uint256 amount) internal {
         if (from != to) {
             (address router,) = ISimplifiedSwapInfo(swapper).swapInfo(from, to);
             if (router != address(0)) {
@@ -154,5 +152,4 @@ contract StrategyAlienBaseBunni is BaseAllToNativeFactoryStrat {
     function outputToLp1() external view returns (address[] memory) {
         return UniswapV3Utils.pathToRoute(outputToLp1Path);
     }
-
 }

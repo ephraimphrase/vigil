@@ -19,25 +19,23 @@ contract StrategySiloVault is BaseAllToNativeFactoryStrat {
 
     // Tokens used
     ISiloV2 public silo;
-    IIncentivesGauge public gauge; 
+    IIncentivesGauge public gauge;
     IMerklClaimer public claimer;
 
-    function initialize(
-        address _silo,
-        address _gauge,
-        address[] calldata _rewards,
-        Addresses calldata _commonAddresses
-    ) public initializer {
+    function initialize(address _silo, address _gauge, address[] calldata _rewards, Addresses calldata _commonAddresses)
+        public
+        initializer
+    {
         silo = ISiloV2(_silo);
         gauge = IIncentivesGauge(_gauge);
- 
+
         __BaseStrategy_init(_commonAddresses, _rewards);
         _giveAllowances();
 
         setMerklClaimer(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae);
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         uint256 shares = silo.balanceOf(address(this));
         return silo.convertToAssets(shares);
     }
@@ -46,11 +44,11 @@ contract StrategySiloVault is BaseAllToNativeFactoryStrat {
         return "SiloVault";
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         silo.deposit(_amount, address(this));
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (_amount > 0) {
             if (_amount == balanceOfPool()) silo.redeem(silo.balanceOf(address(this)), address(this), address(this));
             else silo.withdraw(_amount, address(this), address(this));
@@ -75,7 +73,7 @@ contract StrategySiloVault is BaseAllToNativeFactoryStrat {
     }
 
     function _giveAllowances() internal {
-        uint max = type(uint).max;
+        uint256 max = type(uint256).max;
         _approve(want, address(silo), max);
         _approve(native, address(swapper), max);
     }
@@ -110,17 +108,12 @@ contract StrategySiloVault is BaseAllToNativeFactoryStrat {
         deposit();
     }
 
-
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).approve(_spender, amount);
     }
 
-     /// @notice Claim rewards from the underlying platform
-    function claim(
-        address[] calldata _tokens,
-        uint256[] calldata _amounts,
-        bytes32[][] calldata _proofs
-    ) external { 
+    /// @notice Claim rewards from the underlying platform
+    function claim(address[] calldata _tokens, uint256[] calldata _amounts, bytes32[][] calldata _proofs) external {
         address[] memory users = new address[](1);
         users[0] = address(this);
 

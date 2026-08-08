@@ -65,16 +65,16 @@ contract StrategyBeraPaw is BaseAllToNativeFactoryStrat {
         return "BeraPaw";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return gauge.balanceOf(address(this)) - gauge.getTotalDelegateStaked(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(gauge), amount);
         gauge.stake(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             gauge.withdraw(amount);
         }
@@ -88,7 +88,7 @@ contract StrategyBeraPaw is BaseAllToNativeFactoryStrat {
         if (gauge.earned(address(this)) > 0) {
             IBeraPaw(beraPawForge).mint(address(this), address(gauge), address(this));
         }
-        uint bgtBal = BGT.balanceOf(address(this));
+        uint256 bgtBal = BGT.balanceOf(address(this));
         if (bgtBal > 0) {
             BGT.redeem(address(this), bgtBal);
             IWrappedNative(native).deposit{value: address(this).balance}();
@@ -117,26 +117,26 @@ contract StrategyBeraPaw is BaseAllToNativeFactoryStrat {
     }
 
     function _buildKodiakLp(address output) internal {
-        (uint amount0, uint amount1) = IKodiakIsland(want).getUnderlyingBalances();
+        (uint256 amount0, uint256 amount1) = IKodiakIsland(want).getUnderlyingBalances();
         (uint160 sqrtPriceX96,,,,,,) = pool.slot0();
-        uint price = (uint(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2;
-        uint amount0inLp1 = amount0 * price / 1e36;
-        uint outputBal = IERC20(output).balanceOf(address(this));
-        uint toLp0 = outputBal * amount0inLp1 / (amount0inLp1 + amount1);
-        uint toLp1 = outputBal - toLp0;
+        uint256 price = (uint256(sqrtPriceX96) * 1e18 / (2 ** 96)) ** 2;
+        uint256 amount0inLp1 = amount0 * price / 1e36;
+        uint256 outputBal = IERC20(output).balanceOf(address(this));
+        uint256 toLp0 = outputBal * amount0inLp1 / (amount0inLp1 + amount1);
+        uint256 toLp1 = outputBal - toLp0;
 
         _swap(output, lpToken0, outputToLp0Path, toLp0);
         _swap(output, lpToken1, outputToLp1Path, toLp1);
 
-        uint lp0Bal = IERC20(lpToken0).balanceOf(address(this));
-        uint lp1Bal = IERC20(lpToken1).balanceOf(address(this));
+        uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
+        uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
         IERC20(lpToken0).forceApprove(want, lp0Bal);
         IERC20(lpToken1).forceApprove(want, lp1Bal);
-        (,, uint mintAmount) = IKodiakIsland(want).getMintAmounts(lp0Bal, lp1Bal);
+        (,, uint256 mintAmount) = IKodiakIsland(want).getMintAmounts(lp0Bal, lp1Bal);
         IKodiakIsland(want).mint(mintAmount, address(this));
     }
 
-    function _swap(address from, address to, bytes memory path, uint amount) internal {
+    function _swap(address from, address to, bytes memory path, uint256 amount) internal {
         if (amount > 0 && from != to) {
             (address router,) = ISimplifiedSwapInfo(swapper).swapInfo(from, to);
             if (router != address(0)) {
@@ -173,5 +173,4 @@ contract StrategyBeraPaw is BaseAllToNativeFactoryStrat {
     function outputToLp1() external view returns (address[] memory) {
         return UniswapV3Utils.pathToRoute(outputToLp1Path);
     }
-
 }

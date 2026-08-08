@@ -67,9 +67,7 @@ contract HealthOracleTest is Test {
     function test_RegisterProtocolRevertsForNonAdmin() public {
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                stranger,
-                oracle.DEFAULT_ADMIN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, oracle.DEFAULT_ADMIN_ROLE()
             )
         );
         vm.prank(stranger);
@@ -104,9 +102,7 @@ contract HealthOracleTest is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                stranger,
-                oracle.SCORER_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, oracle.SCORER_ROLE()
             )
         );
         vm.prank(stranger);
@@ -134,9 +130,7 @@ contract HealthOracleTest is Test {
         oracle.setScore(PROTOCOL, 60);
 
         vm.expectRevert(
-            abi.encodeWithSelector(
-                HealthOracle.TooSoon.selector, PROTOCOL, block.timestamp + oracle.MIN_INTERVAL()
-            )
+            abi.encodeWithSelector(HealthOracle.TooSoon.selector, PROTOCOL, block.timestamp + oracle.MIN_INTERVAL())
         );
         vm.prank(scorer);
         oracle.setScore(PROTOCOL, 70);
@@ -249,9 +243,7 @@ contract HealthOracleTest is Test {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IAccessControl.AccessControlUnauthorizedAccount.selector,
-                stranger,
-                oracle.GUARDIAN_ROLE()
+                IAccessControl.AccessControlUnauthorizedAccount.selector, stranger, oracle.GUARDIAN_ROLE()
             )
         );
         vm.prank(stranger);

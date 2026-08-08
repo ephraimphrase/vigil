@@ -11,23 +11,23 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
     using SafeERC20 for IERC20;
 
     // this `pid` means we using Pendle directly and not Equilibria rewardPool
-    uint constant public NO_PID = 42069;
+    uint256 public constant NO_PID = 42069;
 
     IEqbBooster public booster;
     IRewardPool public rewardPool;
     IXEqb public xEqb;
     uint256 public pid;
-    uint public lastEqbRedeem;
-    uint public redeemDelay;
+    uint256 public lastEqbRedeem;
+    uint256 public redeemDelay;
     bool public redeemEqb;
 
     function initialize(
         IEqbBooster _booster,
-        uint _pid,
+        uint256 _pid,
         bool _harvestOnDeposit,
         address[] calldata _rewards,
         Addresses calldata _addresses
-    ) public initializer  {
+    ) public initializer {
         xEqb = IXEqb(_booster.xEqb());
         booster = _booster;
         pid = _pid;
@@ -35,7 +35,7 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         redeemDelay = 1 days;
 
         if (_pid != NO_PID) {
-            (,,address _rewardPool) = _booster.poolInfo(_pid);
+            (,, address _rewardPool) = _booster.poolInfo(_pid);
             rewardPool = IRewardPool(_rewardPool);
         } else {
             IPendleMarket(_addresses.want).redeemRewards(address(this));
@@ -53,21 +53,21 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         return "EquilibriaPendle";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         if (_isEquilibria()) {
             return rewardPool.balanceOf(address(this));
         }
         return 0;
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         if (_isEquilibria()) {
             IERC20(want).forceApprove(address(booster), amount);
             booster.deposit(pid, amount, true);
         }
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (_isEquilibria() && amount > 0) {
             rewardPool.withdraw(amount);
             booster.withdraw(pid, amount);
@@ -89,9 +89,9 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         }
 
         if (redeemEqb) {
-            uint len = xEqb.getUserRedeemsLength(address(this));
-            for (uint i; i < len; ++i) {
-                (,,uint256 endTime) = xEqb.getUserRedeem(address(this), i);
+            uint256 len = xEqb.getUserRedeemsLength(address(this));
+            for (uint256 i; i < len; ++i) {
+                (,, uint256 endTime) = xEqb.getUserRedeem(address(this), i);
                 if (endTime <= block.timestamp) {
                     xEqb.finalizeRedeem(i);
                     break;
@@ -110,14 +110,14 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         }
     }
 
-    function setEqbPid(uint _pid, bool claim) public onlyManager {
+    function setEqbPid(uint256 _pid, bool claim) public onlyManager {
         if (pid == _pid) return;
 
         _withdraw(balanceOfPool());
         if (claim) _claim();
 
         if (_pid != NO_PID) {
-            (address _market,,address _rewardPool) = booster.poolInfo(_pid);
+            (address _market,, address _rewardPool) = booster.poolInfo(_pid);
             require(want == _market, "!market");
             rewardPool = IRewardPool(_rewardPool);
         } else {
@@ -127,12 +127,12 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         deposit();
     }
 
-    function setRedeemEqb(bool doRedeem, uint delay) external onlyManager {
+    function setRedeemEqb(bool doRedeem, uint256 delay) external onlyManager {
         redeemEqb = doRedeem;
         redeemDelay = delay;
     }
 
-    function redeem(uint amount, uint duration) external onlyManager {
+    function redeem(uint256 amount, uint256 duration) external onlyManager {
         xEqb.redeem(amount, duration);
     }
 
@@ -144,7 +144,7 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
         xEqb.redeem(xEqb.balanceOf(address(this)), xEqb.minRedeemDuration());
     }
 
-    function finalizeRedeem(uint redeemIndex) external onlyManager {
+    function finalizeRedeem(uint256 redeemIndex) external onlyManager {
         xEqb.finalizeRedeem(redeemIndex);
     }
 
@@ -152,5 +152,4 @@ contract StrategyEquilibria is BaseAllToNativeFactoryStrat {
     function boosterWithdrawAll() external onlyManager {
         booster.withdrawAll(pid);
     }
-
 }

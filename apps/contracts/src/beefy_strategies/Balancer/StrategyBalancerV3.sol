@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import { BaseAllToNativeFactoryStrat } from "../Common/BaseAllToNativeFactoryStrat.sol";
-import { IBeefySwapper } from "../interface/beefy/IBeefySwapper.sol";
-import { IRewardsGauge } from "../interface/curve/IRewardsGauge.sol";
-import { IAuraRewardPool } from "../interface/aura/IAuraRewardPool.sol";
-import { IAuraBooster } from "../interface/aura/IAuraBooster.sol";
-import { IBalancerVaultV3 } from "../interface/beethovenx/IBalancerVaultV3.sol";
-import { IMerklClaimer } from "../interface/merkl/IMerklClaimer.sol";
-import { SafeERC20, IERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {BaseAllToNativeFactoryStrat} from "../Common/BaseAllToNativeFactoryStrat.sol";
+import {IBeefySwapper} from "../interface/beefy/IBeefySwapper.sol";
+import {IRewardsGauge} from "../interface/curve/IRewardsGauge.sol";
+import {IAuraRewardPool} from "../interface/aura/IAuraRewardPool.sol";
+import {IAuraBooster} from "../interface/aura/IAuraBooster.sol";
+import {IBalancerVaultV3} from "../interface/beethovenx/IBalancerVaultV3.sol";
+import {IMerklClaimer} from "../interface/merkl/IMerklClaimer.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 interface IBalancerPool {
     function getTokens() external view returns (address[] memory tokens);
@@ -67,7 +67,7 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
         useAura = pid != NOT_AURA;
         holdWant = !useAura && _gauge == address(0);
 
-        if (useAura) (,,,rewardPool,,) = booster.poolInfo(pid);
+        if (useAura) (,,, rewardPool,,) = booster.poolInfo(pid);
         if (!useAura && !holdWant) minter = IMinter(gauge.bal_pseudo_minter());
 
         __BaseStrategy_init(_commonAddresses, _rewards);
@@ -83,7 +83,7 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
         _giveAllowances();
     }
 
-    function balanceOfPool() public view override returns (uint bal) {
+    function balanceOfPool() public view override returns (uint256 bal) {
         if (holdWant) return 0;
         if (useAura) return IAuraRewardPool(rewardPool).balanceOf(address(this));
         else return gauge.balanceOf(address(this));
@@ -93,15 +93,15 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
         return "BalancerV3";
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         if (holdWant) return;
         if (_amount > 0) {
             if (useAura) booster.deposit(pid, _amount, true);
             else gauge.deposit(_amount);
-        } 
+        }
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (holdWant) return;
         if (_amount > 0) {
             if (useAura) IAuraRewardPool(rewardPool).withdrawAndUnwrap(_amount, false);
@@ -115,19 +115,16 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
 
     function _claim() internal override {
         if (holdWant) return;
-        if (useAura) IAuraRewardPool(rewardPool).getReward();
-        else {
+        if (useAura) {
+            IAuraRewardPool(rewardPool).getReward();
+        } else {
             if (address(minter) != address(0)) minter.mint(address(gauge));
             gauge.claim_rewards(address(this));
         }
     }
 
     /// @notice Claim rewards from the underlying platform
-    function claim(
-        address[] calldata _tokens,
-        uint256[] calldata _amounts,
-        bytes32[][] calldata _proofs
-    ) external { 
+    function claim(address[] calldata _tokens, uint256[] calldata _amounts, bytes32[][] calldata _proofs) external {
         address claimer = address(0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae);
         address[] memory users = new address[](1);
         users[0] = address(this);
@@ -148,7 +145,7 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
     }
 
     function _giveAllowances() internal {
-        uint max = type(uint).max;
+        uint256 max = type(uint256).max;
 
         if (!holdWant) {
             if (useAura) _approve(want, address(booster), max);
@@ -195,15 +192,14 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
             rewardPool = address(0);
             minter = holdWant ? IMinter(address(0)) : IMinter(gauge.bal_pseudo_minter());
         } else {
-            (,,,rewardPool,,) = booster.poolInfo(pid);
+            (,,, rewardPool,,) = booster.poolInfo(pid);
             minter = IMinter(address(0));
         }
         _giveAllowances();
         deposit();
     }
 
-
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).approve(_spender, amount);
     }
 
@@ -216,17 +212,19 @@ contract StrategyBalancerV3 is BaseAllToNativeFactoryStrat {
 
         IERC20(depositToken).safeTransfer(address(balancerVault), _amountIn);
         balancerVault.settle(depositToken, _amountIn);
-       (, bptAmountOut,) = balancerVault.addLiquidity(IBalancerVaultV3.AddLiquidityParams({
-            pool: want,
-            to: address(this),
-            maxAmountsIn: amounts,
-            minBptAmountOut: 0,
-            kind: IBalancerVaultV3.AddLiquidityKind.UNBALANCED,
-            userData: ""
-        }));
+        (, bptAmountOut,) = balancerVault.addLiquidity(
+            IBalancerVaultV3.AddLiquidityParams({
+                pool: want,
+                to: address(this),
+                maxAmountsIn: amounts,
+                minBptAmountOut: 0,
+                kind: IBalancerVaultV3.AddLiquidityKind.UNBALANCED,
+                userData: ""
+            })
+        );
 
         addingLiquidity = false;
-    } 
+    }
 
     function _verifyRewardToken(address token) internal view override {}
 }

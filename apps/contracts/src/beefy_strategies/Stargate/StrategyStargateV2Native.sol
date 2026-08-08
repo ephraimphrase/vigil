@@ -14,7 +14,7 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
     using SafeERC20 for IERC20;
 
     address[] public rewards;
-    mapping(address => uint) public minAmounts; // tokens minimum amount to be swapped
+    mapping(address => uint256) public minAmounts; // tokens minimum amount to be swapped
 
     address public want;
     address public native;
@@ -48,10 +48,11 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
         want = _native;
         lpToken = IStargateV2Router(stargateRouter).lpToken();
         lpTokens.push(lpToken);
-        convertRate = 10 ** uint256(IERC20Extended(want).decimals() - IStargateV2Router(stargateRouter).sharedDecimals());
+        convertRate =
+            10 ** uint256(IERC20Extended(want).decimals() - IStargateV2Router(stargateRouter).sharedDecimals());
         native = _native;
         lockDuration = 1 days;
-        for (uint i; i < _rewards.length; i++) {
+        for (uint256 i; i < _rewards.length; i++) {
             addReward(_rewards[i]);
         }
         setWithdrawalFee(0);
@@ -134,7 +135,7 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
     }
 
     function _swapRewardsToNative() internal virtual {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address token = rewards[i];
             uint256 amount = IERC20(token).balanceOf(address(this));
             if (amount > minAmounts[token]) {
@@ -161,11 +162,11 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
     }
 
     function _swap(address tokenFrom, address tokenTo) internal {
-        uint bal = IERC20(tokenFrom).balanceOf(address(this));
+        uint256 bal = IERC20(tokenFrom).balanceOf(address(this));
         IBeefySwapper(unirouter).swap(tokenFrom, tokenTo, bal);
     }
 
-    function rewardsLength() external view returns (uint) {
+    function rewardsLength() external view returns (uint256) {
         return rewards.length;
     }
 
@@ -176,36 +177,36 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
 
         rewards.push(_token);
         _approve(_token, unirouter, 0);
-        _approve(_token, unirouter, type(uint).max);
+        _approve(_token, unirouter, type(uint256).max);
     }
 
-    function removeReward(uint i) external onlyManager {
+    function removeReward(uint256 i) external onlyManager {
         rewards[i] = rewards[rewards.length - 1];
         rewards.pop();
     }
 
     function resetRewards() external onlyManager {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             _approve(rewards[i], unirouter, 0);
         }
         delete rewards;
     }
 
     function updateUnirouter(address _unirouter) external onlyOwner {
-        for (uint i; i < rewards.length; ++i) {
+        for (uint256 i; i < rewards.length; ++i) {
             address token = rewards[i];
             _approve(token, unirouter, 0);
             _approve(token, _unirouter, 0);
-            _approve(token, _unirouter, type(uint).max);
+            _approve(token, _unirouter, type(uint256).max);
         }
         _approve(native, unirouter, 0);
         _approve(native, _unirouter, 0);
-        _approve(native, _unirouter, type(uint).max);
+        _approve(native, _unirouter, type(uint256).max);
         unirouter = _unirouter;
         emit SetUnirouter(_unirouter);
     }
 
-    function setRewardMinAmount(address token, uint minAmount) external onlyManager {
+    function setRewardMinAmount(address token, uint256 minAmount) external onlyManager {
         minAmounts[token] = minAmount;
     }
 
@@ -239,15 +240,15 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
         }
     }
 
-    function setLockDuration(uint _duration) external onlyManager {
+    function setLockDuration(uint256 _duration) external onlyManager {
         lockDuration = _duration;
     }
 
-    function rewardsAvailable() external view virtual returns (uint) {
+    function rewardsAvailable() external view virtual returns (uint256) {
         return 0;
     }
 
-    function callReward() external view virtual returns (uint) {
+    function callReward() external view virtual returns (uint256) {
         return 0;
     }
 
@@ -277,7 +278,7 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
         deposit();
     }
 
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).forceApprove(_spender, amount);
     }
 
@@ -285,7 +286,7 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
         IERC20(want).forceApprove(stargateRouter, type(uint256).max);
         IERC20(lpToken).forceApprove(chef, type(uint256).max);
 
-        for (uint i; i < rewards.length; i++) {
+        for (uint256 i; i < rewards.length; i++) {
             IERC20(rewards[i]).forceApprove(unirouter, 0);
             IERC20(rewards[i]).forceApprove(unirouter, type(uint256).max);
         }
@@ -295,7 +296,7 @@ contract StrategyStargateV2Native is StratFeeManagerInitializable {
         IERC20(want).forceApprove(stargateRouter, 0);
         IERC20(lpToken).forceApprove(chef, 0);
 
-        for (uint i; i < rewards.length; i++) {
+        for (uint256 i; i < rewards.length; i++) {
             IERC20(rewards[i]).forceApprove(unirouter, 0);
         }
     }

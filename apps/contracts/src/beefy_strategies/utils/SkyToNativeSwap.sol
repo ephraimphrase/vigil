@@ -5,7 +5,6 @@ pragma solidity ^0.8.12;
 import "../interface/beefy/IBeefySwapper.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-
 interface IDaiUsds {
     function usdsToDai(address usr, uint256 wad) external;
 }
@@ -20,12 +19,12 @@ contract SkyToNativeSwap {
     address public swapper = 0x8d6cE71ab8c98299c1956247CA9aaEC080DD2df3;
     address public daiUsds = 0x3225737a9Bbb6473CB4a45b7244ACa2BeFdB276A;
 
-    function swap(uint amount) external {
+    function swap(uint256 amount) external {
         IERC20(sky).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(sky).approve(swapper, amount);
         IBeefySwapper(swapper).swap(sky, usds, amount);
 
-        uint bal = IERC20(usds).balanceOf(address(this));
+        uint256 bal = IERC20(usds).balanceOf(address(this));
         IERC20(usds).approve(daiUsds, bal);
         IDaiUsds(daiUsds).usdsToDai(address(this), bal);
 

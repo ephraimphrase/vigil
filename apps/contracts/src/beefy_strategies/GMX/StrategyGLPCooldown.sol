@@ -59,7 +59,7 @@ contract StrategyGLPCooldown is StratFeeManagerInitializable {
     }
 
     // prevent griefing by preventing deposits for longer than the cooldown period
-    modifier whenNotCooling {
+    modifier whenNotCooling() {
         if (cooldown) {
             require(block.timestamp >= withdrawOpen() + extraCooldownDuration, "cooldown");
         }
@@ -111,7 +111,7 @@ contract StrategyGLPCooldown is StratFeeManagerInitializable {
 
     // compounds earnings and charges performance fee
     function _harvest(address callFeeRecipient) internal whenNotPaused {
-        IGMXRouter(chef).compound();   // Claim and restake esGMX and multiplier points
+        IGMXRouter(chef).compound(); // Claim and restake esGMX and multiplier points
         IGMXRouter(chef).claimFees();
         uint256 nativeBal = IERC20(native).balanceOf(address(this));
         if (nativeBal > 0) {
@@ -220,7 +220,7 @@ contract StrategyGLPCooldown is StratFeeManagerInitializable {
     }
 
     function _giveAllowances() internal {
-        IERC20(native).forceApprove(glpManager, type(uint).max);
+        IERC20(native).forceApprove(glpManager, type(uint256).max);
     }
 
     function _removeAllowances() internal {
@@ -229,8 +229,7 @@ contract StrategyGLPCooldown is StratFeeManagerInitializable {
 
     // timestamp at which withdrawals open again
     function withdrawOpen() public view returns (uint256) {
-        return IGLPManager(glpManager).lastAddedAt(address(this)) 
-            + IGLPManager(glpManager).cooldownDuration();
+        return IGLPManager(glpManager).lastAddedAt(address(this)) + IGLPManager(glpManager).cooldownDuration();
     }
 
     // turn on extra cooldown time to allow users to withdraw

@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "../../oracle/BeefyOracleHelper.sol";
 
 interface ICurvePool {
-    function price_oracle() external view returns (uint);
+    function price_oracle() external view returns (uint256);
 }
 
 contract CurveOracle {
@@ -22,7 +22,7 @@ contract CurveOracle {
     }
 
     function getPrice(bytes memory) public returns (uint256 price, bool success) {
-        uint priceInBase = pool.price_oracle();
+        uint256 priceInBase = pool.price_oracle();
         price = BeefyOracleHelper.priceFromBaseToken(beefyOracle, token, baseToken, priceInBase);
         return (price, true);
     }

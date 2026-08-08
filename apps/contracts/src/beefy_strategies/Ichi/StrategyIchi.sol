@@ -31,23 +31,23 @@ contract StrategyIchi is BaseAllToNativeFactoryStrat {
         return "Ichi";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return gauge.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(gauge), amount);
         gauge.deposit(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             gauge.withdraw(amount);
         }
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             if (gauge.emergency()) gauge.emergencyWithdraw();
             else gauge.withdraw(amount);
@@ -64,10 +64,10 @@ contract StrategyIchi is BaseAllToNativeFactoryStrat {
         if (depositToken != native) {
             _swap(native, depositToken);
         }
-        uint depositBal = IERC20(depositToken).balanceOf(address(this));
+        uint256 depositBal = IERC20(depositToken).balanceOf(address(this));
 
-        uint amount0 = depositToken == lpToken0 ? depositBal : 0;
-        uint amount1 = depositToken == lpToken1 ? depositBal : 0;
+        uint256 amount0 = depositToken == lpToken0 ? depositBal : 0;
+        uint256 amount1 = depositToken == lpToken1 ? depositBal : 0;
 
         IERC20(depositToken).forceApprove(want, depositBal);
         IchiVault(want).deposit(amount0, amount1, address(this));

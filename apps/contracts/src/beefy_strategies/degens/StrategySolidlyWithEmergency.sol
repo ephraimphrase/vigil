@@ -38,21 +38,21 @@ contract StrategySolidlyWithEmergency is BaseAllToNativeFactoryStrat {
         return "SolidlyWithEmergency";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return gauge.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(gauge), amount);
         gauge.deposit(amount);
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         gauge.withdraw(amount);
     }
 
     function _emergencyWithdraw() internal override {
-        uint amount = balanceOfPool();
+        uint256 amount = balanceOfPool();
         if (amount > 0) {
             if (gauge.emergency()) gauge.emergencyWithdraw();
             else gauge.withdraw(amount);
@@ -71,15 +71,16 @@ contract StrategySolidlyWithEmergency is BaseAllToNativeFactoryStrat {
             _swap(native, output);
         }
 
-        uint outputBal = IERC20(output).balanceOf(address(this));
-        uint lp0Amt = outputBal / 2;
-        uint lp1Amt = outputBal - lp0Amt;
+        uint256 outputBal = IERC20(output).balanceOf(address(this));
+        uint256 lp0Amt = outputBal / 2;
+        uint256 lp1Amt = outputBal - lp0Amt;
 
         if (stable) {
-            uint out0 = lpToken0 != output ? IBeefySwapper(swapper).getAmountOut(output, lpToken0, lp0Amt) : lp0Amt;
-            uint out1 = lpToken1 != output ? IBeefySwapper(swapper).getAmountOut(output, lpToken1, lp1Amt) : lp1Amt;
-            (uint amountA, uint amountB,) = solidlyRouter.quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
-            uint ratio = out0 * 1e18 / out1 * amountB / amountA;
+            uint256 out0 = lpToken0 != output ? IBeefySwapper(swapper).getAmountOut(output, lpToken0, lp0Amt) : lp0Amt;
+            uint256 out1 = lpToken1 != output ? IBeefySwapper(swapper).getAmountOut(output, lpToken1, lp1Amt) : lp1Amt;
+            (uint256 amountA, uint256 amountB,) =
+                solidlyRouter.quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
+            uint256 ratio = out0 * 1e18 / out1 * amountB / amountA;
             lp0Amt = outputBal * 1e18 / (ratio + 1e18);
             lp1Amt = outputBal - lp0Amt;
         }
@@ -87,8 +88,8 @@ contract StrategySolidlyWithEmergency is BaseAllToNativeFactoryStrat {
         _swap(output, lpToken0, lp0Amt);
         _swap(output, lpToken1, lp1Amt);
 
-        uint lp0Bal = IERC20(lpToken0).balanceOf(address(this));
-        uint lp1Bal = IERC20(lpToken1).balanceOf(address(this));
+        uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
+        uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
         IERC20(lpToken0).forceApprove(address(solidlyRouter), lp0Bal);
         IERC20(lpToken1).forceApprove(address(solidlyRouter), lp1Bal);
         solidlyRouter.addLiquidity(lpToken0, lpToken1, stable, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);

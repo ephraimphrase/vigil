@@ -11,20 +11,21 @@ interface IMellowLpWrapper {
     }
 
     function core() external view returns (address);
-    function positionId() external view returns (uint);
+    function positionId() external view returns (uint256);
     function pool() external view returns (address);
     function token0() external view returns (address);
     function token1() external view returns (address);
-    function totalSupply() external view returns (uint);
+    function totalSupply() external view returns (uint256);
 
-    function getRewards(address recipient) external returns (uint amount);
-    function previewMint(uint lpAmount) external view returns (uint amount0, uint amount1);
-    function mint(MintParams memory mintParams) external returns (uint actualAmount0, uint actualAmount1, uint actualLpAmount);
+    function getRewards(address recipient) external returns (uint256 amount);
+    function previewMint(uint256 lpAmount) external view returns (uint256 amount0, uint256 amount1);
+    function mint(MintParams memory mintParams)
+        external
+        returns (uint256 actualAmount0, uint256 actualAmount1, uint256 actualLpAmount);
 
     function collectRewards() external;
-    function timestampToRewardRatesIndex(uint timestamp) external view returns (uint);
-    function rewardRates(uint index) external view returns (uint timestamp, uint value);
-
+    function timestampToRewardRatesIndex(uint256 timestamp) external view returns (uint256);
+    function rewardRates(uint256 index) external view returns (uint256 timestamp, uint256 value);
 
     function ammModule() external view returns (IAmmModule);
 
@@ -46,19 +47,22 @@ interface IAmmModule {
         uint128 liquidity; // Liquidity of the position
     }
 
-    function getAmmPosition(uint) external view returns(AmmPosition calldata);
+    function getAmmPosition(uint256) external view returns (AmmPosition calldata);
 }
 
 interface ICLPool {
     function gauge() external view returns (address);
-    function slot0() external view returns (
-        uint160 sqrtPriceX96,
-        int24 tick,
-        uint16 observationIndex,
-        uint16 observationCardinality,
-        uint16 observationCardinalityNext,
-        bool unlocked
-    );
+    function slot0()
+        external
+        view
+        returns (
+            uint160 sqrtPriceX96,
+            int24 tick,
+            uint16 observationIndex,
+            uint16 observationCardinality,
+            uint16 observationCardinalityNext,
+            bool unlocked
+        );
 }
 
 interface IMellowCore {

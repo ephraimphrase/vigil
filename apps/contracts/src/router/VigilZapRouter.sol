@@ -82,10 +82,7 @@ contract VigilZapRouter is ReentrancyGuard, IVigilZapRouter {
 
         uint256 wethOut = swapRouter.exactInput(
             ISwapRouter02.ExactInputParams({
-                path: path,
-                recipient: address(this),
-                amountIn: received,
-                amountOutMinimum: minWethOut
+                path: path, recipient: address(this), amountIn: received, amountOutMinimum: minWethOut
             })
         );
 
@@ -115,13 +112,9 @@ contract VigilZapRouter is ReentrancyGuard, IVigilZapRouter {
         bytes32 r,
         bytes32 s
     ) external override returns (uint256 shares) {
-        try IERC20Permit(tokenIn).permit(
-            msg.sender, address(this), amountIn, deadline, v, r, s
-        ) {} catch {}
+        try IERC20Permit(tokenIn).permit(msg.sender, address(this), amountIn, deadline, v, r, s) {} catch {}
 
-        return zapIn(
-            tokenIn, amountIn, path, minWethOut, minSharesOut, receiver, deadline
-        );
+        return zapIn(tokenIn, amountIn, path, minWethOut, minSharesOut, receiver, deadline);
     }
 
     function zapOut(
@@ -143,10 +136,7 @@ contract VigilZapRouter is ReentrancyGuard, IVigilZapRouter {
 
         amountOut = swapRouter.exactInput(
             ISwapRouter02.ExactInputParams({
-                path: path,
-                recipient: receiver,
-                amountIn: wethIn,
-                amountOutMinimum: minAmountOut
+                path: path, recipient: receiver, amountIn: wethIn, amountOutMinimum: minAmountOut
             })
         );
 

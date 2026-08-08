@@ -14,15 +14,18 @@ contract UniV2ToSwapperAdapter {
         swapper = _swapper;
     }
 
-    function swapExactTokensForTokens(uint amountIn, uint, address[] calldata path, address, uint) external returns (uint[] memory amounts) {
+    function swapExactTokensForTokens(uint256 amountIn, uint256, address[] calldata path, address, uint256)
+        external
+        returns (uint256[] memory amounts)
+    {
         address from = path[0];
         address to = path[path.length - 1];
         IERC20(from).safeTransferFrom(msg.sender, address(this), amountIn);
         IERC20(from).forceApprove(swapper, amountIn);
-        uint amountOut = IBeefySwapper(swapper).swap(from, to, amountIn);
+        uint256 amountOut = IBeefySwapper(swapper).swap(from, to, amountIn);
         IERC20(to).safeTransfer(msg.sender, amountOut);
 
-        amounts = new uint[](path.length);
+        amounts = new uint256[](path.length);
         amounts[0] = amountIn;
         amounts[path.length - 1] = amountOut;
     }

@@ -11,7 +11,6 @@ import "../interface/common/IERC20Extended.sol";
 
 // Strategy for dealing with solidly and reward pool style gauges
 contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
-
     // Tokens used
     IRewardPool public rewardPool; // reward pool
     ISolidlyRouter public solidlyRouter;
@@ -34,7 +33,7 @@ contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
         _giveAllowances();
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return rewardPool.balanceOf(address(this));
     }
 
@@ -42,11 +41,11 @@ contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
         return "SolidlyRewardPool";
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         rewardPool.deposit(_amount);
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (_amount > 0) {
             rewardPool.withdraw(_amount);
         }
@@ -67,11 +66,12 @@ contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
         bool stable = ISolidlyPair(want).stable();
 
         if (stable) {
-            uint256 lp0Decimals = 10**IERC20Extended(lpToken0).decimals();
-            uint256 lp1Decimals = 10**IERC20Extended(lpToken1).decimals();
+            uint256 lp0Decimals = 10 ** IERC20Extended(lpToken0).decimals();
+            uint256 lp1Decimals = 10 ** IERC20Extended(lpToken1).decimals();
             uint256 out0 = IBeefySwapper(swapper).getAmountOut(native, lpToken0, lp0Amt) * 1e18 / lp0Decimals;
             uint256 out1 = IBeefySwapper(swapper).getAmountOut(native, lpToken1, lp1Amt) * 1e18 / lp1Decimals;
-            (uint256 amountA, uint256 amountB,) = ISolidlyRouter(solidlyRouter).quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
+            (uint256 amountA, uint256 amountB,) =
+                ISolidlyRouter(solidlyRouter).quoteAddLiquidity(lpToken0, lpToken1, stable, out0, out1);
             amountA = amountA * 1e18 / lp0Decimals;
             amountB = amountB * 1e18 / lp1Decimals;
             uint256 ratio = out0 * 1e18 / out1 * amountB / amountA;
@@ -89,11 +89,12 @@ contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
 
         uint256 lp0Bal = IERC20(lpToken0).balanceOf(address(this));
         uint256 lp1Bal = IERC20(lpToken1).balanceOf(address(this));
-        ISolidlyRouter(solidlyRouter).addLiquidity(lpToken0, lpToken1, stable, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);
+        ISolidlyRouter(solidlyRouter)
+            .addLiquidity(lpToken0, lpToken1, stable, lp0Bal, lp1Bal, 1, 1, address(this), block.timestamp);
     }
 
     function _giveAllowances() internal {
-        uint max = type(uint).max;
+        uint256 max = type(uint256).max;
         _approve(want, address(rewardPool), max);
         _approve(native, address(swapper), max);
 
@@ -128,8 +129,7 @@ contract StrategySolidlyRewardPool is BaseAllToNativeFactoryStrat {
         deposit();
     }
 
-
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).approve(_spender, amount);
     }
 

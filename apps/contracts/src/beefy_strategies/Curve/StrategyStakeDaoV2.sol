@@ -45,16 +45,16 @@ contract StrategyStakeDaoV2 is BaseAllToNativeFactoryStrat {
         return "StakeDaoV2";
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         return sdVault.balanceOf(address(this));
     }
 
-    function _deposit(uint amount) internal override {
+    function _deposit(uint256 amount) internal override {
         IERC20(want).forceApprove(address(sdVault), amount);
         sdVault.deposit(amount, address(this));
     }
 
-    function _withdraw(uint amount) internal override {
+    function _withdraw(uint256 amount) internal override {
         if (amount > 0) {
             sdVault.withdraw(amount, address(this), address(this));
         }
@@ -68,8 +68,7 @@ contract StrategyStakeDaoV2 is BaseAllToNativeFactoryStrat {
         if (sdVaultRewards.length > 0) {
             sdVault.claim(sdVaultRewards, address(this));
         }
-        try accountant.claim(harvestGauges, harvestData) {}
-        catch { /* no rewards to claim */ }
+        try accountant.claim(harvestGauges, harvestData) {} catch { /* no rewards to claim */ }
     }
 
     function _verifyRewardToken(address token) internal view override {
@@ -83,5 +82,4 @@ contract StrategyStakeDaoV2 is BaseAllToNativeFactoryStrat {
     function setVaultRewards(address[] calldata rewards) external onlyManager {
         sdVaultRewards = rewards;
     }
-
 }

@@ -13,10 +13,13 @@ interface IEqbBooster {
 }
 
 interface IXEqb {
-    function balanceOf(address user) external view returns(uint256);
+    function balanceOf(address user) external view returns (uint256);
     function getUserRedeemsLength(address userAddress) external view returns (uint256);
-    function getUserRedeem(address userAddress, uint256 redeemIndex) external view returns (uint256 eqbAmount, uint256 xEqbAmount, uint256 endTime);
-    function minRedeemDuration() external view returns (uint);
-    function redeem(uint256 xEqbAmount,uint256 duration) external;
+    function getUserRedeem(address userAddress, uint256 redeemIndex)
+        external
+        view
+        returns (uint256 eqbAmount, uint256 xEqbAmount, uint256 endTime);
+    function minRedeemDuration() external view returns (uint256);
+    function redeem(uint256 xEqbAmount, uint256 duration) external;
     function finalizeRedeem(uint256 redeemIndex) external;
 }

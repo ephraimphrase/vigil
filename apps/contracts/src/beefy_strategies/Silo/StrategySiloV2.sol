@@ -18,14 +18,12 @@ contract StrategySiloV2 is BaseAllToNativeFactoryStrat {
 
     // Tokens used
     ISiloV2 public silo;
-    IIncentivesGauge public gauge; 
+    IIncentivesGauge public gauge;
 
-    function initialize(
-        address _silo,
-        address _gauge,
-        address[] calldata _rewards,
-        Addresses calldata _commonAddresses
-    ) public initializer {
+    function initialize(address _silo, address _gauge, address[] calldata _rewards, Addresses calldata _commonAddresses)
+        public
+        initializer
+    {
         silo = ISiloV2(_silo);
         gauge = IIncentivesGauge(_gauge);
 
@@ -33,7 +31,7 @@ contract StrategySiloV2 is BaseAllToNativeFactoryStrat {
         _giveAllowances();
     }
 
-    function balanceOfPool() public view override returns (uint) {
+    function balanceOfPool() public view override returns (uint256) {
         uint256 shares = silo.balanceOf(address(this));
         return silo.convertToAssets(shares);
     }
@@ -42,11 +40,11 @@ contract StrategySiloV2 is BaseAllToNativeFactoryStrat {
         return "SiloV2";
     }
 
-    function _deposit(uint _amount) internal override {
+    function _deposit(uint256 _amount) internal override {
         silo.deposit(_amount, address(this));
     }
 
-    function _withdraw(uint _amount) internal override {
+    function _withdraw(uint256 _amount) internal override {
         if (_amount > 0) {
             if (_amount == balanceOfPool()) silo.redeem(silo.balanceOf(address(this)), address(this), address(this));
             else silo.withdraw(_amount, address(this), address(this));
@@ -71,7 +69,7 @@ contract StrategySiloV2 is BaseAllToNativeFactoryStrat {
     }
 
     function _giveAllowances() internal {
-        uint max = type(uint).max;
+        uint256 max = type(uint256).max;
         _approve(want, address(silo), max);
         _approve(native, address(swapper), max);
     }
@@ -102,8 +100,7 @@ contract StrategySiloV2 is BaseAllToNativeFactoryStrat {
         deposit();
     }
 
-
-    function _approve(address _token, address _spender, uint amount) internal {
+    function _approve(address _token, address _spender, uint256 amount) internal {
         IERC20(_token).approve(_spender, amount);
     }
 
