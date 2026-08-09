@@ -16,8 +16,23 @@ struct TokenRecord {
 contract DeployWETHScript is DeployRegistrar {
     string constant WETH_LOGO_URI = "https://coin-images.coingecko.com/coins/images/2518/large/weth.png";
     uint256 constant LOCAL_CHAIN_ID = 31337;
+    uint256 constant BASE_MAINNET_CHAIN_ID = 8453;
+    uint256 constant BASE_SEPOLIA_CHAIN_ID = 84532;
+
+    // Every OP-stack chain (Base mainnet, Base Sepolia, Optimism, ...)
+    // reserves this address for its native WETH predeploy - same address on
+    // all of them, confirmed live via symbol()/decimals() rather than
+    // assumed. Not a guess; just not re-deployable, so it's registered
+    // instead of deployed.
+    address constant OP_STACK_WETH_PREDEPLOY = 0x4200000000000000000000000000000000000006;
 
     function run() external returns (WETH9 weth) {
+        if (block.chainid == BASE_MAINNET_CHAIN_ID || block.chainid == BASE_SEPOLIA_CHAIN_ID) {
+            console.log("OP-stack chain, registering existing WETH predeploy:", OP_STACK_WETH_PREDEPLOY);
+            _registerContract("WETH9", OP_STACK_WETH_PREDEPLOY);
+            return WETH9(payable(OP_STACK_WETH_PREDEPLOY));
+        }
+
         // A forked anvil (anvil --fork-url ...) keeps the source chain's
         // chainid by default, so this also skips deployment on forks - real
         // WETH already exists there at its real address.
