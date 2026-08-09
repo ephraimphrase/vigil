@@ -7,6 +7,12 @@ remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
 ]
-fs_permissions = [{ access = "read-write", path = "./data" }]
+fs_permissions = [
+    { access = "read-write", path = "./data" },
+    # RegisterProtocolsFromSeed.s.sol reads apps/web's protocol list as the
+    # single source of truth for "which protocols exist" - read-only, this
+    # script never writes back into apps/web.
+    { access = "read", path = "../web/seed" },
+]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

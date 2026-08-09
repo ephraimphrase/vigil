@@ -1536,7 +1536,7 @@ export const deployedContracts = {
   },
   "84532": {
     HealthOracle: {
-      address: "0x49979C6d8f2f43C351DeF47D24516e98150C70c4",
+      address: "0x731963F3f23267481Aa8fF78051902bCcf3485ba",
       abi: [
         {
           type: "constructor",
