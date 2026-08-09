@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import {Script, console} from "forge-std/Script.sol";
-import {HealthOracle} from "../src/oracle/HealthOracle.sol";
-import {DeployRegistrar} from "./lib/DeployRegistrar.sol";
+import {HealthOracle} from "../../src/oracle/HealthOracle.sol";
+import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
 
 contract DeployHealthOracleScript is DeployRegistrar {
     // Anvil default account 0 — matches the DEPLOYER_KEY documented in

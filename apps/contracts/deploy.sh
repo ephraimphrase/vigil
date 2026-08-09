@@ -42,15 +42,22 @@ fi
 
 echo
 echo "== Deploying WETH9 =="
-forge script script/DeployWETH.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+forge script script/deploy/DeployWETH.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
 echo "== Pulling and deploying DeFi tokens =="
-forge script script/SeedTokens.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+forge script script/deploy/SeedTokens.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
-echo "== Deploying HealthOracle =="
-forge script script/DeployHealthOracle.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+echo "== Generating role keys (any of ORACLE_ADMIN/SCORER/GUARDIAN/VAULT_KEEPER not already set) =="
+./script/shell/generate-roles.sh
+set -a
+source .env
+set +a
+
+echo
+echo "== Deploying core stack (HealthOracle, VaultFactory, VigilVault, VigilZapRouter) =="
+forge script script/deploy/DeployAll.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
 echo "== Syncing deployed contracts to apps/web =="

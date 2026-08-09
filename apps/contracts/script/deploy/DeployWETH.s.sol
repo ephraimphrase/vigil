@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {WETH9} from "../src/token/WETH9.sol";
-import {DeployRegistrar} from "./lib/DeployRegistrar.sol";
+import {WETH9} from "../../src/token/WETH9.sol";
+import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
 
 struct TokenRecord {
     address token;

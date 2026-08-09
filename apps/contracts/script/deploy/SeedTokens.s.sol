@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
+import {SeedTokenFactory} from "../../src/token/SeedTokenFactory.sol";
 import {TokenRecord} from "./DeployWETH.s.sol";
 
 // ─── TYPES ───
@@ -20,7 +20,7 @@ contract SeedTokensScript is Script {
     // ─── CONSTANTS ───
     // Underscore prefix: this is an FFI helper invoked by run() below, not a
     // standalone entrypoint you'd run directly.
-    string constant FETCH_SCRIPT = "script/_pull_defi_tokens.sh";
+    string constant FETCH_SCRIPT = "script/shell/_pull_defi_tokens.sh";
     uint256 constant PRICE_SCALE = 1e6;
     uint256 constant LOCAL_CHAIN_ID = 31337;
 
