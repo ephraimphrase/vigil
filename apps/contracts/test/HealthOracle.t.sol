@@ -24,6 +24,16 @@ contract HealthOracleTest is Test {
         new HealthOracle(address(0), scorer, guardian, 0);
     }
 
+    function test_ConstructorRevertsOnZeroScorer() public {
+        vm.expectRevert(HealthOracle.ZeroAddress.selector);
+        new HealthOracle(admin, address(0), guardian, 0);
+    }
+
+    function test_ConstructorRevertsOnZeroGuardian() public {
+        vm.expectRevert(HealthOracle.ZeroAddress.selector);
+        new HealthOracle(admin, scorer, address(0), 0);
+    }
+
     function test_ConstructorDefaultsStalenessWindowWhenZero() public view {
         assertEq(oracle.stalenessWindow(), 6 hours);
     }

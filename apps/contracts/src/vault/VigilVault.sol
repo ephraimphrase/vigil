@@ -50,6 +50,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     error AdapterAlreadyAdded();
     error TooManyAdapters();
     error AssetMismatch();
+    error DuplicateProtocol();
 
     constructor(
         IERC20 _asset,
@@ -62,7 +63,7 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
         string memory _symbol
     ) ERC4626(_asset) ERC20(_name, _symbol) {
         if (address(_oracle) == address(0)) revert ZeroAddress();
-        if (admin == address(0)) revert ZeroAddress();
+        if (admin == address(0) || keeper == address(0) || guardian == address(0)) revert ZeroAddress();
 
         kind = _kind;
         oracle = _oracle;
@@ -80,10 +81,16 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
         if (adapters.length >= MAX_ADAPTERS) revert TooManyAdapters();
         if (adapter.asset() != asset()) revert AssetMismatch();
 
+        bytes32 protocolId = adapter.protocolId();
+        uint256 n = adapters.length;
+        for (uint256 i; i < n; ++i) {
+            if (adapters[i].protocolId() == protocolId) revert DuplicateProtocol();
+        }
+
         isAdapter[address(adapter)] = true;
         adapters.push(adapter);
 
-        emit AdapterAdded(address(adapter), adapter.protocolId());
+        emit AdapterAdded(address(adapter), protocolId);
     }
 
     // Pulls any remaining position back into the vault's idle balance before
@@ -186,6 +193,11 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
     // mirroring HealthOracle.emergencyZero. Lets a human yank funds from a
     // failing protocol without waiting for the scorer to catch up and a
     // keeper to run a full rebalance().
+    //
+    // Also drops the adapter from rotation (same bookkeeping as
+    // removeAdapter), not just its funds - otherwise a stale-but-nonzero
+    // oracle score would let the next rebalance() redeploy idle balance
+    // straight back into the protocol this call was meant to exit.
     function emergencyEvacuate(IVigilProtocolAdapter adapter)
         external
         override
@@ -197,7 +209,12 @@ contract VigilVault is ERC4626, AccessControl, ReentrancyGuard, IVigilVault {
 
         withdrawn = adapter.withdrawAll(0);
 
+        bytes32 protocolId = adapter.protocolId();
+        isAdapter[address(adapter)] = false;
+        _removeFromArray(adapter);
+
         emit AdapterEvacuated(address(adapter), withdrawn);
+        emit AdapterRemoved(address(adapter), protocolId, withdrawn);
     }
 
     // ─── ERC4626 OVERRIDES ───

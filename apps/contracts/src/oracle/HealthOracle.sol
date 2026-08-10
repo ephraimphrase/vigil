@@ -55,7 +55,7 @@ contract HealthOracle is AccessControl, IHealthOracle {
     error TooSoon(bytes32 protocolId, uint256 nextAllowed);
 
     constructor(address admin, address scorer, address guardian, uint256 _stalenessWindow) {
-        if (admin == address(0)) revert ZeroAddress();
+        if (admin == address(0) || scorer == address(0) || guardian == address(0)) revert ZeroAddress();
 
         stalenessWindow = _stalenessWindow == 0 ? 6 hours : _stalenessWindow;
 

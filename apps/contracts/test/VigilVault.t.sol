@@ -79,6 +79,18 @@ contract VigilVaultTest is Test {
         );
     }
 
+    function test_ConstructorRevertsOnZeroKeeper() public {
+        vm.expectRevert(VigilVault.ZeroAddress.selector);
+        new VigilVault(
+            IERC20(address(weth)), IVigilVault.VaultKind.Single, oracle, admin, address(0), guardian, "n", "s"
+        );
+    }
+
+    function test_ConstructorRevertsOnZeroGuardian() public {
+        vm.expectRevert(VigilVault.ZeroAddress.selector);
+        new VigilVault(IERC20(address(weth)), IVigilVault.VaultKind.Single, oracle, admin, keeper, address(0), "n", "s");
+    }
+
     function test_ConstructorSetsKind() public view {
         assertEq(uint256(vault.kind()), uint256(IVigilVault.VaultKind.Single));
     }
@@ -114,6 +126,16 @@ contract VigilVaultTest is Test {
         vm.prank(admin);
         vm.expectRevert(VigilVault.AdapterAlreadyAdded.selector);
         vault.addAdapter(IVigilProtocolAdapter(address(adapterA)));
+    }
+
+    function test_AddAdapterRevertsOnDuplicateProtocolId() public {
+        // A different adapter *contract* reporting the same protocolId() as
+        // one already whitelisted must be rejected - otherwise the oracle
+        // score for that protocol gets weighted twice in rebalance().
+        MockAdapter sameProtocol = new MockAdapter(address(vault), IERC20(address(weth)), PROTOCOL_A);
+        vm.prank(admin);
+        vm.expectRevert(VigilVault.DuplicateProtocol.selector);
+        vault.addAdapter(IVigilProtocolAdapter(address(sameProtocol)));
     }
 
     function test_AddAdapterRevertsAboveMax() public {
@@ -259,6 +281,25 @@ contract VigilVaultTest is Test {
         assertEq(withdrawn, 500e18);
         assertEq(adapterA.totalAssets(), 0);
         assertEq(weth.balanceOf(address(vault)), 500e18);
+    }
+
+    function test_EmergencyEvacuateDropsAdapterFromRotation() public {
+        _deposit(depositor, 1_000e18);
+        vm.prank(keeper);
+        vault.rebalance();
+
+        vm.prank(guardian);
+        vault.emergencyEvacuate(IVigilProtocolAdapter(address(adapterA)));
+
+        assertFalse(vault.isAdapter(address(adapterA)));
+        assertEq(vault.adapterCount(), 1);
+
+        // Oracle score for PROTOCOL_A is still live (evacuation doesn't
+        // touch the oracle) - if the adapter were still in rotation this
+        // rebalance would push idle funds straight back into it.
+        vm.prank(keeper);
+        vault.rebalance();
+        assertEq(adapterA.totalAssets(), 0);
     }
 
     function test_EmergencyEvacuateRevertsForNonGuardian() public {
