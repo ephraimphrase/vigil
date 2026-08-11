@@ -46,6 +46,8 @@
   "Balancer_ondo-7_balancer": "0x92A7cB88235fcD7668dDB05802E2020d9E5F9542",
   "ConvexCRV_ondo-7_curve": "0x7FAB43a8Ddd6455E969565a2956910adb95637bF",
   "Beefy_ondo-7_beefy": "0xECf33221E2c4f1D871C5ADe009fcEc9F3C6A8c30",
+  "Aave_ondo-7_aave": "0x889f98f3EeAE27c582dD249460195F911154972E",
+  "ERC4626_ondo-7_lido": "0x2437D1d2D5179eFfaCaC28634A2fE3ffB8195006",
   "Vault_aster-8": "0xEa019fc295c40a567EA8A4f2CCe41AdE92F2Dc9A",
   "Aave_aster-8_aave": "0x4312ea93992B8e1a5780C28AF1f4F82dB3AF576c",
   "ERC4626_aster-8_lido": "0xfCeAb3C26e9F45d06979c810e1C8ecC21eF69CCa",
@@ -237,7 +239,5 @@
   "StargateV2_pendle-39_stargate": "0x0D3BF13baA1793A4A95777E418e00f4925A18dfA",
   "CompoundV3_pendle-39_compound": "0x00B34EEAe0439cdC62f62f56083C87f620bba34d",
   "CurveConvex_pendle-39_curve": "0x14AC9a00ce7b4F32E258E6E7493BbC9ADb19BD11",
-  "BaseSwap_pendle-39_baseswap": "0x4e9FbA268A823945Bf9331Ada991373530Cd81bA",
-  "StrategyAdapter_ondo_Aave": "0x889f98f3EeAE27c582dD249460195F911154972E",
-  "StrategyAdapter_ondo_ERC4626": "0x2437D1d2D5179eFfaCaC28634A2fE3ffB8195006"
+  "BaseSwap_pendle-39_baseswap": "0x4e9FbA268A823945Bf9331Ada991373530Cd81bA"
 }

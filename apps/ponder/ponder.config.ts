@@ -30,7 +30,10 @@ const HEALTH_ORACLE_ADDRESS = deployedContracts.HealthOracle!;
 // Not in deployedContracts.json (that file only has addresses) - found once
 // via Basescan's contract-creation lookup and hardcoded, since neither
 // contract has been redeployed since.
-const VAULT_FACTORY_START_BLOCK = 45322158;
+// VaultFactory was redeployed fresh during the 40-vault reseed on Base
+// Sepolia (block from the real deploy tx receipt); HealthOracle was reused
+// as-is, so its start block is unchanged.
+const VAULT_FACTORY_START_BLOCK = 45358036;
 const HEALTH_ORACLE_START_BLOCK = 45240276;
 
 const rpcUrl = process.env.PONDER_RPC_URL_84532 ?? "https://sepolia.base.org";
