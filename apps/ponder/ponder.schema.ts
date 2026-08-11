@@ -1,4 +1,12 @@
-import { onchainTable } from "ponder";
+import { onchainEnum, onchainTable } from "ponder";
+
+// Solidity's IVigilVault.VaultKind has a third value (Basket=2), but it's
+// unused - no vault has ever been created with it and none is expected to
+// be, so it's deliberately left out here. If that ever changes, the insert
+// in src/index.ts will throw (VAULT_KIND_LABELS[2] is undefined) rather
+// than silently accepting bad data - a real Basket vault would need this
+// enum extended back to 3 values first.
+export const vaultKind = onchainEnum("vault_kind", ["Single", "LP"]);
 
 // One row per vault, written once when VaultFactory emits VaultCreated -
 // vault address as the primary key since VaultFactory enforces exactly
@@ -8,7 +16,7 @@ export const vault = onchainTable("vault", (t) => ({
   id: t.hex().primaryKey(),
   asset: t.hex().notNull(),
   oracle: t.hex().notNull(),
-  kind: t.integer().notNull(),
+  kind: vaultKind("kind").notNull(),
   // VaultCreated itself doesn't carry any of this - VigilVault is its own
   // ERC20 (name/symbol) and the underlying asset is a separate ERC20 with
   // its own metadata, so both get read on-chain once at index time rather
