@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {Script, console} from "forge-std/Script.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {MockStrategyAdapter} from "../../src/adapter/MockStrategyAdapter.sol";
 import {VigilVault} from "../../src/vault/VigilVault.sol";
 import {IVigilProtocolAdapter} from "../../src/interface/IVigilProtocolAdapter.sol";
@@ -65,13 +66,18 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar, StrategySe
         address vault = _resolveVault();
         address token = address(VigilVault(vault).asset());
         uint256 maxAdapters = VigilVault(vault).MAX_ADAPTERS();
+        // Registry keys are scoped by the vault's own token symbol - two
+        // vaults wiring the same strategy id (e.g. both wiring "aave")
+        // would otherwise register under the identical
+        // "StrategyAdapter_aave" key and silently clobber each other.
+        string memory vaultLabel = IERC20Metadata(token).symbol();
 
         string memory singleName = vm.envOr("STRAT_NAME", string(""));
         if (bytes(singleName).length > 0) {
             string memory protocolIdStr = vm.envString("PROTOCOL_ID");
             uint256 apyBps = vm.envUint("APY_BPS");
             vm.startBroadcast();
-            _deployOne(vault, token, maxAdapters, singleName, protocolIdStr, singleName, apyBps);
+            _deployOne(vault, token, maxAdapters, vaultLabel, singleName, protocolIdStr, singleName, apyBps);
             vm.stopBroadcast();
             return;
         }
@@ -89,7 +95,7 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar, StrategySe
         vm.startBroadcast();
         for (uint256 i; i < length && _wiredProtocolIds.length < maxAdapters; ++i) {
             (string memory id, string memory protocolIdStr, string memory stratName, uint256 apyBps) = _strategyAt(i);
-            _deployOne(vault, token, maxAdapters, id, protocolIdStr, stratName, apyBps);
+            _deployOne(vault, token, maxAdapters, vaultLabel, id, protocolIdStr, stratName, apyBps);
         }
         vm.stopBroadcast();
     }
@@ -101,6 +107,7 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar, StrategySe
         address vault,
         address token,
         uint256 maxAdapters,
+        string memory vaultLabel,
         string memory id,
         string memory protocolIdStr,
         string memory stratName,
@@ -109,7 +116,7 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar, StrategySe
         bytes32 protocolId = bytes32(bytes(protocolIdStr));
 
         MockStrategyAdapter adapter = new MockStrategyAdapter(vault, token, protocolId, apyBps, stratName);
-        _registerContract(string.concat("StrategyAdapter_", id), address(adapter));
+        _registerContract(string.concat("StrategyAdapter_", vaultLabel, "_", id), address(adapter));
 
         if (vm.envOr("WRAP_NATIVE", true)) {
             IWETH9(token).deposit{value: RESERVE_PER_ADAPTER}();
