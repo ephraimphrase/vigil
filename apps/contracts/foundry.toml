@@ -6,6 +6,11 @@ ffi = true
 remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
     "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+    # Vendored real protocol source (see vendor/README.md) - remapped rather
+    # than editing import paths, so these stay byte-for-byte identical to
+    # what's actually deployed upstream.
+    "@uniswap/v2-core/contracts/=vendor/uniswap-v2/core/",
+    "@uniswap/lib/contracts/libraries/=vendor/uniswap-v2/periphery/external-libs/",
 ]
 fs_permissions = [
     { access = "read-write", path = "./data" },
