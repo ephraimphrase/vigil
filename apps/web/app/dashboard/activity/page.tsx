@@ -1,21 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ActivityPage — two views of "what happened," kept as separate tabs
-// rather than one merged feed since they answer different questions with
-// different data shapes: Log is "what did Vigil's automation do to the
-// vault's protocol allocations" (the permanent, filterable execution
-// audit trail - triggers/simulations/executions/circuit breakers);
-// Transactions is "what did MY wallet do" (my own deposit/withdraw
-// history into the vault itself). See shared/transactions.ts's header
-// comment for why. Log stays the default tab - Vigil's differentiator is
-// autonomous protocol monitoring, not looking like a Yearn clone. No
-// corner-node frame on either tab's list - DESIGN.md rations that motif
-// to 1-2 primary panels per view, and a dense reverse-chronological log is
-// exactly the case it says may want none; a plain hairline border carries
-// it instead.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import { useActivity } from "@/hooks/useActivity";
 import { useActivityTable } from "@/hooks/useActivityTable";

@@ -45,6 +45,11 @@ export const metadata: Metadata = {
   publisher: SITE_NAME,
   robots: { index: true, follow: true },
   alternates: { canonical: '/' },
+  icons: {
+    icon: '/vigil-logo.png',
+    shortcut: '/vigil-logo.png',
+    apple: '/vigil-logo.png',
+  },
   openGraph: {
     type: 'website',
     url: '/',
@@ -54,9 +59,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
+        url: '/vigil-logo.png',
+        width: 300,
+        height: 300,
         alt: 'Vigil — Autonomous protocol risk monitoring',
       },
     ],
@@ -65,7 +70,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Vigil — Autonomous Protocol Risk Monitoring',
     description: SITE_DESCRIPTION,
-    images: ['/opengraph-image'],
+    images: ['/vigil-logo.png'],
   },
 };
 
