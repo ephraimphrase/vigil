@@ -21,6 +21,13 @@ import {
   withdrawal,
 } from "../ponder.schema";
 
+// Matches IVigilVault.VaultKind's declaration order (Single=0, LP=1) -
+// VaultCreated only emits the raw uint8 index. Solidity's enum also has a
+// third value, Basket=2, but it's unused (see ponder.schema.ts's vaultKind)
+// - a Basket vault would make this lookup return undefined and throw below,
+// on purpose, rather than silently inserting bad data.
+const VAULT_KIND_LABELS = ["Single", "LP"] as const;
+
 // Every event table shares this same envelope. A single transaction can
 // emit the same event type more than once, so the log's own position (not
 // the tx hash alone) is what makes `id` unique.
@@ -59,7 +66,7 @@ ponder.on("VaultFactory:VaultCreated", async ({ event, context }) => {
     id: event.args.vault,
     asset: event.args.asset,
     oracle: event.args.oracle,
-    kind: event.args.kind,
+    kind: VAULT_KIND_LABELS[event.args.kind]!,
     vaultName,
     vaultSymbol,
     assetName,

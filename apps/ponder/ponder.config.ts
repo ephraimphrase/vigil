@@ -7,15 +7,29 @@ import {
   http,
 } from "viem";
 
+import { readFileSync } from "node:fs";
+
 import { HealthOracleAbi } from "./abis/HealthOracleAbi";
 import { StrategyAdapterAbi } from "./abis/StrategyAdapterAbi";
 import { VaultFactoryAbi } from "./abis/VaultFactoryAbi";
 import { VigilVaultAbi } from "./abis/VigilVaultAbi";
 
-// Base Sepolia only - matches the real testnet deployment tracked in
-// apps/contracts/data/84532/deployedContracts.json.
-const VAULT_FACTORY_ADDRESS = "0xd0604AB0Cb2CAdd850837c2ea25d5909B15D4cA7";
-const HEALTH_ORACLE_ADDRESS = "0x731963F3f23267481Aa8fF78051902bCcf3485ba";
+// Base Sepolia only. Addresses are read from
+// apps/contracts/data/84532/deployedContracts.json - the actual source of
+// truth every deploy script writes to - rather than duplicated here as
+// hardcoded strings that could drift if that file ever changes (it's
+// already been manually edited/restored more than once this session).
+const deployedContracts: Record<string, `0x${string}`> = JSON.parse(
+  readFileSync(
+    new URL("../contracts/data/84532/deployedContracts.json", import.meta.url),
+    "utf-8",
+  ),
+);
+const VAULT_FACTORY_ADDRESS = deployedContracts.VaultFactory!;
+const HEALTH_ORACLE_ADDRESS = deployedContracts.HealthOracle!;
+// Not in deployedContracts.json (that file only has addresses) - found once
+// via Basescan's contract-creation lookup and hardcoded, since neither
+// contract has been redeployed since.
 const VAULT_FACTORY_START_BLOCK = 45322158;
 const HEALTH_ORACLE_START_BLOCK = 45240276;
 
