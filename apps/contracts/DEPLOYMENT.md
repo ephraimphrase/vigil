@@ -1,10 +1,12 @@
 # Deployment guide
 
-Covers `VigilVault`/`VaultFactory`/`HealthOracle`/`VigilZapRouter` — the core
-Vigil stack. `src/beefy_strategies/` and `src/adapter/BeefyStrategyAdapter.sol`
-are **not** covered here: they need a `IStrategyFactory` + swapper
+Covers `VigilVault`/`VaultFactory`/`HealthOracle` — the core Vigil stack.
+`src/beefy_strategies/` and `src/adapter/BeefyStrategyAdapter.sol` are
+**not** covered here: they need a `IStrategyFactory` + swapper
 implementation that doesn't exist in this repo yet, so nothing in that
-directory can be deployed on any chain today.
+directory can be deployed on any chain today. For protocols with no real
+integration, `MockStrategyAdapter.sol` + `script/deploy/DeployMockStrategyAdapters.s.sol`
+stand in instead — see that script's own doc comment.
 
 ## Where addresses land
 
@@ -34,22 +36,12 @@ variable inline — read it before asking "what do I set this to."
 Starts anvil if nothing's listening on `RPC_URL` (or forks Base if
 `BASE_RPC_URL` is set), then runs the full sequence: WETH9 → seed DeFi
 tokens → generate any missing role keys → `DeployAll.s.sol` (HealthOracle →
-VaultFactory → VigilVault → VigilZapRouter, wired together in one script,
-with a `MockSwapRouter` standing in for Uniswap) → sync into `apps/web`.
-This is the only path that deploys the _entire_ stack in one shot, because
-it's the only chain where a mock swap router is allowed.
+VaultFactory → VigilVault) → sync into `apps/web`.
 
 `./deploy.sh --fresh` wipes anvil and the local Blockscout index for a clean
 slate.
 
 ## Base Sepolia (real testnet)
-
-**`./deploy.sh` will get partway through and then revert here** —
-`VigilZapRouter`'s constructor needs a real `ISwapRouter02`, and
-`DeployAll.s.sol` deliberately refuses to guess one on a non-local chain
-(`script/deploy/DeployAll.s.sol`'s `_resolveSwapRouter()`). Deploy the
-pieces that don't depend on it individually instead of running `deploy.sh`
-wholesale:
 
 ```
 set -a; source .env; set +a
@@ -63,40 +55,28 @@ forge script script/deploy/DeployHealthOracle.s.sol --rpc-url "$RPC_URL" --broad
 
 # Register every protocol in apps/web/seed/protocols.json - required once
 # before setScore()/scoreOf() work for any of them (NotRegistered otherwise).
+# Must broadcast as the ORACLE_ADMIN key (.keys/ORACLE_ADMIN.txt) - registerProtocol() is admin-gated.
 ORACLE_ADDRESS=<HealthOracle address from above> \
-forge script script/admin/RegisterProtocolsFromSeed.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+forge script script/admin/RegisterProtocolsFromSeed.s.sol --rpc-url "$RPC_URL" --broadcast --private-key <ORACLE_ADMIN private key>
 
-# VaultFactory + VigilVault - unlike VigilZapRouter, neither touches
-# Uniswap, so this works today without a SWAP_ROUTER_ADDRESS. Picks up
-# WETH9/HealthOracle from deployedContracts.json automatically; reuses an
-# existing VaultFactory if one's already registered.
+# VaultFactory + VigilVault.
 forge script script/deploy/DeployVault.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+
+# 42 MockStrategyAdapters (one per apps/web/seed/strategies.json entry) -
+# wires the first 8 unique protocolIds into the vault (VigilVault.MAX_ADAPTERS).
+# Must also broadcast as the ORACLE_ADMIN key - addAdapter() is admin-gated.
+# --slow avoids public-RPC "in-flight transaction limit" errors with this many txs.
+forge script script/deploy/DeployMockStrategyAdapters.s.sol --rpc-url "$RPC_URL" --broadcast --slow --private-key <ORACLE_ADMIN private key>
 ```
 
 `SeedTokens.s.sol` also no-ops on any non-local chain (real DeFi tokens
 already exist on Base Sepolia's mainnet-adjacent contracts where they exist
 at all) — skip it here.
 
-`VigilZapRouter` is the one piece still blocked — it needs a real
-`SwapRouter02` address, which `DeployAll.s.sol` refuses to guess on a
-non-local chain. Once one's sourced, set `SWAP_ROUTER_ADDRESS` and deploy it
-directly:
-
-```
-SWAP_ROUTER_ADDRESS=<real Base Sepolia SwapRouter02> \
-forge script script/deploy/DeployAll.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
-```
-
-(`DeployAll.s.sol` re-running is safe for the pieces above — `VaultFactory`
-gets reused via the same `.VaultFactory` lookup, though it will still try
-`factory.createVault(...)` again and revert with `VaultAlreadyExists` if a
-vault for that asset already exists; run `DeployVault.s.sol` and
-`DeployAll.s.sol` as alternatives, not both.)
-
-**Current live state on Base Sepolia** (`data/84532/deployedContracts.json`):
-`HealthOracle` and `WETH9` only — `VaultFactory`/`VigilVault` are ready to
-deploy via `DeployVault.s.sol` above but haven't been run for real yet;
-`VigilZapRouter` stays blocked on `SWAP_ROUTER_ADDRESS`.
+`DeployVault.s.sol` and `DeployMockStrategyAdapters.s.sol` both work against
+any vault, not just a WETH one — see their own doc comments for the
+`VAULT_ADDRESS` / `WRAP_NATIVE` overrides if deploying a second vault on a
+different underlying token.
 
 After any manual (non-`deploy.sh`) run, sync the frontend yourself:
 
@@ -108,9 +88,7 @@ After any manual (non-`deploy.sh`) run, sync the frontend yourself:
 
 Not done, and shouldn't be attempted casually — real funds, real
 irreversibility. Same script set as Base Sepolia applies once you're
-actually ready; get a real `SwapRouter02` address and a real audited
-comfort level before broadcasting anything with `--broadcast` against
-`https://mainnet.base.org`.
+actually ready.
 
 ## Verifying on Etherscan
 

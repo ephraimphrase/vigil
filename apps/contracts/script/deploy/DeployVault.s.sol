@@ -10,11 +10,9 @@ import {IVigilVault} from "../../src/interface/IVigilVault.sol";
 import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
 
 // Standalone VaultFactory + VigilVault deploy, split out from
-// DeployAll.s.sol so a vault can go live without waiting on
-// VigilZapRouter's SwapRouter02 dependency (the only piece of the core
-// stack that needs a real, unguessable external address on a non-local
-// chain - see DeployAll.s.sol's _resolveSwapRouter()). VaultFactory and
-// VigilVault don't touch Uniswap at all.
+// DeployAll.s.sol so a vault can be deployed on its own - e.g. a second
+// vault for a different underlying asset, reusing the existing
+// HealthOracle and VaultFactory, without redeploying the whole stack.
 //
 // Reuses an already-deployed VaultFactory from
 // data/<chainid>/deployedContracts.json if one exists (a factory has no

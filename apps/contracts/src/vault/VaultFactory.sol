@@ -8,8 +8,8 @@ import {IVaultFactory} from "../interface/IVaultFactory.sol";
 import {IVigilVault} from "../interface/IVigilVault.sol";
 
 // Deploys one VigilVault per underlying asset. Keeping a single canonical
-// vault per asset (rather than allowing many) matches how VigilZapRouter is
-// wired - it holds one immutable vault reference, not a registry.
+// vault per asset (rather than allowing many) avoids ambiguity over which
+// vault a given asset's deposits should route to.
 contract VaultFactory is IVaultFactory {
     address[] public override vaults;
     mapping(address asset => address vault) public override vaultByAsset;
