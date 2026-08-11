@@ -30,6 +30,17 @@ contract DeployWETHScript is DeployRegistrar {
         if (block.chainid == BASE_MAINNET_CHAIN_ID || block.chainid == BASE_SEPOLIA_CHAIN_ID) {
             console.log("OP-stack chain, registering existing WETH predeploy:", OP_STACK_WETH_PREDEPLOY);
             _registerContract("WETH9", OP_STACK_WETH_PREDEPLOY);
+            _appendToTokensFile(
+                _tokenRecordJson(
+                    TokenRecord({
+                        token: OP_STACK_WETH_PREDEPLOY,
+                        symbol: "WETH",
+                        name: "Wrapped Ether",
+                        decimals: 18,
+                        logoURI: WETH_LOGO_URI
+                    })
+                )
+            );
             return WETH9(payable(OP_STACK_WETH_PREDEPLOY));
         }
 

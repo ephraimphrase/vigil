@@ -23,15 +23,27 @@ contract SeedTokensScript is Script {
     string constant FETCH_SCRIPT = "script/shell/_pull_defi_tokens.sh";
     uint256 constant PRICE_SCALE = 1e6;
     uint256 constant LOCAL_CHAIN_ID = 31337;
+    uint256 constant BASE_SEPOLIA_CHAIN_ID = 84532;
 
     // ─── MAIN ───
     function run() external returns (SeedTokenFactory factory) {
-        if (block.chainid != LOCAL_CHAIN_ID) {
-            console2.log("not a local chain, skipping seed tokens");
+        if (block.chainid != LOCAL_CHAIN_ID && block.chainid != BASE_SEPOLIA_CHAIN_ID) {
+            console2.log("not a local or Sepolia chain, skipping seed tokens");
             return factory;
         }
 
         TokenData[] memory tokens = _fetchTokens();
+
+        // MAX_TOKENS caps the batch (e.g. for a real testnet where each
+        // token deploy is a real transaction) - unset deploys every token
+        // the fetch script returned, same as before this existed.
+        uint256 maxTokens = vm.envOr("MAX_TOKENS", type(uint256).max);
+        if (tokens.length > maxTokens) {
+            assembly {
+                mstore(tokens, maxTokens)
+            }
+        }
+
         _logTokens(tokens);
 
         vm.startBroadcast();
