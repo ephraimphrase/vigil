@@ -7,7 +7,7 @@ import {HealthOracle} from "../../src/oracle/HealthOracle.sol";
 import {VaultFactory} from "../../src/vault/VaultFactory.sol";
 import {VigilVault} from "../../src/vault/VigilVault.sol";
 import {IVigilVault} from "../../src/interface/IVigilVault.sol";
-import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
+import {VaultResolvers} from "../lib/VaultResolvers.sol";
 
 // Standalone VaultFactory + VigilVault deploy, split out from
 // DeployAll.s.sol so a vault can be deployed on its own - e.g. a second
@@ -23,8 +23,8 @@ import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
 //
 // Usage:
 //   forge script script/deploy/DeployVault.s.sol --rpc-url $RPC_URL --broadcast --private-key $DEPLOYER_KEY
-// Optional overrides: WETH_ADDRESS, ORACLE_ADDRESS, VAULT_NAME, VAULT_SYMBOL
-contract DeployVaultScript is DeployRegistrar {
+// Optional overrides: WETH_ADDRESS, ORACLE_ADDRESS, VAULT_FACTORY_ADDRESS, VAULT_NAME, VAULT_SYMBOL
+contract DeployVaultScript is VaultResolvers {
     address constant DEFAULT_LOCAL_ROLE_HOLDER = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     function run() external returns (VaultFactory factory, VigilVault vault) {
@@ -61,36 +61,5 @@ contract DeployVaultScript is DeployRegistrar {
             "No WETH_ADDRESS set and data/<chainid>/deployedContracts.json not found - run DeployWETH.s.sol first, or set WETH_ADDRESS explicitly"
         );
         return vm.parseJsonAddress(vm.readFile(path), ".WETH9");
-    }
-
-    function _resolveOracle() internal returns (address) {
-        address override_ = vm.envOr("ORACLE_ADDRESS", address(0));
-        if (override_ != address(0)) return override_;
-
-        string memory path = string.concat("data/", vm.toString(block.chainid), "/deployedContracts.json");
-        require(
-            vm.exists(path),
-            "No ORACLE_ADDRESS set and data/<chainid>/deployedContracts.json not found - run DeployHealthOracle.s.sol first, or set ORACLE_ADDRESS explicitly"
-        );
-        return vm.parseJsonAddress(vm.readFile(path), ".HealthOracle");
-    }
-
-    // A factory is stateless enough to reuse across every vault ever
-    // created on this chain - deploying a fresh one each run would just
-    // leave orphaned duplicates in deployedContracts.json overwriting each
-    // other.
-    function _resolveFactory() internal returns (address) {
-        string memory path = string.concat("data/", vm.toString(block.chainid), "/deployedContracts.json");
-        if (vm.exists(path)) {
-            string memory json = vm.readFile(path);
-            if (vm.keyExistsJson(json, ".VaultFactory")) {
-                address existing = vm.parseJsonAddress(json, ".VaultFactory");
-                if (existing != address(0)) return existing;
-            }
-        }
-
-        VaultFactory factory = new VaultFactory();
-        _registerContract("VaultFactory", address(factory));
-        return address(factory);
     }
 }

@@ -18,6 +18,10 @@ fs_permissions = [
     # single source of truth for "which protocols exist" - read-only, this
     # script never writes back into apps/web.
     { access = "read", path = "../web/seed" },
+    # vm.getCode() reads compiled artifacts from here - needed by scripts
+    # that deploy bytecode without importing the contract type directly
+    # (e.g. DeployManyMockVaults.s.sol deploying MockERC20).
+    { access = "read", path = "./out" },
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
