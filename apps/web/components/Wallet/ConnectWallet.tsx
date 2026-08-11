@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { ConnectButton, darkTheme } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { thirdwebClient } from "@/lib/thirdweb-client";
+import { FaucetModal } from "@/components/Wallet/FaucetModal";
 
 const wallets = [
   inAppWallet({
@@ -32,6 +34,8 @@ const theme = darkTheme({
 });
 
 export function ConnectWallet() {
+  const [faucetOpen, setFaucetOpen] = useState(false);
+
   if (!thirdwebClient) {
     return (
       <button
@@ -46,17 +50,34 @@ export function ConnectWallet() {
   }
 
   return (
-    <ConnectButton
-      client={thirdwebClient}
-      wallets={wallets}
-      theme={theme}
-      connectButton={{ label: "Connect Wallet" }}
-      connectModal={{ size: "compact", title: "Connect to Vigil" }}
-      appMetadata={{
-        name: "Vigil",
-        description: "Autonomous protocol risk monitoring and consequence execution system.",
-        url: "https://vigil.xyz",
-      }}
-    />
+    <>
+      <ConnectButton
+        client={thirdwebClient}
+        wallets={wallets}
+        theme={theme}
+        connectButton={{ label: "Connect Wallet" }}
+        connectModal={{ size: "compact", title: "Connect to Vigil" }}
+        detailsModal={{
+          footer: (props) => (
+            <button
+              type="button"
+              onClick={() => {
+                props.close();
+                setFaucetOpen(true);
+              }}
+              className="w-full rounded-full border border-hairline py-2 font-mono text-xs uppercase tracking-wider text-muted transition-colors hover:border-violet hover:text-body"
+            >
+              Get test tokens
+            </button>
+          ),
+        }}
+        appMetadata={{
+          name: "Vigil",
+          description: "Autonomous protocol risk monitoring and consequence execution system.",
+          url: "https://vigil.xyz",
+        }}
+      />
+      <FaucetModal open={faucetOpen} onOpenChange={setFaucetOpen} />
+    </>
   );
 }

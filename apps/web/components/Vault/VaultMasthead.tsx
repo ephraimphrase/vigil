@@ -37,7 +37,7 @@ export function VaultMasthead({ info, policy, position, apy }: VaultMastheadProp
     <CornerFrame>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3 p-5">
-          <TokenIconStack symbols={assetsOf(info)} size="lg" />
+          <TokenIconStack symbols={assetsOf(info)} logoURIs={[info.assetLogoURI]} size="lg" />
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-3">
               <h1 className="font-display text-3xl leading-none tracking-tight text-body">{info.name}</h1>

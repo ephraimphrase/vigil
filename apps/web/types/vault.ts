@@ -22,6 +22,8 @@ export interface VaultInfo {
    * Absent for ordinary single-token vaults, where `asset` alone is the whole story.
    */
   underlyingAssets?: string[];
+  /** Icon override for `asset` - TokenIcon's hardcoded symbol map only covers a handful of well-known tokens. */
+  assetLogoURI?: string;
   totalAssets: number;
   totalShares: number;
   sharePrice: number;

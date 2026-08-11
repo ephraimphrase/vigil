@@ -11,6 +11,7 @@
     "check-types": "tsc --noEmit",
     "seed:db": "tsx scripts/seed-db.ts",
     "sync-contracts": "tsx scripts/sync-contracts.ts",
+    "sync-test-tokens": "tsx scripts/sync-test-tokens.ts",
     "ponder:codegen": "tsx scripts/ponder-codegen.ts"
   },
   "dependencies": {

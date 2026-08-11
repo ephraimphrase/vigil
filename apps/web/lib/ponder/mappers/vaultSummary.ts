@@ -1,5 +1,6 @@
 import type { VaultsQuery } from "@/lib/ponder/generated/sdk";
 import type { VaultSummary } from "@/types";
+import { logoForTokenAddress } from "./tokenLogo";
 
 type PonderVault = VaultsQuery["vaults"]["items"][number];
 
@@ -14,6 +15,7 @@ export function toVaultSummary(vault: PonderVault): VaultSummary {
     slug: vault.id,
     name: vault.vaultName,
     asset: vault.assetSymbol,
+    assetLogoURI: logoForTokenAddress(vault.asset),
     totalAssets: NaN,
     totalShares: NaN,
     sharePrice: NaN,

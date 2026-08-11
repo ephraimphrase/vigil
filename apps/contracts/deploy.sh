@@ -49,6 +49,10 @@ echo "== Pulling and deploying DeFi tokens =="
 forge script script/deploy/SeedTokens.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
 
 echo
+echo "== Deploying and funding Faucet =="
+forge script script/deploy/DeployFaucet.s.sol --rpc-url "$RPC_URL" --broadcast --private-key "$DEPLOYER_KEY"
+
+echo
 echo "== Generating role keys (any of ORACLE_ADMIN/SCORER/GUARDIAN/VAULT_KEEPER not already set) =="
 ./script/shell/generate-roles.sh
 set -a
@@ -61,7 +65,7 @@ forge script script/deploy/DeployAll.s.sol --rpc-url "$RPC_URL" --broadcast --pr
 
 echo
 echo "== Syncing deployed contracts to apps/web =="
-(cd ../web && npx tsx scripts/sync-contracts.ts)
+(cd ../web && npx tsx scripts/sync-contracts.ts && npx tsx scripts/sync-test-tokens.ts)
 
 echo
 echo "Done. Chain stays up at $RPC_URL — run 'pnpm explorer' to visualize it."

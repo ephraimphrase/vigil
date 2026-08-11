@@ -30,7 +30,7 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
         const v = row.original;
         return (
           <div className="flex items-center gap-3">
-            <TokenIconStack symbols={assetsOf(v)} size="lg" />
+            <TokenIconStack symbols={assetsOf(v)} logoURIs={[v.assetLogoURI]} size="lg" />
             <div className="flex flex-col gap-1.5 leading-tight">
               <span className="text-base text-body">{v.name}</span>
               <div className="flex flex-wrap items-center gap-1.5">

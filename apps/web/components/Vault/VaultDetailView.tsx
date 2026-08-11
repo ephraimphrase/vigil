@@ -101,6 +101,8 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
     );
   }
 
+  console.log(vault, "vault info")
+
   const { info, policy, position, allocation, riskChecks, history } = vault;
   const agg = vaultAggregate(allocation);
 

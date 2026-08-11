@@ -31,11 +31,13 @@ interface TokenIconProps {
   size?: IconSize;
   className?: string;
   style?: CSSProperties;
+  /** Overrides the hardcoded lookup - for tokens with a known logo not in COINGECKO_ICONS (e.g. the faucet's test token list). */
+  logoURI?: string;
 }
 
-export function TokenIcon({ symbol, size = "md", className = "", style }: TokenIconProps) {
+export function TokenIcon({ symbol, size = "md", className = "", style, logoURI }: TokenIconProps) {
   const key = symbol.trim().toUpperCase().replace(/[^A-Z]/g, "");
-  const iconUrl = COINGECKO_ICONS[key] ?? (key.includes("STETH") ? COINGECKO_ICONS.STETH : undefined);
+  const iconUrl = logoURI || COINGECKO_ICONS[key] || (key.includes("STETH") ? COINGECKO_ICONS.STETH : undefined);
   const { className: dim, px } = DIM[size];
 
   if (iconUrl) {
@@ -102,7 +104,16 @@ const MAX_STACKED_ICONS = 4;
 // just passes a one-item array so callers don't need to branch on count.
 // Caps at 4 icons; anything beyond that collapses into a "+N" badge rather
 // than growing the row unbounded once a vault has a longer underlying list.
-export function TokenIconStack({ symbols, size = "md" }: { symbols: string[]; size?: IconSize }) {
+export function TokenIconStack({
+  symbols,
+  size = "md",
+  logoURIs,
+}: {
+  symbols: string[];
+  size?: IconSize;
+  /** Per-symbol icon overrides, matched by index - see TokenIcon's own logoURI prop. */
+  logoURIs?: (string | undefined)[];
+}) {
   const shown = symbols.slice(0, MAX_STACKED_ICONS);
   const overflow = symbols.length - shown.length;
   const { className: dim } = DIM[size];
@@ -113,6 +124,7 @@ export function TokenIconStack({ symbols, size = "md" }: { symbols: string[]; si
         <TokenIcon
           key={symbol}
           symbol={symbol}
+          logoURI={logoURIs?.[i]}
           size={size}
           className={i > 0 ? "-ml-2 bg-panel" : ""}
           style={{ zIndex: shown.length - i }}

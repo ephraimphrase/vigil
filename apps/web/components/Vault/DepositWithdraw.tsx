@@ -96,7 +96,7 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
               className="font-mono text-lg tabular-nums text-body placeholder:text-muted/40"
             />
             <InputGroupAddon align="inline-end" className="gap-1.5">
-              <TokenIcon symbol={info.asset} className="!size-6" />
+              <TokenIcon symbol={info.asset} logoURI={info.assetLogoURI} className="!size-6" />
               <InputGroupText className="font-mono text-xs uppercase tracking-wider text-muted">
                 {info.asset}
               </InputGroupText>

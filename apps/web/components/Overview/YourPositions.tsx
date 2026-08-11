@@ -65,7 +65,7 @@ export function YourPositions({ positions, isConnected, isLoading = false, Link 
                 className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-panel/40"
               >
                 <div className="flex items-center gap-3">
-                  <TokenIconStack symbols={assetsOf(v)} size="md" />
+                  <TokenIconStack symbols={assetsOf(v)} logoURIs={[v.assetLogoURI]} size="md" />
                   <div className="flex flex-col">
                     <span className="text-sm text-body">{v.name}</span>
                     <span className="flex items-center gap-1 font-mono text-xs uppercase tracking-wider text-muted/50">

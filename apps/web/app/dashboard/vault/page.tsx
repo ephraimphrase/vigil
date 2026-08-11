@@ -35,6 +35,8 @@ export default function VaultsPage() {
   const { data: vaults, isLoading } = useApi<VaultSummary[]>("/api/vaults", []);
   const onOpenVault = useCallback((slug: string) => router.push(`/dashboard/vault/${slug}`), [router]);
 
+  
+
   const [typeFilter, setTypeFilter] = useState<VaultTypeFilter>("all");
   const [chainFilter, setChainFilter] = useState("all");
   const [advancedFilters, setAdvancedFilters] = useState<VaultFilterState>(EMPTY_ADVANCED_FILTERS);

@@ -1,5 +1,6 @@
 import type { VaultQuery } from "@/lib/ponder/generated/sdk";
 import type { VaultData } from "@/types";
+import { logoForTokenAddress } from "./tokenLogo";
 
 type PonderVault = NonNullable<VaultQuery["vault"]>;
 
@@ -14,6 +15,7 @@ export function toVaultData(vault: PonderVault): VaultData {
       slug: vault.id,
       name: vault.vaultName,
       asset: vault.assetSymbol,
+      assetLogoURI: logoForTokenAddress(vault.asset),
       totalAssets: NaN,
       totalShares: NaN,
       // Static 1:1 default (an ERC-4626 vault starts here) rather than
