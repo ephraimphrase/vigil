@@ -47,7 +47,7 @@ export function VaultMasthead({ info, policy, position, apy }: VaultMastheadProp
           </div>
         </div>
         <div className="grid grid-cols-3 divide-x divide-hairline border-t border-hairline md:border-t-0 md:border-l">
-          <Stat label="TVL" value={fmtUsd(info.tvl)} />
+          <Stat label="TVL" value={Number.isFinite(info.tvl) ? fmtUsd(info.tvl) : "-"} />
           <Stat label="APY" value={`${apy.toFixed(1)}%`} />
           <Stat label="Your deposit" value={position ? fmtUsdFull(position.valueUsd) : "—"} />
         </div>

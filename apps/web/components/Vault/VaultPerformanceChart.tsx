@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Tabs } from "@/components/ui/Tabs";
+import { EmptyState } from "@/components/EmptyState";
 import { dateShort, fmtUsd } from "@/shared/format";
 import type { VaultHistoryPoint } from "@/types";
 
@@ -41,6 +42,11 @@ function ChartTooltip({ active, payload, metric }: { active?: boolean; payload?:
 
 export function VaultPerformanceChart({ history }: { history: VaultHistoryPoint[] }) {
   const [metric, setMetric] = useState<Metric>("apy30d");
+
+  if (history.length === 0) {
+    return <EmptyState query="" label="history" message="No performance history yet." />;
+  }
+
   const data = history.map((h) => ({ ...h, label: dateShort(h.ts) }));
   const values = data.map((d) => d[metric]);
   const min = Math.min(...values);
