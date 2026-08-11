@@ -21,6 +21,13 @@ contract SeedToken is Initializable, ERC20 {
         _mint(recipient, initialSupply);
     }
 
+    // Testnet faucet - these tokens only ever exist behind SeedTokenFactory
+    // on local/Base Sepolia deploys, so anyone being able to mint to
+    // themselves is intentional, not a bug.
+    function mint(uint256 amount) external {
+        _mint(msg.sender, amount);
+    }
+
     function name() public view override returns (string memory) {
         return _tokenName;
     }
