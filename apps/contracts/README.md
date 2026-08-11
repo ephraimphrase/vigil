@@ -47,9 +47,9 @@ $ anvil
 
 ### Deploy
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for the real deploy flow (local anvil,
+Base Sepolia, verification, role keys) — `./deploy.sh` covers local dev
+end-to-end.
 
 ### Cast
 
