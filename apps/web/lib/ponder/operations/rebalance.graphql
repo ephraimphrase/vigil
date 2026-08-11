@@ -1,0 +1,33 @@
+query Rebalances(
+  $where: rebalanceFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  rebalances(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      totalPool
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

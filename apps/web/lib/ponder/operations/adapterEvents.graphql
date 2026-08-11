@@ -1,0 +1,244 @@
+query AdapterAddeds(
+  $where: adapterAddedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterAddeds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      adapter
+      protocolId
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterRemoveds(
+  $where: adapterRemovedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterRemoveds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      adapter
+      protocolId
+      withdrawn
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterEvacuateds(
+  $where: adapterEvacuatedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterEvacuateds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      adapter
+      withdrawn
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterDepositeds(
+  $where: adapterDepositedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterDepositeds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      adapter
+      requested
+      supplied
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterWithdrawns(
+  $where: adapterWithdrawnFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterWithdrawns(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      adapter
+      requested
+      received
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterHarvesteds(
+  $where: adapterHarvestedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterHarvesteds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      adapter
+      gain
+      totalAssetsAfter
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query AdapterRetiredEvents(
+  $where: adapterRetiredEventFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapterRetiredEvents(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      adapter
+      withdrawn
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

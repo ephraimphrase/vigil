@@ -1,0 +1,74 @@
+query Deposits(
+  $where: depositFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  deposits(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      sender
+      owner
+      assets
+      shares
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query Withdrawals(
+  $where: withdrawalFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  withdrawals(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      sender
+      receiver
+      owner
+      assets
+      shares
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

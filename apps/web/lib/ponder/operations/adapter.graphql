@@ -1,0 +1,56 @@
+query Adapter($id: String!) {
+  adapter(id: $id) {
+    id
+    vault
+    protocolId
+    stratName
+    apyBps
+    allocated
+    paused
+    retired
+    lastHarvestAt
+    lastHarvestGain
+    addedAtBlock
+    addedAtTimestamp
+  }
+}
+
+query Adapters(
+  $where: adapterFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  adapters(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      vault
+      protocolId
+      stratName
+      apyBps
+      allocated
+      paused
+      retired
+      lastHarvestAt
+      lastHarvestGain
+      addedAtBlock
+      addedAtTimestamp
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

@@ -1,0 +1,102 @@
+query ProtocolRegistereds(
+  $where: protocolRegisteredFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  protocolRegistereds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      protocolId
+      initialScore
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query ScoreUpdateds(
+  $where: scoreUpdatedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  scoreUpdateds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      protocolId
+      oldScore
+      newScore
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query EmergencyZeroeds(
+  $where: emergencyZeroedFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  emergencyZeroeds(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      protocolId
+      previousScore
+      blockNumber
+      timestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

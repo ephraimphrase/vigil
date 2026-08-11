@@ -1,0 +1,56 @@
+query Vault($id: String!) {
+  vault(id: $id) {
+    id
+    asset
+    oracle
+    kind
+    vaultName
+    vaultSymbol
+    assetName
+    assetSymbol
+    assetDecimals
+    createdAtBlock
+    createdAtTimestamp
+    txHash
+  }
+}
+
+query Vaults(
+  $where: vaultFilter
+  $orderBy: String
+  $orderDirection: String
+  $limit: Int
+  $after: String
+  $before: String
+) {
+  vaults(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    limit: $limit
+    after: $after
+    before: $before
+  ) {
+    items {
+      id
+      asset
+      oracle
+      kind
+      vaultName
+      vaultSymbol
+      assetName
+      assetSymbol
+      assetDecimals
+      createdAtBlock
+      createdAtTimestamp
+      txHash
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
