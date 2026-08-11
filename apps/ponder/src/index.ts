@@ -270,9 +270,6 @@ ponder.on("StrategyAdapter:Harvested", async ({ event, context }) => {
     gain: event.args.gain,
     totalAssetsAfter: event.args.totalAssetsAfter,
   });
-  // Harvested already carries totalAssetsAfter, so no extra read needed for
-  // `allocated` - just paused/retired, plus the lastHarvest fields the
-  // frontend's strategy view reads directly.
   await context.db.update(adapter, { id: event.log.address }).set({
     allocated: event.args.totalAssetsAfter,
     lastHarvestAt: event.block.timestamp,
