@@ -67,37 +67,6 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar {
 
     bytes32[] private _wiredProtocolIds;
 
-    function run() external {
-        address vault = _resolveVault();
-        // Read straight off the vault rather than assuming WETH9 -
-        // vaults don't all have to share the same underlying token, so
-        // this works for whichever vault VAULT_ADDRESS/deployedContracts.json
-        // points at.
-        address token = address(VigilVault(vault).asset());
-        uint256 maxAdapters = VigilVault(vault).MAX_ADAPTERS();
-
-        string memory singleName = vm.envOr("STRAT_NAME", string(""));
-        if (bytes(singleName).length > 0) {
-            string memory protocolIdStr = vm.envString("PROTOCOL_ID");
-            uint256 apyBps = vm.envUint("APY_BPS");
-            vm.startBroadcast();
-            _deployOne(vault, token, maxAdapters, singleName, protocolIdStr, singleName, apyBps);
-            vm.stopBroadcast();
-            return;
-        }
-
-        uint256 length = _seedLength();
-        console.log("Deploying", length, "mock strategy adapters from", SEED_PATH);
-        console.log("VigilVault.MAX_ADAPTERS is", maxAdapters, "- only one strategy per unique protocolId gets wired");
-
-        vm.startBroadcast();
-        for (uint256 i; i < length; ++i) {
-            (string memory id, string memory protocolIdStr, string memory stratName, uint256 apyBps) = _strategyAt(i);
-            _deployOne(vault, token, maxAdapters, id, protocolIdStr, stratName, apyBps);
-        }
-        vm.stopBroadcast();
-    }
-
     // Shared by both the batch loop and the single-strategy path - deploys
     // one MockStrategyAdapter, funds its reserve, and wires it into the
     // vault if there's room and its protocolId isn't already live.
