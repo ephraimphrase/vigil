@@ -48,15 +48,25 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
     }),
     col.accessor("apy", {
       header: "Est. APY",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-base tabular-nums text-body">{getValue().toFixed(1)}%</span>
-      ),
+      cell: ({ getValue }) => {
+        const apy = getValue();
+        return (
+          <span className="font-mono text-base tabular-nums text-body">
+            {Number.isFinite(apy) ? `${apy.toFixed(1)}%` : "-"}
+          </span>
+        );
+      },
     }),
     col.accessor("tvl", {
       header: "TVL",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-base tabular-nums text-body">{fmtUsd(getValue())}</span>
-      ),
+      cell: ({ getValue }) => {
+        const tvl = getValue();
+        return (
+          <span className="font-mono text-base tabular-nums text-body">
+            {Number.isFinite(tvl) ? fmtUsd(tvl) : "-"}
+          </span>
+        );
+      },
     }),
     col.display({
       id: "fee",
@@ -69,7 +79,14 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
     }),
     col.accessor("score", {
       header: "Score",
-      cell: ({ getValue }) => <ScoreCell score={getValue()} />,
+      cell: ({ getValue }) => {
+        const score = getValue();
+        return Number.isFinite(score) ? (
+          <ScoreCell score={score} />
+        ) : (
+          <span className="font-mono text-sm tabular-nums text-text-muted">-</span>
+        );
+      },
     }),
   ];
 }

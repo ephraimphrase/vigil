@@ -52,7 +52,7 @@ export default function VaultsPage() {
         if (chainFilter !== "all" && v.chain !== chainFilter) return false;
         const { assetFilter, minTvl, categoryFilter, aggressivenessFilter } = advancedFilters;
         if (assetFilter.length > 0 && !assetsOf(v).some((a) => assetFilter.includes(a))) return false;
-        if (minTvl > 0 && v.tvl < minTvl) return false;
+        if (minTvl > 0 && Number.isFinite(v.tvl) && v.tvl < minTvl) return false;
         if (categoryFilter.length > 0 && !categoryFilter.includes(v.assetType)) return false;
         if (aggressivenessFilter.length > 0 && !aggressivenessFilter.includes(aggressivenessOf(v)))
           return false;

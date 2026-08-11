@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { SEED } from "@/seed";
+import { ponder } from "@/lib/ponder/client";
+import { toVaultSummary } from "@/lib/ponder/mappers/vaultSummary";
 
-export function GET() {
-  return NextResponse.json(SEED.vaultList);
+export async function GET() {
+  const { vaults } = await ponder.Vaults({ limit: 1000 });
+  return NextResponse.json(vaults.items.map(toVaultSummary));
 }

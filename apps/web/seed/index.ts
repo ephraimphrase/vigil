@@ -10,8 +10,8 @@
 // Vault is keyed by slug (VAULT_MOCKS): three policy tiers today
 // (conservative/balanced/degen), DEFAULT_VAULT_SLUG picks which one a bare
 // "the vault" reference means. app/api/vault/[slug]/route.ts serves one
-// entry via getVault(); app/api/vaults serves SEED.vaultList for the
-// /dashboard/vault picker.
+// entry via getVault(); the /dashboard/vault picker reads from Ponder
+// instead (app/api/vaults/route.ts).
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
