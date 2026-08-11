@@ -17,6 +17,16 @@
     "start": {
       "cache": false,
       "persistent": true
+    },
+    "ponder#dev": {
+      "cache": false,
+      "persistent": true,
+      "env": ["PONDER_RPC_URL_84532", "DATABASE_URL"]
+    },
+    "ponder#start": {
+      "cache": false,
+      "persistent": true,
+      "env": ["PONDER_RPC_URL_84532", "DATABASE_URL"]
     }
   }
 }

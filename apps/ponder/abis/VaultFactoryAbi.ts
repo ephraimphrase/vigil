@@ -151,4 +151,4 @@ export const VaultFactoryAbi = [
     name: "ZeroAddress",
     inputs: [],
   },
-];
+] as const;

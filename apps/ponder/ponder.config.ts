@@ -10,6 +10,15 @@ import { VaultFactoryAbi } from "./abis/VaultFactoryAbi";
 // every vault as it's created without needing to know their addresses
 // ahead of time.
 export default createConfig({
+  // Real Postgres instead of the default embedded pglite - pglite kept
+  // corrupting/locking its on-disk WAL across restarts during local
+  // testing. Points at the same local Postgres apps/web's Drizzle setup
+  // uses (DATABASE_URL), but under its own "ponder" schema so it never
+  // touches apps/web's tables.
+  database: {
+    kind: "postgres",
+    connectionString: process.env.DATABASE_URL,
+  },
   chains: {
     baseSepolia: {
       id: 84532,
