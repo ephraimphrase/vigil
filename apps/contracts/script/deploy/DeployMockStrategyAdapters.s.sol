@@ -46,6 +46,10 @@ interface IWETH9 {
 //   STRAT_NAME / PROTOCOL_ID / APY_BPS   set all three to deploy ONE custom
 //                   strategy instead of the full 42-entry batch (APY_BPS
 //                   is basis points, e.g. 650 = 6.50%).
+//   STRATEGIES_PER_VAULT   optional, default MAX_ADAPTERS - caps how many
+//                   distinct-protocolId strategies get wired, and stops
+//                   the batch loop once that many are wired rather than
+//                   deploying the rest of the 42 unnecessarily.
 //
 // Usage:
 //   forge script script/deploy/DeployMockStrategyAdapters.s.sol \
@@ -73,11 +77,17 @@ contract DeployMockStrategyAdaptersScript is Script, DeployRegistrar, StrategySe
         }
 
         uint256 length = _seedLength();
-        console.log("Deploying", length, "mock strategy adapters from", SEED_PATH);
-        console.log("VigilVault.MAX_ADAPTERS is", maxAdapters, "- only one strategy per unique protocolId gets wired");
+        // STRATEGIES_PER_VAULT further caps how many actually get wired
+        // (and, unlike MAX_ADAPTERS alone, stops the loop from deploying
+        // the rest of the batch at all once that cap is hit - deploying
+        // all 42 just to wire 5 wastes real gas on a real chain).
+        uint256 cap = vm.envOr("STRATEGIES_PER_VAULT", maxAdapters);
+        if (cap < maxAdapters) maxAdapters = cap;
+        console.log("Deploying up to", length, "mock strategy adapters from", SEED_PATH);
+        console.log("Wiring cap is", maxAdapters, "- only one strategy per unique protocolId gets wired");
 
         vm.startBroadcast();
-        for (uint256 i; i < length; ++i) {
+        for (uint256 i; i < length && _wiredProtocolIds.length < maxAdapters; ++i) {
             (string memory id, string memory protocolIdStr, string memory stratName, uint256 apyBps) = _strategyAt(i);
             _deployOne(vault, token, maxAdapters, id, protocolIdStr, stratName, apyBps);
         }

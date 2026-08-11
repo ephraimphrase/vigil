@@ -43,7 +43,19 @@ contract DeployVaultScript is VaultResolvers {
         vault = factory.createVault(
             IERC20(weth), IVigilVault.VaultKind.Single, oracle, admin, keeper, guardian, name, symbol
         );
-        _registerContract("VigilVault", address(vault));
+        // "VigilVault" is the canonical default vault other scripts fall
+        // back to when no override is given (e.g.
+        // DeployMockStrategyAdapters.s.sol's _resolveVault()) - only claim
+        // that key if nothing already holds it, so a second/third vault
+        // deployed with this script doesn't clobber an earlier one. Every
+        // vault also gets its own "Vault_{symbol}" key regardless, so it's
+        // individually addressable either way.
+        string memory deployedPath = string.concat("data/", vm.toString(block.chainid), "/deployedContracts.json");
+        bool hasDefaultVault = vm.exists(deployedPath) && vm.keyExistsJson(vm.readFile(deployedPath), ".VigilVault");
+        if (!hasDefaultVault) {
+            _registerContract("VigilVault", address(vault));
+        }
+        _registerContract(string.concat("Vault_", symbol), address(vault));
 
         vm.stopBroadcast();
 
