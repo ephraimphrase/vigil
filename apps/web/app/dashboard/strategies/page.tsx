@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 
 import { useStrategies } from "../../../hooks/useStrategies";
-import { aggregate, groupByProtocol } from "../../../shared/rebalance";
+import { groupByProtocol } from "../../../shared/rebalance";
 import { StrategiesTable } from "../../../components/Strategy/StrategiesTable";
 import { buildStrategyColumns } from "../../../components/Strategy/StrategyColumns";
 import type { Strategy } from "../../../types";
@@ -21,12 +21,9 @@ const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];
 export default function StrategiesPage() {
   const router = useRouter();
   const { data, isLoading } = useStrategies();
-  const agg = aggregate(data.strategies);
 
-  // Grouping is a presentational fold of the flat list (one row per
-  // protocol, multi-strategy protocols expandable) - aggregate() above
-  // still runs on the flat data so vault-wide totals never double-count a
-  // group and its children.
+  // Grouping is a presentational fold of the flat list - one row per
+  // protocol, multi-strategy protocols expandable.
   const grouped = useMemo(() => groupByProtocol(data.strategies), [data.strategies]);
 
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
@@ -47,14 +44,6 @@ export default function StrategiesPage() {
 
   return (
     <div className="flex h-full flex-col gap-4 p-4">
-      {agg.needsAttention > 0 && (
-        <div className="flex items-center gap-2 border-l-2 border-[#E0A95F] bg-panel/20 px-3 py-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-[#E0A95F]">
-            {agg.needsAttention} {agg.needsAttention === 1 ? "strategy" : "strategies"} pending rebalance
-          </span>
-        </div>
-      )}
-
       <div className="min-h-0 flex-1 border border-hairline">
         <StrategiesTable
           table={table}

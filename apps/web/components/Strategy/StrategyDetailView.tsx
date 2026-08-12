@@ -14,7 +14,7 @@ import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Loader } from "@/components/ui/Loader";
 import { Chip } from "@/components/ui/Chip";
 import { bandColor } from "@/shared/health";
-import { fmtScore, fmtAddress } from "@/shared/format";
+import { fmtScore } from "@/shared/format";
 import type { Strategy } from "@/types";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -23,14 +23,6 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       <span className="text-sm text-body">{label}</span>
       {children}
     </div>
-  );
-}
-
-function AddressRow({ label, value }: { label: string; value: string }) {
-  return (
-    <Row label={label}>
-      <span className="font-mono text-xs text-muted" title={value}>{fmtAddress(value)}</span>
-    </Row>
   );
 }
 
@@ -115,10 +107,10 @@ export function StrategyDetailView({ id }: { id: string }) {
     <div className="mx-auto flex max-w-[900px] flex-col gap-4 bg-base p-4">
       <Masthead s={s} />
 
-      {/* Contracts */}
+      {/* Mechanics */}
       <CornerFrame>
         <div className="flex flex-col gap-3 p-5">
-          <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Contracts</span>
+          <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Mechanics</span>
           <Row label="Strategy type">
             <span className="font-mono text-sm text-muted">{s.stratName}</span>
           </Row>
@@ -137,10 +129,6 @@ export function StrategyDetailView({ id }: { id: string }) {
               </div>
             )}
           </Row>
-          <AddressRow label="Adapter" value={s.adapter} />
-          <AddressRow label="Strategy" value={s.strategyAddress} />
-          <AddressRow label="Asset" value={s.asset} />
-          <AddressRow label="Want" value={s.want} />
         </div>
       </CornerFrame>
     </div>
