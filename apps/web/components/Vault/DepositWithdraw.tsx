@@ -19,6 +19,7 @@ import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull, fmtFeePct } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
@@ -57,8 +58,8 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
   const [raw, setRaw] = useState("");
 
   // derived
-  const connected = position != null;
-  const max = tab === "deposit" ? position?.walletUsdc ?? 0 : position?.valueUsd ?? 0;
+  const { balance: walletBalance, isLoading: balanceLoading, connected } = useTokenBalance(info.tokenContractAddress);
+  const max = tab === "deposit" ? walletBalance ?? 0 : position?.valueUsd ?? 0;
   const amount = parseAmount(raw);
   const overMax = amount != null && amount > max;
 
@@ -85,7 +86,16 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
         <div>
           <div className="mb-1 flex items-center justify-between font-mono text-xs text-muted/60">
             <span>{tab === "deposit" ? `${info.asset} amount` : `${info.asset} value`}</span>
-            <span>Available {connected ? fmtUsdFull(max) : "—"}</span>
+            <span>
+              Available{" "}
+              {!connected
+                ? "—"
+                : tab === "deposit"
+                  ? balanceLoading
+                    ? "…"
+                    : `${max.toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`
+                  : fmtUsdFull(max)}
+            </span>
           </div>
           <InputGroup className="!rounded-none !border-hairline !bg-base !shadow-none !ring-0 before:!hidden focus-within:!border-violet">
             <InputGroupInput
