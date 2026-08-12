@@ -8,9 +8,10 @@
 // restyled to our hairline/mono tokens (rounded-none, no shadow/ring)
 // instead of its shadcn defaults - see the `!` overrides below.
 //
-// USDC-only for now, hence USD_RATE hardcoded to 1 - kept as a named
-// constant rather than inlined so the day this vault accepts a second
-// asset, the "amount x rate" line is the one place that changes.
+// The USD-equivalent line under the amount comes from useTokenPrices()
+// (lib/tokenPrices.ts, CoinGecko-backed) - "-" when this asset has no
+// verified price mapping (lib/tokenPriceIds.ts) rather than guessing a
+// 1:1 rate, since most vault assets here aren't stablecoins.
 // ─────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from "react";
@@ -20,16 +21,15 @@ import { AnnotationText } from "@/components/ui/AnnotationText";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
+import { useTokenPrices } from "@/hooks/useTokenPrices";
 import { useVaultDeposit } from "@/hooks/useVaultDeposit";
 import { useVaultWithdraw } from "@/hooks/useVaultWithdraw";
-import { useVaultWithdrawable } from "@/hooks/useVaultWithdrawable";
 import { toast } from "@/components/ui/Toast";
 import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull, fmtFeePct } from "@/shared/format";
 import type { VaultInfo } from "@/types";
 
 // ─── CONSTANTS ───
-const USD_RATE = 1; // USDC only, for now — see file header.
 const PERCENT_PILLS = [25, 50, 75, 100] as const;
 const DEPOSIT_FEE = 0;
 const WITHDRAW_FEE = 0;
@@ -39,6 +39,12 @@ type Tab = "deposit" | "withdraw";
 interface DepositWithdrawProps {
   info: VaultInfo;
   onSubmit?: (tab: Tab, amount: number) => void;
+  /** Called after a deposit/withdraw tx confirms on-chain - lets the parent refresh vault-level data (tvl, apy) that this panel doesn't own. "Your deposit" doesn't need a separate call here - it reads the same withdrawable/refetchWithdrawable this panel already refetches below. */
+  onTxConfirmed?: () => void;
+  /** Lifted to VaultDetailView (useVaultWithdrawable) rather than mounted here too - the masthead's "Your deposit" reads the exact same value, and a second independent hook instance is one more place a post-tx refetch could silently miss. */
+  withdrawable: number | null;
+  withdrawableLoading: boolean;
+  refetchWithdrawable: () => void;
 }
 
 // ─── UTILS ───
@@ -65,7 +71,14 @@ function showTxToast(action: "Deposit" | "Withdrawal", explorerUrl: string | nul
 }
 
 // ─── MAIN ───
-export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
+export function DepositWithdraw({
+  info,
+  onSubmit,
+  onTxConfirmed,
+  withdrawable,
+  withdrawableLoading,
+  refetchWithdrawable,
+}: DepositWithdrawProps) {
   // state
   const [tab, setTab] = useState<Tab>("deposit");
   const [raw, setRaw] = useState("");
@@ -77,13 +90,10 @@ export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
     connected,
     refetch: refetchBalance,
   } = useTokenBalance(info.tokenContractAddress);
-  const {
-    balance: withdrawable,
-    isLoading: withdrawableLoading,
-    refetch: refetchWithdrawable,
-  } = useVaultWithdrawable(info.vaultContractAddress, info.tokenContractAddress);
   const { deposit, isPending: depositPending } = useVaultDeposit(info.vaultContractAddress, info.tokenContractAddress);
   const { withdraw, isPending: withdrawPending } = useVaultWithdraw(info.vaultContractAddress, info.tokenContractAddress);
+  const { prices } = useTokenPrices();
+  const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
 
   const max = tab === "deposit" ? walletBalance ?? 0 : withdrawable ?? 0;
   const amountLoading = tab === "deposit" ? balanceLoading : withdrawableLoading;
@@ -95,8 +105,11 @@ export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
     if (amount == null || amount === 0) return null;
     return tab === "deposit"
       ? { label: "You receive", value: `${previewDeposit(amount, info.sharePrice).toLocaleString("en-US", { maximumFractionDigits: 2 })} shares` }
-      : { label: "You receive", value: fmtUsdFull(previewWithdraw(amount / info.sharePrice, info.sharePrice)) };
-  }, [amount, tab, info.sharePrice]);
+      : {
+          label: "You receive",
+          value: `${previewWithdraw(amount / info.sharePrice, info.sharePrice).toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`,
+        };
+  }, [amount, tab, info.sharePrice, info.asset]);
 
   const canSubmit = connected && amount != null && amount > 0 && !overMax && !submitting;
 
@@ -117,6 +130,7 @@ export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
       }
       setRaw("");
       onSubmit?.(tab, amount);
+      onTxConfirmed?.();
     } catch (e) {
       toast.error(tab === "deposit" ? "Deposit failed" : "Withdrawal failed", {
         description: e instanceof Error ? e.message : undefined,
@@ -166,7 +180,9 @@ export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
             <span className={overMax ? "" : "text-muted/40"} style={overMax ? { color: "#E0607F" } : undefined}>
               {overMax ? "Exceeds available." : " "}
             </span>
-            <span className="text-muted/40">{fmtUsdFull((amount ?? 0) * USD_RATE)}</span>
+            <span className="text-muted/40">
+              {priceUsd == null ? "-" : fmtUsdFull((amount ?? 0) * priceUsd)}
+            </span>
           </div>
 
           {/* percent pills */}

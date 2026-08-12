@@ -10,11 +10,13 @@ import { TokenBalanceRow } from "@/components/Wallet/TokenBalanceRow";
 import { useFaucetModal } from "@/components/Wallet/FaucetModalProvider";
 import { useDepositableTokens } from "@/hooks/useDepositableTokens";
 import { useLazyReveal } from "@/hooks/useLazyReveal";
-import { fmtAddress } from "@/shared/format";
+import { useTokenPrices } from "@/hooks/useTokenPrices";
+import { fmtAddress, fmtUsdFull } from "@/shared/format";
 
 export default function WalletPage() {
   const account = useActiveAccount();
   const { tokens, isLoading: tokensLoading } = useDepositableTokens();
+  const { prices, isLoading: pricesLoading } = useTokenPrices();
   const { openFaucet } = useFaucetModal();
   const [balances, setBalances] = useState<Record<string, number | null>>({});
   const { count: visibleCount, sentinelRef, hasMore } = useLazyReveal(tokens.length);
@@ -33,6 +35,11 @@ export default function WalletPage() {
 
   const heldCount = tokens.filter((t) => (balances[t.address] ?? 0) > 0).length;
   const coveragePct = tokens.length > 0 ? (heldCount / tokens.length) * 100 : 0;
+  const portfolioValue = tokens.reduce((sum, t) => {
+    const bal = balances[t.address];
+    const price = prices[t.address.toLowerCase()];
+    return bal && price ? sum + bal * price : sum;
+  }, 0);
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 p-4">
@@ -48,6 +55,13 @@ export default function WalletPage() {
           </div>
 
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="flex flex-col gap-0.5">
+              <span className="font-mono text-2xl tabular-nums text-body">
+                {pricesLoading ? "…" : fmtUsdFull(portfolioValue)}
+              </span>
+              <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Portfolio value</span>
+            </div>
+
             <div className="flex w-48 flex-col gap-1.5">
               <div className="flex items-baseline justify-between">
                 <span className="font-mono text-2xl tabular-nums text-body">
@@ -95,7 +109,13 @@ export default function WalletPage() {
           <div className="max-h-[28rem] overflow-y-auto px-4">
             <ul className="divide-y divide-hairline/40">
               {tokens.map((t, i) => (
-                <TokenBalanceRow key={t.address} token={t} onBalance={onBalance} render={i < visibleCount} />
+                <TokenBalanceRow
+                  key={t.address}
+                  token={t}
+                  onBalance={onBalance}
+                  render={i < visibleCount}
+                  usdPrice={prices[t.address.toLowerCase()]}
+                />
               ))}
             </ul>
             {hasMore && (

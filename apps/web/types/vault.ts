@@ -29,6 +29,8 @@ export interface VaultInfo {
   sharePrice: number;
   idle: number;
   tvl: number;
+  /** Allocation-weighted across the vault's adapters (lib/ponder/mappers/adapterApy.ts) - 0 with no live adapters. */
+  apy: number;
   benchmarkDeltaPct: number;
   chain: string;
   description: string;
@@ -101,7 +103,6 @@ export interface VaultData {
 // at seed-build time from that same vault's VaultData, never hand-entered
 // a second time.
 export interface VaultSummary extends VaultInfo {
-  apy: number;
   score: number;
   riskFlagged: number;
   positionValueUsd: number | null;

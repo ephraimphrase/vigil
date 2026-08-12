@@ -4,6 +4,7 @@
 import { useEffect } from "react";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
+import { fmtUsdFull } from "@/shared/format";
 import type { TestToken } from "@/lib/testTokens";
 
 interface TokenBalanceRowProps {
@@ -11,9 +12,11 @@ interface TokenBalanceRowProps {
   onBalance?: (address: string, balance: number | null) => void;
   compact?: boolean;
   render?: boolean;
+  /** Omit to hide the USD line entirely; null renders "-" (price not resolved). */
+  usdPrice?: number | null;
 }
 
-export function TokenBalanceRow({ token, onBalance, compact = false, render = true }: TokenBalanceRowProps) {
+export function TokenBalanceRow({ token, onBalance, compact = false, render = true, usdPrice }: TokenBalanceRowProps) {
   const { balance, isLoading } = useTokenBalance(token.address);
 
   useEffect(() => {
@@ -31,9 +34,16 @@ export function TokenBalanceRow({ token, onBalance, compact = false, render = tr
           {!compact && <p className="truncate font-mono text-xs text-muted/50">{token.name}</p>}
         </div>
       </div>
-      <span className="shrink-0 font-mono text-xs tabular-nums text-body">
-        {isLoading ? "…" : (balance ?? 0).toLocaleString("en-US", { maximumFractionDigits: 2 })}
-      </span>
+      <div className="flex shrink-0 flex-col items-end gap-0.5">
+        <span className="font-mono text-xs tabular-nums text-body">
+          {isLoading ? "…" : (balance ?? 0).toLocaleString("en-US", { maximumFractionDigits: 2 })}
+        </span>
+        {usdPrice !== undefined && !isLoading && (
+          <span className="font-mono text-xs tabular-nums text-muted/50">
+            {usdPrice == null ? "-" : fmtUsdFull((balance ?? 0) * usdPrice)}
+          </span>
+        )}
+      </div>
     </li>
   );
 }

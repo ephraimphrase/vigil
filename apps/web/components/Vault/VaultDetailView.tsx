@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 
 import { useVault } from "@/hooks/useVault";
+import { useVaultWithdrawable } from "@/hooks/useVaultWithdrawable";
+import { useTokenPrices } from "@/hooks/useTokenPrices";
 import { vaultAggregate } from "@/shared/vault";
 import { Loader } from "@/components/ui/Loader";
 import { Tabs } from "@/components/ui/Tabs";
@@ -62,8 +64,14 @@ function useScrollSpy(ids: DetailTab[], ready: boolean): DetailTab {
 }
 
 export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (tab: Tab, amount: number) => void }) {
-  const { data: vault, isLoading } = useVault(slug);
+  const { data: vault, isLoading, refetch: refetchVault } = useVault(slug);
   const activeTab = useScrollSpy(SECTION_IDS, !isLoading && vault != null);
+  const {
+    balance: withdrawable,
+    isLoading: withdrawableLoading,
+    refetch: refetchWithdrawable,
+  } = useVaultWithdrawable(vault?.info.vaultContractAddress, vault?.info.tokenContractAddress);
+  const { prices } = useTokenPrices();
 
   if (isLoading) {
     return (
@@ -82,14 +90,14 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
     );
   }
 
-  console.log(vault, "vault info")
-
   const { info, policy, position, allocation, riskChecks, history } = vault;
   const agg = vaultAggregate(allocation);
+  const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
+  const depositedUsd = withdrawable != null && priceUsd != null ? withdrawable * priceUsd : null;
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 bg-base p-4">
-      <VaultMasthead info={info} policy={policy} position={position} apy={agg.weightedApy} />
+      <VaultMasthead info={info} policy={policy} depositedUsd={depositedUsd} apy={info.apy} />
 
       <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
         {/* main column */}
@@ -121,7 +129,14 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
 
         {/* action rail */}
         <div className="lg:sticky lg:top-4 lg:self-start">
-          <DepositWithdraw info={info} onSubmit={onSubmit} />
+          <DepositWithdraw
+            info={info}
+            onSubmit={onSubmit}
+            onTxConfirmed={refetchVault}
+            withdrawable={withdrawable}
+            withdrawableLoading={withdrawableLoading}
+            refetchWithdrawable={refetchWithdrawable}
+          />
         </div>
       </div>
     </div>

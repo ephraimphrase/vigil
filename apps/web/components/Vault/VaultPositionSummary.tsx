@@ -13,7 +13,7 @@ import { Section } from "@/components/Section";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
 import { deltaColor } from "@/shared/health";
-import { fmtUsdFull, fmtSigned } from "@/shared/format";
+import { fmtUsd, fmtUsdFull, fmtSigned } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
 
 // ─── UTILS ───
@@ -68,10 +68,10 @@ export function VaultPositionSummary({ info, position, deployed }: VaultPosition
               value={`$${info.sharePrice.toFixed(4)}`}
               tooltip="1 share started worth 1 USDC. As the vault earns yield, the share price rises, so each share redeems for more USDC over time. It only falls if the vault loses money."
             />
-            <Stat label="Cost basis" value={fmtUsdFull(position.costBasisUsd)} />
-            <Stat label="Wallet USDC" value={fmtUsdFull(position.walletUsdc)} />
-            <Stat label="Deployed" value={fmtUsdFull(deployed)} />
-            <Stat label="Idle (USDC)" value={fmtUsdFull(info.idle)} />
+            <Stat label="Cost basis" value={fmtUsd(position.costBasisUsd)} />
+            <Stat label="Wallet USDC" value={fmtUsd(position.walletUsdc)} />
+            <Stat label="Deployed" value={fmtUsd(deployed)} />
+            <Stat label="Idle (USDC)" value={fmtUsd(info.idle)} />
           </div>
         </div>
       ) : (

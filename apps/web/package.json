@@ -12,6 +12,7 @@
     "seed:db": "tsx scripts/seed-db.ts",
     "sync-contracts": "tsx scripts/sync-contracts.ts",
     "sync-test-tokens": "tsx scripts/sync-test-tokens.ts",
+    "sync-token-prices": "tsx scripts/sync-token-prices.ts",
     "ponder:codegen": "tsx scripts/ponder-codegen.ts"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "lucide-react": "^1.27.0",
     "moment": "^2.30.1",
     "next": "16.2.0",
+    "numbro": "^2.5.0",
     "pg": "^8.22.0",
     "react": "^19.1.0",
     "react-day-picker": "^10",

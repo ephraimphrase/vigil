@@ -48,7 +48,9 @@ export function TransactionRow({ entry: e }: { entry: TransactionEntry }) {
             {SIGN[e.type]}
             {e.amount.toLocaleString("en-US", { maximumFractionDigits: 4 })} {e.asset}
           </span>
-          <span className="font-mono text-xs tabular-nums text-muted/60">{fmtUsdFull(e.amountUsd)}</span>
+          <span className="font-mono text-xs tabular-nums text-muted/60">
+            {e.amountUsd == null ? "-" : fmtUsdFull(e.amountUsd)}
+          </span>
         </div>
         <span className="shrink-0 font-mono text-xs text-muted/50" title={e.ts}>{moment(e.ts).fromNow()}</span>
       </div>
