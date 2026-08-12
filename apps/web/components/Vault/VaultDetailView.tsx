@@ -140,7 +140,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
 
         {/* action rail */}
         <div className="lg:sticky lg:top-4 lg:self-start">
-          <DepositWithdraw info={info} position={position} onSubmit={onSubmit} />
+          <DepositWithdraw info={info} onSubmit={onSubmit} />
         </div>
       </div>
     </div>

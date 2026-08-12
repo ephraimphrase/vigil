@@ -21,10 +21,12 @@ import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { useVaultDeposit } from "@/hooks/useVaultDeposit";
+import { useVaultWithdraw } from "@/hooks/useVaultWithdraw";
+import { useVaultWithdrawable } from "@/hooks/useVaultWithdrawable";
 import { toast } from "@/components/ui/Toast";
 import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull, fmtFeePct } from "@/shared/format";
-import type { UserPosition, VaultInfo } from "@/types";
+import type { VaultInfo } from "@/types";
 
 // ─── CONSTANTS ───
 const USD_RATE = 1; // USDC only, for now — see file header.
@@ -36,7 +38,6 @@ const WITHDRAW_FEE = 0;
 type Tab = "deposit" | "withdraw";
 interface DepositWithdrawProps {
   info: VaultInfo;
-  position: UserPosition | null;
   onSubmit?: (tab: Tab, amount: number) => void;
 }
 
@@ -53,8 +54,18 @@ function FeeRow({ label, value, tooltip }: { label: string; value: string; toolt
   );
 }
 
+function showTxToast(action: "Deposit" | "Withdrawal", explorerUrl: string | null) {
+  toast.success(`${action} confirmed`, {
+    description: explorerUrl ? (
+      <a href={explorerUrl} target="_blank" rel="noreferrer" className="underline hover:text-body">
+        View on explorer ↗
+      </a>
+    ) : undefined,
+  });
+}
+
 // ─── MAIN ───
-export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawProps) {
+export function DepositWithdraw({ info, onSubmit }: DepositWithdrawProps) {
   // state
   const [tab, setTab] = useState<Tab>("deposit");
   const [raw, setRaw] = useState("");
@@ -66,11 +77,19 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
     connected,
     refetch: refetchBalance,
   } = useTokenBalance(info.tokenContractAddress);
+  const {
+    balance: withdrawable,
+    isLoading: withdrawableLoading,
+    refetch: refetchWithdrawable,
+  } = useVaultWithdrawable(info.vaultContractAddress, info.tokenContractAddress);
   const { deposit, isPending: depositPending } = useVaultDeposit(info.vaultContractAddress, info.tokenContractAddress);
-  const max = tab === "deposit" ? walletBalance ?? 0 : position?.valueUsd ?? 0;
+  const { withdraw, isPending: withdrawPending } = useVaultWithdraw(info.vaultContractAddress, info.tokenContractAddress);
+
+  const max = tab === "deposit" ? walletBalance ?? 0 : withdrawable ?? 0;
+  const amountLoading = tab === "deposit" ? balanceLoading : withdrawableLoading;
   const amount = parseAmount(raw);
   const overMax = amount != null && amount > max;
-  const submitting = tab === "deposit" && depositPending;
+  const submitting = tab === "deposit" ? depositPending : withdrawPending;
 
   const preview = useMemo(() => {
     if (amount == null || amount === 0) return null;
@@ -82,25 +101,27 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
   const canSubmit = connected && amount != null && amount > 0 && !overMax && !submitting;
 
   async function handleSubmit() {
-    if (!canSubmit) return;
-    if (tab === "deposit") {
-      try {
+    if (!canSubmit || amount == null) return;
+
+    try {
+      if (tab === "deposit") {
         const { explorerUrl } = await deposit(raw, info.asset);
-        setRaw("");
         refetchBalance();
-        toast.success("Deposit confirmed", {
-          description: explorerUrl ? (
-            <a href={explorerUrl} target="_blank" rel="noreferrer" className="underline hover:text-body">
-              View on explorer ↗
-            </a>
-          ) : undefined,
-        });
-      } catch (e) {
-        toast.error("Deposit failed", { description: e instanceof Error ? e.message : undefined });
+        refetchWithdrawable();
+        showTxToast("Deposit", explorerUrl);
+      } else {
+        const { explorerUrl } = await withdraw(raw, info.asset);
+        refetchBalance();
+        refetchWithdrawable();
+        showTxToast("Withdrawal", explorerUrl);
       }
-      return;
+      setRaw("");
+      onSubmit?.(tab, amount);
+    } catch (e) {
+      toast.error(tab === "deposit" ? "Deposit failed" : "Withdrawal failed", {
+        description: e instanceof Error ? e.message : undefined,
+      });
     }
-    onSubmit?.(tab, amount!);
   }
 
   return (
@@ -121,11 +142,9 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
               Available{" "}
               {!connected
                 ? "—"
-                : tab === "deposit"
-                  ? balanceLoading
-                    ? "…"
-                    : `${max.toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`
-                  : fmtUsdFull(max)}
+                : amountLoading
+                  ? "…"
+                  : `${max.toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`}
             </span>
           </div>
           <InputGroup className="!rounded-none !border-hairline !bg-base !shadow-none !ring-0 before:!hidden focus-within:!border-violet">
@@ -190,7 +209,15 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
               : "cursor-not-allowed border border-hairline text-muted/40"
           }`}
         >
-          {!connected ? "Connect wallet" : submitting ? "Depositing…" : tab === "deposit" ? "Deposit" : "Withdraw"}
+          {!connected
+            ? "Connect wallet"
+            : submitting
+              ? tab === "deposit"
+                ? "Depositing…"
+                : "Withdrawing…"
+              : tab === "deposit"
+                ? "Deposit"
+                : "Withdraw"}
         </button>
 
         {/* fees + disclaimer */}

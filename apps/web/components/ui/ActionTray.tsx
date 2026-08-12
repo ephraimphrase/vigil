@@ -69,7 +69,7 @@ export interface JobHandle {
 /** The subset a hook needs - lets hooks stay decoupled from the tray. */
 export type StepReporter = Pick<JobHandle, "advance" | "detail">;
 
-interface TrayContextValue {
+export interface TrayContextValue {
   start: (job: { title: string; steps: string[] }) => JobHandle;
   dismiss: (id: string) => void;
   jobs: Job[];
