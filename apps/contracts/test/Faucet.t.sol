@@ -3,22 +3,23 @@ pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
 import {Faucet} from "../src/token/Faucet.sol";
+import {SeedTokenFactory} from "../src/token/SeedTokenFactory.sol";
+import {SeedToken} from "../src/token/SeedToken.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
 
 contract FaucetTest is Test {
     Faucet faucet;
-    MockERC20 tokenA;
-    MockERC20 tokenB;
+    SeedToken tokenA;
+    SeedToken tokenB;
     address owner = makeAddr("owner");
     address user = makeAddr("user");
 
     function setUp() public {
         faucet = new Faucet(owner);
-        tokenA = new MockERC20("Token A", "A");
-        tokenB = new MockERC20("Token B", "B");
 
-        tokenA.mint(address(faucet), 1_000_000 ether);
-        tokenB.mint(address(faucet), 1_000_000 ether);
+        SeedTokenFactory factory = new SeedTokenFactory();
+        tokenA = SeedToken(factory.deployToken("Token A", "A"));
+        tokenB = SeedToken(factory.deployToken("Token B", "B"));
 
         address[] memory tokens = new address[](2);
         tokens[0] = address(tokenA);
@@ -32,6 +33,18 @@ contract FaucetTest is Test {
         faucet.claim(address(tokenA));
 
         assertEq(tokenA.balanceOf(user), faucet.CLAIM_AMOUNT());
+    }
+
+    function test_ClaimMintsRatherThanDrainingAPool() public {
+        uint256 supplyBefore = tokenA.totalSupply();
+
+        vm.prank(user);
+        faucet.claim(address(tokenA));
+
+        // Real SeedToken.mint() creates new supply - the faucet never needs
+        // (and, after this claim, still doesn't hold) a pre-funded balance.
+        assertEq(tokenA.totalSupply(), supplyBefore + faucet.CLAIM_AMOUNT());
+        assertEq(tokenA.balanceOf(address(faucet)), 0);
     }
 
     function test_RevertWhen_ClaimUnsupportedToken() public {
@@ -135,6 +148,11 @@ contract FaucetTest is Test {
     }
 
     function test_RescueIsOwnerOnly() public {
+        // Faucet shouldn't normally hold a balance (mint-and-forward nets to
+        // zero) - simulate leftover dust to prove rescue can sweep it.
+        vm.prank(address(faucet));
+        tokenA.mint(1 ether);
+
         vm.prank(user);
         vm.expectRevert();
         faucet.rescue(address(tokenA), user, 1 ether);

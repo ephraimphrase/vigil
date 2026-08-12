@@ -97,6 +97,8 @@ contract Faucet is Ownable, ReentrancyGuard {
         return result;
     }
 
+    // Safety valve only - normal operation mints and forwards in the same
+    // tx, so this contract shouldn't hold a balance between calls.
     function rescue(address token, address to, uint256 amount) external onlyOwner {
         IERC20(token).safeTransfer(to, amount);
         emit Rescued(token, to, amount);

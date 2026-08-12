@@ -5,13 +5,12 @@ import type { VaultFilterState } from "@/components/Vault/vaultFilters";
 import { SearchIcon } from "lucide-react";
 import { PiGlobeLight } from "react-icons/pi";
 
-export type VaultTypeFilter = "all" | "single" | "lp" | "basket";
+export type VaultTypeFilter = "all" | "single" | "lp";
 
 const TYPE_TABS: { id: VaultTypeFilter; label: string }[] = [
   { id: "all", label: "All Vaults" },
   { id: "single", label: "Single Asset" },
   { id: "lp", label: "LP" },
-  { id: "basket", label: "Basket" },
 ];
 
 function FilterPill({

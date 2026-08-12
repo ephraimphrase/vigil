@@ -4,7 +4,10 @@ import { useState } from "react";
 import { ConnectButton, darkTheme } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { thirdwebClient } from "@/lib/thirdweb-client";
+import { chainForId } from "@/lib/chains";
 import { FaucetModal } from "@/components/Wallet/FaucetModal";
+
+const DEFAULT_CHAIN = chainForId("84532");
 
 const wallets = [
   inAppWallet({
@@ -54,6 +57,7 @@ export function ConnectWallet() {
       <ConnectButton
         client={thirdwebClient}
         wallets={wallets}
+        chain={DEFAULT_CHAIN}
         theme={theme}
         connectButton={{ label: "Connect Wallet" }}
         connectModal={{ size: "compact", title: "Connect to Vigil" }}
