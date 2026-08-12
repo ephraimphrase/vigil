@@ -21,14 +21,24 @@ export interface ApiResult<T> {
 // `refetchIntervalMs` is opt-in (omit it and this behaves exactly as
 // before) - pass it for data that goes stale while the page sits open
 // (e.g. a vault's TVL moving as other wallets deposit/withdraw).
-export function useApi<T>(url: string, fallback: T, refetchIntervalMs?: number): ApiResult<T> {
+//
+// `enabled` (default true) skips fetching entirely - for a url that isn't
+// meaningful yet (e.g. address-keyed data before a wallet connects), so
+// callers don't need a second hook just to gate the request.
+export function useApi<T>(url: string, fallback: T, refetchIntervalMs?: number, enabled = true): ApiResult<T> {
   const [data, setData] = useState(fallback);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(enabled);
   const fallbackRef = useRef(fallback);
   fallbackRef.current = fallback;
   const loadRef = useRef<(showLoading: boolean) => void>(() => {});
 
   useEffect(() => {
+    if (!enabled) {
+      setData(fallbackRef.current);
+      setIsLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     const load = async (showLoading: boolean) => {
@@ -44,13 +54,13 @@ export function useApi<T>(url: string, fallback: T, refetchIntervalMs?: number):
     load(true);
 
     return () => { cancelled = true; };
-  }, [url]);
+  }, [url, enabled]);
 
   useEffect(() => {
-    if (!refetchIntervalMs) return;
+    if (!refetchIntervalMs || !enabled) return;
     const interval = setInterval(() => loadRef.current(false), refetchIntervalMs);
     return () => clearInterval(interval);
-  }, [refetchIntervalMs]);
+  }, [refetchIntervalMs, enabled]);
 
   const refetch = useCallback(() => loadRef.current(false), []);
 

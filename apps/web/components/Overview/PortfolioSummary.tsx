@@ -1,12 +1,21 @@
+"use client";
 
+// ─────────────────────────────────────────────────────────────
+// PortfolioSummary — the dashboard's one headline: total value + P&L
+// across every vault the connected wallet holds, real (usePortfolio(),
+// /api/portfolio/[address]). "Vaults"/"Current APY" are real too; "30-day
+// APY" is honestly "-" - Vigil doesn't index a share-price time series
+// (and adapter yield rates are immutable on-chain anyway), so there's no
+// trailing window to compute, see types/portfolio.ts.
+// ─────────────────────────────────────────────────────────────
 
+import type { ReactNode } from "react";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AllocationDonut } from "./AllocationDonut";
+import { usePortfolio } from "@/hooks/usePortfolio";
 import { deltaColor } from "@/shared/health";
 import { fmtUsdFull, fmtSigned } from "@/shared/format";
-import type { Portfolio, Position } from "../../types";
-import type { ReactNode } from "react";
 
 function Stat({ label, value, color, info }: { label: string; value: string; color?: string; info?: ReactNode }) {
   return (
@@ -20,48 +29,57 @@ function Stat({ label, value, color, info }: { label: string; value: string; col
   );
 }
 
-export function PortfolioSummary({ portfolio, positions }: { portfolio: Portfolio; positions: Position[] }) {
-  const deployed = positions.reduce((s, p) => s + p.allocated, 0);
+export function PortfolioSummary() {
+  const { data, isLoading, connected } = usePortfolio();
+  const { totalValueUsd, pnlUsd, vaultsCount, currentApy, positions } = data;
+
+  const costBasisUsd = totalValueUsd - pnlUsd;
+  const pnlPct = costBasisUsd !== 0 ? (pnlUsd / costBasisUsd) * 100 : 0;
+  const allocations = positions.map((p) => ({ name: p.vaultName, valueUsd: p.currentUsd ?? 0 }));
+
+  const show = connected && !isLoading;
+
   return (
     <CornerFrame>
       <div className="flex flex-col gap-6 p-5 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-5">
           <div>
             <div className="flex items-center gap-1.5 font-display text-4xl leading-none tracking-tight text-body">
-              {fmtUsdFull(portfolio.totalValue)}
+              {!connected ? "—" : isLoading ? "…" : fmtUsdFull(totalValueUsd)}
               <InfoTooltip>
-                Your entire position — shares × share price. Some may be deployed into
-                strategies and some idle as the risk-off USDC buffer. If Vigil exits
-                everything unsafe, this doesn&apos;t drop to zero — it moves to idle and waits.
+                Your entire position across every vault you&apos;ve deposited into — net deposits plus or minus
+                each vault&apos;s own yield or loss, valued at today&apos;s price. If a vault holds it idle rather
+                than deployed, this doesn&apos;t drop — it&apos;s still yours, just not earning yet.
               </InfoTooltip>
             </div>
-            <div className="mt-1 flex items-center gap-3 font-mono text-xs">
-              <span className="text-muted/60">24h</span>
-              <span style={{ color: deltaColor(portfolio.pnl24h) }}>
-                {fmtSigned(portfolio.pnl24h)} ({fmtSigned(portfolio.pnlPct24h, "%")})
-              </span>
-            </div>
+            {show && (
+              <div className="mt-1 flex items-center gap-3 font-mono text-xs">
+                <span className="text-muted/60">P&amp;L</span>
+                <span style={{ color: deltaColor(pnlUsd) }}>
+                  {fmtSigned(pnlUsd)} ({fmtSigned(pnlPct, "%")})
+                </span>
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-3 gap-6">
             <Stat
-              label="Vault shares"
-              value={portfolio.shares.toLocaleString("en-US", { maximumFractionDigits: 0 })}
-              info="Your ownership unit in the vault. Depositing USDC mints you shares — a claim on a slice of the whole pool, not any single position."
+              label="Vaults"
+              value={show ? String(vaultsCount) : "—"}
+              info="Vaults where you currently hold a nonzero position."
             />
             <Stat
-              label="Share price"
-              value={`$${portfolio.sharePrice.toFixed(4)}`}
-              info="Total pool value ÷ total shares. Starts near $1.00 and rises as strategies earn yield — you hold the same shares, each worth more over time."
+              label="Current APY"
+              value={show ? `${currentApy.toFixed(1)}%` : "—"}
+              info="Position-weighted across your held vaults' own real APYs (each vault's allocation-weighted adapter yield)."
             />
             <Stat
-              label="vs. no-op"
-              value={fmtSigned(portfolio.benchmarkDeltaPct, "%")}
-              color={deltaColor(portfolio.benchmarkDeltaPct)}
-              info="How the vault performed versus doing nothing — holding USDC with no monitoring or rebalancing. This is what Vigil's active management actually added."
+              label="30-day APY"
+              value="—"
+              info="Not available yet - this needs a share-price history Vigil doesn't index today."
             />
           </div>
         </div>
-        <AllocationDonut positions={positions} total={deployed} />
+        <AllocationDonut allocations={show ? allocations : []} total={show ? totalValueUsd : 0} />
       </div>
     </CornerFrame>
   );
