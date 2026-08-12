@@ -5,6 +5,7 @@ import {
   PiFlowArrowLight,
   PiVaultLight,
   PiScrollLight,
+  PiWalletLight,
 } from "react-icons/pi";
 
 export interface NavItem {
@@ -23,6 +24,7 @@ export const NAV: NavSection[] = [
     label: "Monitor",
     items: [
       { label: "Overview", href: "/dashboard", icon: PiSquaresFourLight },
+      { label: "Wallet", href: "/dashboard/wallet", icon: PiWalletLight },
       { label: "Vault", href: "/dashboard/vault", icon: PiVaultLight },
       { label: "Protocols", href: "/dashboard/protocols", icon: PiStackLight },
       { label: "Strategies", href: "/dashboard/strategies", icon: PiFlowArrowLight },

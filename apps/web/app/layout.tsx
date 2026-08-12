@@ -7,6 +7,7 @@ import { ConditionalNav } from "@/components/Landing/ConditionalNav";
 import { ThirdwebProvider } from "thirdweb/react";
 import { ToastProvider } from "@/components/ui/Toast";
 import { TrayProvider } from "@/components/ui/ActionTray";
+import { FaucetModalProvider } from "@/components/Wallet/FaucetModalProvider";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -91,8 +92,10 @@ export default function RootLayout({
         <ThirdwebProvider>
           <ToastProvider>
             <TrayProvider>
-              <ConditionalNav />
-              {children}
+              <FaucetModalProvider>
+                <ConditionalNav />
+                {children}
+              </FaucetModalProvider>
             </TrayProvider>
           </ToastProvider>
         </ThirdwebProvider>

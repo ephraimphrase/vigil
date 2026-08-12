@@ -1,24 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// VaultDetailView — composition only. Yearn-style single-vault page:
-// breadcrumb → masthead → your position → a scroll-spy shell (Performance /
-// Vault Info / Strategies / Risk / More Info) → deposit/withdraw rail,
-// sticky on the right. The tab bar doesn't swap content - all five
-// sections render stacked, clicking a tab scrolls to it, and the active
-// tab follows scroll position via IntersectionObserver (useScrollSpy
-// below). Headline APY, weighted health, and deployed total all come from
-// vaultAggregate(vault.allocation) - this vault's own rows, not the global
-// strategies list - so each vault in the picker shows its own numbers,
-// never another vault's. No data logic of its own beyond that composition.
-//
-// Rendered from both /dashboard/vault/[slug] and the bare public
-// /vault/[slug] route (see the thin wrappers there). No breadcrumb of its
-// own - inside the dashboard shell that's AppShell's Breadcrumbs
-// (components/Layouts/Breadcrumbs.tsx, which resolves this same vault's
-// name for the last crumb); the bare public route has no dashboard nav to
-// build one from, so it goes without.
-// ─────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from "react";
 
