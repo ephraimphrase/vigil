@@ -17,18 +17,12 @@ export const EMPTY_ADVANCED_FILTERS: VaultFilterState = {
   aggressivenessFilter: [],
 };
 
-export type VaultKind = "single" | "lp" | "basket";
+export type VaultKind = "single" | "lp";
 
-// Three shapes a vault's deposit can take: one token (single), a claim on a
-// pooled LP/pool token (lp - `vaultType` names it explicitly), or a direct
-// multi-asset holding that isn't pooled into one token (basket - more than
-// one real `underlyingAssets` entry, without being an LP). LP is checked
-// first since a vault could plausibly be both LP-named and multi-asset;
-// naming wins because that's what the deposit actually is.
+// Two shapes a vault's deposit can take: one token (single), or a claim on
+// a pooled LP/pool token (lp - `vaultType` names it explicitly).
 export function vaultKindOf(v: VaultSummary): VaultKind {
-  if (/\blp\b|pool/i.test(v.vaultType)) return "lp";
-  if (v.underlyingAssets && v.underlyingAssets.length > 1) return "basket";
-  return "single";
+  return /\blp\b|pool/i.test(v.vaultType) ? "lp" : "single";
 }
 
 // A vault's real asset list - `underlyingAssets` for LP/pool vaults that

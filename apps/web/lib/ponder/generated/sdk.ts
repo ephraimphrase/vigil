@@ -187,7 +187,7 @@ export type VaultQueryVariables = Exact<{
 }>;
 
 
-export type VaultQuery = { vault: { id: string, asset: string, oracle: string, kind: number, vaultName: string, vaultSymbol: string, assetName: string, assetSymbol: string, assetDecimals: number, createdAtBlock: string, createdAtTimestamp: string, txHash: string } | null };
+export type VaultQuery = { vault: { id: string, asset: string, oracle: string, kind: Types.VaultKind, vaultName: string, vaultSymbol: string, assetName: string, assetSymbol: string, assetDecimals: number, createdAtBlock: string, createdAtTimestamp: string, txHash: string } | null };
 
 export type VaultsQueryVariables = Exact<{
   where?: Types.VaultFilter | null | undefined;
@@ -199,7 +199,7 @@ export type VaultsQueryVariables = Exact<{
 }>;
 
 
-export type VaultsQuery = { vaults: { totalCount: number, items: Array<{ id: string, asset: string, oracle: string, kind: number, vaultName: string, vaultSymbol: string, assetName: string, assetSymbol: string, assetDecimals: number, createdAtBlock: string, createdAtTimestamp: string, txHash: string }>, pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null, endCursor: string | null } } };
+export type VaultsQuery = { vaults: { totalCount: number, items: Array<{ id: string, asset: string, oracle: string, kind: Types.VaultKind, vaultName: string, vaultSymbol: string, assetName: string, assetSymbol: string, assetDecimals: number, createdAtBlock: string, createdAtTimestamp: string, txHash: string }>, pageInfo: { hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string | null, endCursor: string | null } } };
 
 
 export const AdapterDocument = gql`

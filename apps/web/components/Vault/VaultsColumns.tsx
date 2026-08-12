@@ -17,7 +17,6 @@ import type { VaultSummary } from "../../types";
 import { fmtUsd, fmtFeePct } from "../../shared/format";
 import { TokenIconStack, ChainIcon } from "./TokenIcon";
 import { assetsOf } from "./vaultFilters";
-import { ScoreCell } from "../Health/ScoreCell";
 import { Chip } from "../ui/Chip";
 
 const col = createColumnHelper<VaultSummary>();
@@ -39,7 +38,7 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
                   {v.chain}
                 </span>
                 <Chip>{v.assetType === "stablecoin" ? "Stablecoin" : "Volatile"}</Chip>
-                <Chip>{v.vaultType}</Chip>
+                {v.vaultType !== "-" && <Chip>{v.vaultType}</Chip>}
               </div>
             </div>
           </div>
@@ -76,17 +75,6 @@ export function buildVaultColumns(): ColumnDef<VaultSummary, any>[] {
           {fmtFeePct(row.original.performanceFeePct)}
         </span>
       ),
-    }),
-    col.accessor("score", {
-      header: "Score",
-      cell: ({ getValue }) => {
-        const score = getValue();
-        return Number.isFinite(score) ? (
-          <ScoreCell score={score} />
-        ) : (
-          <span className="font-mono text-sm tabular-nums text-text-muted">-</span>
-        );
-      },
     }),
   ];
 }

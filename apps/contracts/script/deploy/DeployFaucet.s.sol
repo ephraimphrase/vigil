@@ -2,26 +2,21 @@
 pragma solidity ^0.8.24;
 
 import {Script, console2} from "forge-std/Script.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Faucet} from "../../src/token/Faucet.sol";
 import {DeployRegistrar} from "../lib/DeployRegistrar.sol";
 
 contract DeployFaucetScript is DeployRegistrar {
-    using SafeERC20 for IERC20;
-
     uint256 constant LOCAL_CHAIN_ID = 31337;
     uint256 constant BASE_SEPOLIA_CHAIN_ID = 84532;
-    uint256 constant DEFAULT_FUND_AMOUNT = 100_000 ether; // 10% of each SeedToken's 1,000,000 supply
 
-    // Field order is alphabetical (decimals, kind, logoURI, name, symbol,
-    // token), matching data/<chainid>/token.json's on-disk shape - see
-    // SeedTokens.s.sol's TokenData for why (parseJson -> abi.decode sorts
-    // JSON object keys alphabetically before assigning struct fields
-    // positionally, regardless of source key order).
+    // Field order is alphabetical (decimals, logoURI, name, symbol, token),
+    // matching data/<chainid>/token.json's on-disk shape - see
+    // SeedTokens.s.sol's TokenData/_tokenRecordJson for why (parseJson ->
+    // abi.decode sorts JSON object keys alphabetically before assigning
+    // struct fields positionally, regardless of source key order, and must
+    // match exactly - no "kind" field, that's never actually written).
     struct TokenJsonRecord {
         uint8 decimals;
-        string kind;
         string logoURI;
         string name;
         string symbol;
@@ -40,22 +35,18 @@ contract DeployFaucetScript is DeployRegistrar {
             return faucet;
         }
 
-        // Unlike HealthOracle's admin/scorer/guardian (deliberately
-        // separate roles), Faucet's owner IS the deployer by default - it
-        // needs to call setSupportedTokens and hold the token balances
-        // being transferred below, all within this same broadcast.
-        // FAUCET_OWNER can still hand ownership to a different address
-        // afterward via transferOwnership below.
+        // Faucet.claim/claimMany mint each token to themselves and forward
+        // the result - no pre-funded balance needed, so unlike a plain
+        // distributor this deploy needs nothing from the deployer but gas.
+        // Owner defaults to the deployer and can call setSupportedTokens
+        // immediately in this same broadcast; FAUCET_OWNER can still hand
+        // ownership to a different address afterward via transferOwnership.
         address deployer = vm.addr(vm.envUint("DEPLOYER_KEY"));
         address owner = vm.envOr("FAUCET_OWNER", deployer);
-        uint256 fundAmount = vm.envOr("FAUCET_FUND_AMOUNT", DEFAULT_FUND_AMOUNT);
 
         vm.startBroadcast();
         faucet = new Faucet(deployer);
         faucet.setSupportedTokens(tokens, true);
-        for (uint256 i = 0; i < tokens.length; i++) {
-            IERC20(tokens[i]).safeTransfer(address(faucet), fundAmount);
-        }
         if (owner != deployer) {
             faucet.transferOwnership(owner);
         }
@@ -64,7 +55,6 @@ contract DeployFaucetScript is DeployRegistrar {
         console2.log("Faucet deployed at:", address(faucet));
         console2.log("  owner:", owner);
         console2.log("  tokens supported:", tokens.length);
-        console2.log("  funded per token:", fundAmount);
 
         _registerContract("Faucet", address(faucet));
     }

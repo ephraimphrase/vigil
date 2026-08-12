@@ -6,12 +6,19 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-// Testnet faucet for the SeedToken clones deployed by SeedTokens.s.sol -
-// those tokens mint their entire fixed supply once, to the deployer, at
-// deploy time (SeedToken.initialize) and have no mint() function
-// afterward. This contract holds a pre-funded balance per token (funded by
-// a plain transfer() from the deployer, see DeployFaucet.s.sol) and pushes
-// it out to callers instead.
+// SeedToken (apps/contracts/src/token/SeedToken.sol) exposes a public
+// mint(uint256) that mints to msg.sender - intentional, these tokens only
+// ever exist on local/Base Sepolia test deploys. That means anyone could
+// already self-serve one token at a time with N separate signatures; this
+// contract's only job is collapsing that into one signature for several
+// tokens at once: it mints each token to itself (msg.sender from that
+// token's point of view is this contract, not the caller) then forwards
+// the freshly-minted balance to the real caller in the same transaction.
+// No pre-funding required - deploying this needs nothing but gas.
+interface ISeedToken {
+    function mint(uint256 amount) external;
+}
+
 contract Faucet is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -51,6 +58,7 @@ contract Faucet is Ownable, ReentrancyGuard {
         require(last == 0 || block.timestamp >= last + COOLDOWN, "Faucet: cooldown");
 
         lastClaimed[token][msg.sender] = block.timestamp;
+        ISeedToken(token).mint(CLAIM_AMOUNT);
         IERC20(token).safeTransfer(msg.sender, CLAIM_AMOUNT);
         emit Claimed(msg.sender, token, CLAIM_AMOUNT);
     }
@@ -74,6 +82,7 @@ contract Faucet is Ownable, ReentrancyGuard {
             }
 
             lastClaimed[token][msg.sender] = block.timestamp;
+            ISeedToken(token).mint(CLAIM_AMOUNT);
             IERC20(token).safeTransfer(msg.sender, CLAIM_AMOUNT);
             emit Claimed(msg.sender, token, CLAIM_AMOUNT);
         }
@@ -90,6 +99,8 @@ contract Faucet is Ownable, ReentrancyGuard {
         return result;
     }
 
+    // Safety valve only - normal operation mints and forwards in the same
+    // tx, so this contract shouldn't hold a balance between calls.
     function rescue(address token, address to, uint256 amount) external onlyOwner {
         IERC20(token).safeTransfer(to, amount);
         emit Rescued(token, to, amount);

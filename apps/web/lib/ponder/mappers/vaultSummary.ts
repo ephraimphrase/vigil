@@ -1,4 +1,5 @@
 import type { VaultsQuery } from "@/lib/ponder/generated/sdk";
+import { VaultKind } from "@/lib/ponder/generated/types";
 import type { VaultSummary } from "@/types";
 import { logoForTokenAddress } from "./tokenLogo";
 
@@ -27,7 +28,7 @@ export function toVaultSummary(vault: PonderVault): VaultSummary {
     assetType: STABLECOIN_SYMBOLS.has(vault.assetSymbol.toUpperCase())
       ? "stablecoin"
       : "volatile",
-    vaultType: "-",
+    vaultType: vault.kind === VaultKind.Lp ? "LP" : "Single Asset",
     vaultContractAddress: vault.id,
     tokenContractAddress: vault.asset,
     managementFeePct: 0,

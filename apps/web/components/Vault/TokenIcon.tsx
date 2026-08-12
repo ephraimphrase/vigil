@@ -72,6 +72,7 @@ export function TokenIcon({ symbol, size = "md", className = "", style, logoURI 
 const CHAIN_ICONS: Partial<Record<string, string>> = {
   Ethereum: "https://coin-images.coingecko.com/asset_platforms/images/279/large/ethereum.png",
   Base: "https://coin-images.coingecko.com/asset_platforms/images/131/large/base.png",
+  "Base Sepolia": "https://coin-images.coingecko.com/asset_platforms/images/131/large/base.png",
 };
 
 export function ChainIcon({ chain, size = "xs" }: { chain: string; size?: IconSize }) {

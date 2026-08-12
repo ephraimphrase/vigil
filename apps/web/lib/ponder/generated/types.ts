@@ -1541,7 +1541,7 @@ export type Vault = {
   createdAtBlock: Scalars['BigInt']['output'];
   createdAtTimestamp: Scalars['BigInt']['output'];
   id: Scalars['String']['output'];
-  kind: Scalars['Int']['output'];
+  kind: VaultKind;
   oracle: Scalars['String']['output'];
   txHash: Scalars['String']['output'];
   vaultName: Scalars['String']['output'];
@@ -1627,14 +1627,10 @@ export type VaultFilter = {
   id_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   id_not_starts_with?: InputMaybe<Scalars['String']['input']>;
   id_starts_with?: InputMaybe<Scalars['String']['input']>;
-  kind?: InputMaybe<Scalars['Int']['input']>;
-  kind_gt?: InputMaybe<Scalars['Int']['input']>;
-  kind_gte?: InputMaybe<Scalars['Int']['input']>;
-  kind_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
-  kind_lt?: InputMaybe<Scalars['Int']['input']>;
-  kind_lte?: InputMaybe<Scalars['Int']['input']>;
-  kind_not?: InputMaybe<Scalars['Int']['input']>;
-  kind_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
+  kind?: InputMaybe<VaultKind>;
+  kind_in?: InputMaybe<Array<InputMaybe<VaultKind>>>;
+  kind_not?: InputMaybe<VaultKind>;
+  kind_not_in?: InputMaybe<Array<InputMaybe<VaultKind>>>;
   oracle?: InputMaybe<Scalars['String']['input']>;
   oracle_contains?: InputMaybe<Scalars['String']['input']>;
   oracle_ends_with?: InputMaybe<Scalars['String']['input']>;
@@ -1688,6 +1684,11 @@ export type VaultFilter = {
   vaultSymbol_starts_with?: InputMaybe<Scalars['String']['input']>;
   vaultSymbol_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
 };
+
+export enum VaultKind {
+  Lp = 'LP',
+  Single = 'Single'
+}
 
 export type VaultPage = {
   __typename?: 'vaultPage';
