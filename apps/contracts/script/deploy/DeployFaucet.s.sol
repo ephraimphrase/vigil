@@ -11,10 +11,9 @@ contract DeployFaucetScript is DeployRegistrar {
 
     // Field order is alphabetical (decimals, logoURI, name, symbol, token),
     // matching data/<chainid>/token.json's on-disk shape - see
-    // SeedTokens.s.sol's TokenData/_tokenRecordJson for why (parseJson ->
-    // abi.decode sorts JSON object keys alphabetically before assigning
-    // struct fields positionally, regardless of source key order, and must
-    // match exactly - no "kind" field, that's never actually written).
+    // SeedTokens.s.sol's TokenRecord for why (parseJson -> abi.decode sorts
+    // JSON object keys alphabetically before assigning struct fields
+    // positionally, regardless of source key order).
     struct TokenJsonRecord {
         uint8 decimals;
         string logoURI;
@@ -35,12 +34,11 @@ contract DeployFaucetScript is DeployRegistrar {
             return faucet;
         }
 
-        // Faucet.claim/claimMany mint each token to themselves and forward
-        // the result - no pre-funded balance needed, so unlike a plain
-        // distributor this deploy needs nothing from the deployer but gas.
-        // Owner defaults to the deployer and can call setSupportedTokens
-        // immediately in this same broadcast; FAUCET_OWNER can still hand
-        // ownership to a different address afterward via transferOwnership.
+        // Unlike HealthOracle's admin/scorer/guardian (deliberately
+        // separate roles), Faucet's owner IS the deployer by default - it
+        // needs to call setSupportedTokens within this same broadcast.
+        // FAUCET_OWNER can still hand ownership to a different address
+        // afterward via transferOwnership below.
         address deployer = vm.addr(vm.envUint("DEPLOYER_KEY"));
         address owner = vm.envOr("FAUCET_OWNER", deployer);
 

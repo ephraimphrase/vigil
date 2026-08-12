@@ -45,7 +45,25 @@ declare -A CONTRACT_PATHS=(
   [VaultFactory]="src/vault/VaultFactory.sol:VaultFactory"
   [VigilVault]="src/vault/VigilVault.sol:VigilVault"
   [VigilZapRouter]="src/router/VigilZapRouter.sol:VigilZapRouter"
+  [Faucet]="src/token/Faucet.sol:Faucet"
 )
+
+# DeployManyMockVaults.s.sol registers many vaults/adapters under
+# per-instance labels (e.g. "Vault_steth-0", "Aave_steth-0_aave") instead
+# of the fixed names above, so those need a pattern fallback rather than
+# an exact CONTRACT_PATHS entry: anything named "Vault_*" is a VigilVault,
+# anything else not already known is a MockStrategyAdapter (the only other
+# contract type that script deploys per-instance).
+resolve_path() {
+  local name="$1"
+  if [[ -n "${CONTRACT_PATHS[$name]:-}" ]]; then
+    echo "${CONTRACT_PATHS[$name]}"
+  elif [[ "$name" == Vault_* ]]; then
+    echo "src/vault/VigilVault.sol:VigilVault"
+  else
+    echo "src/adapter/MockStrategyAdapter.sol:MockStrategyAdapter"
+  fi
+}
 
 names="$(grep -oE '"[A-Za-z0-9_]+"\s*:' "$MANIFEST" | tr -d '": ')"
 
@@ -58,7 +76,7 @@ print(data.get(sys.argv[2], ""))
 PYEOF
   )"
 
-  path="${CONTRACT_PATHS[$name]:-}"
+  path="$(resolve_path "$name")"
   if [[ -z "$path" ]]; then
     echo "Skipping $name - no known source path (add it to CONTRACT_PATHS in this script)."
     continue
