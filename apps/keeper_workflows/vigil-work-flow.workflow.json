@@ -1,0 +1,355 @@
+{
+  "version": 1,
+  "exportedAt": "2026-08-12T10:06:56.168Z",
+  "workflow": {
+    "name": "Vigil Work flow",
+    "description": ""
+  },
+  "nodes": [
+    {
+      "id": "Pj1qglPFASj5OwbmvNixm",
+      "data": {
+        "type": "trigger",
+        "label": "",
+        "config": {
+          "triggerType": "Schedule",
+          "scheduleCron": "*/15 * * * *",
+          "scheduleIntervalSeconds": ""
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "trigger",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "O0Rs7XT52plx_MqP1QH7M",
+      "data": {
+        "type": "action",
+        "label": "Vigil Webhook",
+        "config": {
+          "actionType": "webhook/send-webhook",
+          "webhookUrl": "",
+          "webhookMethod": "POST"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 410.93036811058755,
+        "y": 49.62103457051805
+      }
+    },
+    {
+      "id": "ugKDGEsOVJ9CEzoC_ruz2",
+      "data": {
+        "type": "action",
+        "label": "",
+        "config": {
+          "dbQuery": "SELECT DISTINCT ON (protocol) protocol, score\nFROM health_scores\nORDER BY protocol, timestamp DESC;\n",
+          "actionType": "Database Query",
+          "connectTimeout": "1"
+        },
+        "status": "success",
+        "enabled": true,
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 425.1035443677015,
+        "y": -679.7900423537931
+      }
+    },
+    {
+      "id": "ttNW9STsjf895NpvPsQ-b",
+      "data": {
+        "type": "action",
+        "label": "",
+        "config": {
+          "actionType": "For Each",
+          "arraySource": "{{@ugKDGEsOVJ9CEzoC_ruz2:Database Query.rows}}",
+          "concurrency": "sequential",
+          "maxIterations": "0",
+          "concurrencyLimit": ""
+        },
+        "status": "error",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 787.2878913206703,
+        "y": -681.4866353207746
+      }
+    },
+    {
+      "id": "UQb40_eHvUg5-XlW_sIWS",
+      "data": {
+        "type": "action",
+        "label": "",
+        "config": {
+          "code": "function stringToBytes32(str) {\n  const bytes = new TextEncoder().encode(str);\n  if (bytes.length > 32) {\n    throw new Error(`String \"${str}\" is too long for bytes32`);\n  }\n  const buffer = new Uint8Array(32);\n  buffer.set(bytes);\n  return \"0x\" + Array.from(buffer)\n    .map(b => b.toString(16).padStart(2, \"0\"))\n    .join(\"\");\n}\n\nfunction toUint16(score) {\n  const scaled = Math.round(score);\n  if (scaled < 0 || scaled > 65535) {\n    throw new Error(`Score ${scaled} out of uint16 range`);\n  }\n  return scaled;\n}\n\nconst item = {{@ttNW9STsjf895NpvPsQ-b:For Each.currentItem}};;\nconst id = stringToBytes32(item.protocol);\nconst value = toUint16(item.score);\n\nreturn { id, value };",
+          "timeout": "60",
+          "actionType": "code/run-code"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1121.4563017847875,
+        "y": -663.1781290510899
+      }
+    },
+    {
+      "id": "E4BITw-8NxNm4fcvYzWV4",
+      "data": {
+        "type": "action",
+        "label": "",
+        "config": {
+          "abi": "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"scorer\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"guardian\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_stalenessWindow\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"}],\"name\":\"AlreadyRegistered\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"}],\"name\":\"NotRegistered\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint16\",\"name\":\"score\",\"type\":\"uint16\"}],\"name\":\"ScoreOutOfRange\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"nextAllowed\",\"type\":\"uint256\"}],\"name\":\"TooSoon\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"previousScore\",\"type\":\"uint16\"}],\"name\":\"EmergencyZeroed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"initialScore\",\"type\":\"uint16\"}],\"name\":\"ProtocolRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"oldScore\",\"type\":\"uint16\"},{\"indexed\":false,\"internalType\":\"uint16\",\"name\":\"newScore\",\"type\":\"uint16\"}],\"name\":\"ScoreUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"GUARDIAN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MAX_DELTA\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MAX_SCORE\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"\",\"type\":\"uint16\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MIN_INTERVAL\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SCORER_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"}],\"name\":\"emergencyZero\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"protocolCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"protocolIds\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"internalType\":\"uint16\",\"name\":\"initialScore\",\"type\":\"uint16\"}],\"name\":\"registerProtocol\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"}],\"name\":\"scoreOf\",\"outputs\":[{\"internalType\":\"uint16\",\"name\":\"score\",\"type\":\"uint16\"},{\"internalType\":\"uint40\",\"name\":\"updatedAt\",\"type\":\"uint40\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"protocolId\",\"type\":\"bytes32\"},{\"internalType\":\"uint16\",\"name\":\"newScore\",\"type\":\"uint16\"}],\"name\":\"setScore\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"ids\",\"type\":\"bytes32[]\"},{\"internalType\":\"uint16[]\",\"name\":\"values\",\"type\":\"uint16[]\"}],\"name\":\"setScores\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stalenessWindow\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+          "network": "84532",
+          "actionType": "web3/write-contract",
+          "abiFunction": "setScore",
+          "failOnError": "true",
+          "functionArgs": "[\"{{@UQb40_eHvUg5-XlW_sIWS:Run Code.result.id}}\",\"{{@UQb40_eHvUg5-XlW_sIWS:Run Code.result.value}}\"]",
+          "useManualAbi": "false",
+          "contractAddress": "0x731963f3f23267481aa8ff78051902bccf3485ba",
+          "usePrivateMempool": false,
+          "addressBookSelection": "{\"contractAddress\":\"e3ul33cq03cx3goopago5\"}"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1508.3538986846158,
+        "y": -662.0957577890595
+      }
+    },
+    {
+      "id": "jZj28iFtrT-_RR8wv9Q5E",
+      "data": {
+        "type": "action",
+        "label": "Read Total Vaults",
+        "config": {
+          "abi": "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"}],\"name\":\"VaultAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum IVigilVault.VaultKind\",\"name\":\"kind\",\"type\":\"uint8\"}],\"name\":\"VaultCreated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"asset\",\"type\":\"address\"},{\"internalType\":\"enum IVigilVault.VaultKind\",\"name\":\"kind\",\"type\":\"uint8\"},{\"internalType\":\"contract HealthOracle\",\"name\":\"oracle\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"keeper\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"guardian\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"}],\"name\":\"createVault\",\"outputs\":[{\"internalType\":\"contract VigilVault\",\"name\":\"vault\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"}],\"name\":\"vaultByAsset\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"vaultCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"vaults\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+          "network": "84532",
+          "actionType": "web3/read-contract",
+          "abiFunction": "vaultCount",
+          "contractAddress": "0x2c14b5d390e6b84d865759e261d746c30700c5ad"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 253.91293879377554,
+        "y": 694.7277734291134
+      }
+    },
+    {
+      "id": "vB-z-CUrqD8DE_XQLlKOP",
+      "data": {
+        "type": "action",
+        "label": "Create List",
+        "config": {
+          "code": "// Use @ to insert template variables from upstream nodes\n// e.g. {{QueryEvents.events}}, {{ReadContract.result}}\n\nconst data = {{@jZj28iFtrT-_RR8wv9Q5E:Read Contract.result}}\nconst items = Array.from({ length: data }, (_, i) => i);\nreturn { items };",
+          "timeout": "60",
+          "actionType": "code/run-code"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 543.6199384505671,
+        "y": 686.0551189290925
+      }
+    },
+    {
+      "id": "DRDYSqEzc9HLCe7mQ2TH4",
+      "data": {
+        "type": "action",
+        "label": "loop vaults ",
+        "config": {
+          "actionType": "For Each",
+          "arraySource": "{{@vB-z-CUrqD8DE_XQLlKOP:Create List.result.items}}"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 845.6679703185962,
+        "y": 684.6180289300285
+      }
+    },
+    {
+      "id": "MLbPF86DH8_ojCTLDMwqc",
+      "data": {
+        "type": "action",
+        "label": "read vault address",
+        "config": {
+          "abi": "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"}],\"name\":\"VaultAlreadyExists\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroAddress\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum IVigilVault.VaultKind\",\"name\":\"kind\",\"type\":\"uint8\"}],\"name\":\"VaultCreated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"contract IERC20\",\"name\":\"asset\",\"type\":\"address\"},{\"internalType\":\"enum IVigilVault.VaultKind\",\"name\":\"kind\",\"type\":\"uint8\"},{\"internalType\":\"contract HealthOracle\",\"name\":\"oracle\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"admin\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"keeper\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"guardian\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"}],\"name\":\"createVault\",\"outputs\":[{\"internalType\":\"contract VigilVault\",\"name\":\"vault\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"}],\"name\":\"vaultByAsset\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"vault\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"vaultCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"vaults\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+          "network": "84532",
+          "actionType": "web3/read-contract",
+          "abiFunction": "vaults",
+          "functionArgs": "[\"{{@DRDYSqEzc9HLCe7mQ2TH4:For Each.currentItem}}\"]",
+          "contractAddress": "0x2c14b5d390e6b84d865759e261d746c30700c5ad",
+          "addressBookSelection": "{\"contractAddress\":\"qtmzine2nu6ub9n85iwpq\"}"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1182.7012580452117,
+        "y": 947.2342294195502
+      }
+    },
+    {
+      "id": "_tfw47TFxC0uXWdfJw1Tw",
+      "data": {
+        "type": "action",
+        "label": "Collect Vault Address ",
+        "config": {
+          "actionType": "Collect"
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1202.6902492962176,
+        "y": 328.5428201248799
+      }
+    },
+    {
+      "id": "3ioqdxVSb59CxZiE60iEy",
+      "data": {
+        "type": "action",
+        "label": "Rebalnce Loop ",
+        "config": {
+          "actionType": "For Each",
+          "arraySource": "{{@_tfw47TFxC0uXWdfJw1Tw:Collect Vault Address .results}}"
+        },
+        "status": "error",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1492.7190684170353,
+        "y": 315.02120578426684
+      }
+    },
+    {
+      "id": "oP5LnkZFJagR_yR1VEqD5",
+      "data": {
+        "type": "action",
+        "label": "",
+        "config": {
+          "abi": "[  {    \"type\": \"constructor\",    \"inputs\": [      {        \"name\": \"_asset\",        \"type\": \"address\",        \"internalType\": \"contract IERC20\"      },      {        \"name\": \"_kind\",        \"type\": \"uint8\",        \"internalType\": \"enum IVigilVault.VaultKind\"      },      {        \"name\": \"_oracle\",        \"type\": \"address\",        \"internalType\": \"contract HealthOracle\"      },      {        \"name\": \"admin\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"keeper\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"guardian\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"_name\",        \"type\": \"string\",        \"internalType\": \"string\"      },      {        \"name\": \"_symbol\",        \"type\": \"string\",        \"internalType\": \"string\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"DEFAULT_ADMIN_ROLE\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"GUARDIAN_ROLE\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"KEEPER_ROLE\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"MAX_ADAPTERS\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"adapterCount\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"adapters\",    \"inputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"contract IVigilProtocolAdapter\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"addAdapter\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"internalType\": \"contract IVigilProtocolAdapter\"      }    ],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"allowance\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"spender\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"approve\",    \"inputs\": [      {        \"name\": \"spender\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"value\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"asset\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"balanceOf\",    \"inputs\": [      {        \"name\": \"account\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"convertToAssets\",    \"inputs\": [      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"convertToShares\",    \"inputs\": [      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"decimals\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint8\",        \"internalType\": \"uint8\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"deposit\",    \"inputs\": [      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"emergencyEvacuate\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"internalType\": \"contract IVigilProtocolAdapter\"      }    ],    \"outputs\": [      {        \"name\": \"withdrawn\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"getRoleAdmin\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"grantRole\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      },      {        \"name\": \"account\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"hasRole\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      },      {        \"name\": \"account\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"isAdapter\",    \"inputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"kind\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint8\",        \"internalType\": \"enum IVigilVault.VaultKind\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"maxDeposit\",    \"inputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"maxMint\",    \"inputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"maxRedeem\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"maxWithdraw\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"mint\",    \"inputs\": [      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"name\",  
+  \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"string\",        \"internalType\": \"string\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"oracle\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"address\",        \"internalType\": \"contract HealthOracle\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"previewDeposit\",    \"inputs\": [      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"previewMint\",    \"inputs\": [      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"previewRedeem\",    \"inputs\": [      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"previewWithdraw\",    \"inputs\": [      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"rebalance\",    \"inputs\": [],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"redeem\",    \"inputs\": [      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"removeAdapter\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"internalType\": \"contract IVigilProtocolAdapter\"      }    ],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"renounceRole\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      },      {        \"name\": \"callerConfirmation\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"revokeRole\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      },      {        \"name\": \"account\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"supportsInterface\",    \"inputs\": [      {        \"name\": \"interfaceId\",        \"type\": \"bytes4\",        \"internalType\": \"bytes4\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"symbol\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"string\",        \"internalType\": \"string\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"targetWeights\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"weights\",        \"type\": \"uint256[]\",        \"internalType\": \"uint256[]\"      },      {        \"name\": \"totalWeight\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"totalAssets\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"total\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"totalSupply\",    \"inputs\": [],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"view\"  },  {    \"type\": \"function\",    \"name\": \"transfer\",    \"inputs\": [      {        \"name\": \"to\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"value\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"transferFrom\",    \"inputs\": [      {        \"name\": \"from\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"to\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"value\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"bool\",        \"internalType\": \"bool\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"function\",    \"name\": \"withdraw\",    \"inputs\": [      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ],    \"outputs\": [      {        \"name\": \"\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ],    \"stateMutability\": \"nonpayable\"  },  {    \"type\": \"event\",    \"name\": \"AdapterAdded\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"protocolId\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"AdapterEvacuated\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"withdrawn\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"AdapterRemoved\",    \"inputs\": [      {        \"name\": \"adapter\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"protocolId\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      },      {        \"name\": \"withdrawn\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"Approval\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"spender\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"value\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"Deposit\",    \"inputs\": [      {        \"name\": \"sender\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"owner\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      },      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"Rebalanced\",    \"inputs\": [      {        \"name\": \"totalPool\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"RoleAdminChanged\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      },      {        \"name\": \"previousAdminRole\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      },      {        \"name\": \"newAdminRole\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"
+name\": \"RoleGranted\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      },      {        \"name\": \"account\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"sender\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"RoleRevoked\",    \"inputs\": [      {        \"name\": \"role\",        \"type\": \"bytes32\",        \"indexed\": true,        \"internalType\": \"bytes32\"      },      {        \"name\": \"account\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"sender\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"Transfer\",    \"inputs\": [      {        \"name\": \"from\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"to\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"value\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"event\",    \"name\": \"Withdraw\",    \"inputs\": [      {        \"name\": \"sender\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"receiver\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"owner\",        \"type\": \"address\",        \"indexed\": true,        \"internalType\": \"address\"      },      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      },      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"indexed\": false,        \"internalType\": \"uint256\"      }    ],    \"anonymous\": false  },  {    \"type\": \"error\",    \"name\": \"AccessControlBadConfirmation\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"AccessControlUnauthorizedAccount\",    \"inputs\": [      {        \"name\": \"account\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"neededRole\",        \"type\": \"bytes32\",        \"internalType\": \"bytes32\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"AdapterAlreadyAdded\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"AssetMismatch\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"DuplicateProtocol\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"ERC20InsufficientAllowance\",    \"inputs\": [      {        \"name\": \"spender\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"allowance\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"needed\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC20InsufficientBalance\",    \"inputs\": [      {        \"name\": \"sender\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"balance\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"needed\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC20InvalidApprover\",    \"inputs\": [      {        \"name\": \"approver\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC20InvalidReceiver\",    \"inputs\": [      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC20InvalidSender\",    \"inputs\": [      {        \"name\": \"sender\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC20InvalidSpender\",    \"inputs\": [      {        \"name\": \"spender\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC4626ExceededMaxDeposit\",    \"inputs\": [      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"max\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC4626ExceededMaxMint\",    \"inputs\": [      {        \"name\": \"receiver\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"max\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC4626ExceededMaxRedeem\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"shares\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"max\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"ERC4626ExceededMaxWithdraw\",    \"inputs\": [      {        \"name\": \"owner\",        \"type\": \"address\",        \"internalType\": \"address\"      },      {        \"name\": \"assets\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      },      {        \"name\": \"max\",        \"type\": \"uint256\",        \"internalType\": \"uint256\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"NotAnAdapter\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"ReentrancyGuardReentrantCall\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"SafeERC20FailedOperation\",    \"inputs\": [      {        \"name\": \"token\",        \"type\": \"address\",        \"internalType\": \"address\"      }    ]  },  {    \"type\": \"error\",    \"name\": \"TooManyAdapters\",    \"inputs\": []  },  {    \"type\": \"error\",    \"name\": \"ZeroAddress\",    \"inputs\": []  }]",
+          "network": "84532",
+          "actionType": "web3/write-contract",
+          "abiFunction": "rebalance",
+          "failOnError": "true",
+          "useManualAbi": "true",
+          "contractAddress": "{{@3ioqdxVSb59CxZiE60iEy:Rebalnce Loop .currentItem.result}}",
+          "usePrivateMempool": false
+        },
+        "status": "success",
+        "description": ""
+      },
+      "type": "action",
+      "position": {
+        "x": 1820.5662081411945,
+        "y": 339.47433822038874
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "AJLn_PU-8_h-b6ZW2b8PD",
+      "type": "animated",
+      "source": "Pj1qglPFASj5OwbmvNixm",
+      "target": "O0Rs7XT52plx_MqP1QH7M"
+    },
+    {
+      "id": "rem8OMR1-tKouvhbigZ1V",
+      "type": "animated",
+      "source": "Pj1qglPFASj5OwbmvNixm",
+      "target": "ugKDGEsOVJ9CEzoC_ruz2"
+    },
+    {
+      "id": "awICcyuPw16klRGnhS9t_",
+      "type": "animated",
+      "source": "ugKDGEsOVJ9CEzoC_ruz2",
+      "target": "ttNW9STsjf895NpvPsQ-b"
+    },
+    {
+      "id": "f5IX4Tmgihup__VxI36Lb",
+      "type": "animated",
+      "source": "ttNW9STsjf895NpvPsQ-b",
+      "target": "UQb40_eHvUg5-XlW_sIWS",
+      "sourceHandle": "loop"
+    },
+    {
+      "id": "3iO_ycuTh7wJEJRo1x-UF",
+      "type": "animated",
+      "source": "UQb40_eHvUg5-XlW_sIWS",
+      "target": "E4BITw-8NxNm4fcvYzWV4"
+    },
+    {
+      "id": "1cLkzW1TwWkV1NgiqZ-zN",
+      "type": "animated",
+      "source": "Pj1qglPFASj5OwbmvNixm",
+      "target": "jZj28iFtrT-_RR8wv9Q5E"
+    },
+    {
+      "id": "uNj2yuRyIpXErTD_A7P8y",
+      "type": "animated",
+      "source": "jZj28iFtrT-_RR8wv9Q5E",
+      "target": "vB-z-CUrqD8DE_XQLlKOP"
+    },
+    {
+      "id": "1g_a9y-DFsxP7NXzwaokx",
+      "type": "animated",
+      "source": "vB-z-CUrqD8DE_XQLlKOP",
+      "target": "DRDYSqEzc9HLCe7mQ2TH4"
+    },
+    {
+      "id": "85NuBX5gtiOl7eyWSwrfo",
+      "type": "animated",
+      "source": "DRDYSqEzc9HLCe7mQ2TH4",
+      "target": "MLbPF86DH8_ojCTLDMwqc",
+      "sourceHandle": "loop"
+    },
+    {
+      "id": "8k7iBnNmeJBlOJyxxYkbo",
+      "type": "animated",
+      "source": "DRDYSqEzc9HLCe7mQ2TH4",
+      "target": "_tfw47TFxC0uXWdfJw1Tw",
+      "sourceHandle": "done"
+    },
+    {
+      "id": "1yHxFm-tJwpyYAGdrmwYV",
+      "type": "animated",
+      "source": "_tfw47TFxC0uXWdfJw1Tw",
+      "target": "3ioqdxVSb59CxZiE60iEy"
+    },
+    {
+      "id": "GXFKF8TMo6TIPzFwsLNVR",
+      "type": "animated",
+      "source": "3ioqdxVSb59CxZiE60iEy",
+      "target": "oP5LnkZFJagR_yR1VEqD5",
+      "sourceHandle": "loop"
+    }
+  ],
+  "integrationBindings": []
+}
