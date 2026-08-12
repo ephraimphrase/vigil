@@ -1,31 +1,12 @@
-import { toTokens } from "thirdweb";
-import type { DepositsQuery, VaultsQuery, WithdrawalsQuery } from "@/lib/ponder/generated/sdk";
+import type { DepositsQuery, WithdrawalsQuery } from "@/lib/ponder/generated/sdk";
 import type { PriceByAddress } from "@/lib/tokenPrices";
 import type { TransactionEntry } from "@/types";
+import { vaultMeta, toAmount, amountUsd, type PonderVault } from "./vaultMeta";
 
 const CHAIN_LABEL = "Base Sepolia";
 
-type PonderVault = VaultsQuery["vaults"]["items"][number];
 type PonderDeposit = DepositsQuery["deposits"]["items"][number];
 type PonderWithdrawal = WithdrawalsQuery["withdrawals"]["items"][number];
-
-function vaultMeta(vaultsById: Map<string, PonderVault>, vaultAddress: string) {
-  const vault = vaultsById.get(vaultAddress.toLowerCase());
-  return {
-    vaultSlug: vaultAddress.toLowerCase(),
-    vaultName: vault?.vaultName ?? vaultAddress,
-    asset: vault?.assetSymbol ?? "?",
-    decimals: vault?.assetDecimals ?? 18,
-    assetAddress: vault?.asset,
-  };
-}
-
-const toAmount = (raw: string, decimals: number) => Number(toTokens(BigInt(raw), decimals));
-
-function amountUsd(amount: number, assetAddress: string | undefined, prices: PriceByAddress): number | null {
-  const price = assetAddress ? prices[assetAddress.toLowerCase()] : undefined;
-  return price == null ? null : amount * price;
-}
 
 export function toDepositTransaction(
   d: PonderDeposit,

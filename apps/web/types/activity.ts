@@ -13,7 +13,10 @@ export type EventKind =
   | "approval"           // requested / granted / rejected, for Approve-mode actions
   | "alert"              // notify-only threshold crossed, no action taken
   | "circuit_breaker"    // safety interrupt tripped - always-on floor, independent of autonomy level
-  | "cycle";             // polling cycle housekeeping
+  | "cycle"              // polling cycle housekeeping
+  | "strategy_added"     // a vault added a new protocol adapter to its rotation
+  | "strategy_removed"   // a vault dropped an adapter from rotation (removed or retired)
+  | "harvest";           // a strategy realized yield
 
 export interface FeedEvent {
   id: string;

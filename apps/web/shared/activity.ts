@@ -22,6 +22,9 @@ export const KIND_COLOR: Record<EventKind, string> = {
   approval: "#E5DBF1",
   alert: "#E0607F",
   circuit_breaker: "#E0607F",
+  strategy_added: "#E5DBF1",
+  strategy_removed: "#E0A95F",
+  harvest: "#5FD08A",
 };
 
 export const KIND_LABEL: Record<EventKind, string> = {
@@ -33,6 +36,9 @@ export const KIND_LABEL: Record<EventKind, string> = {
   approval: "Approval",
   alert: "Alert",
   circuit_breaker: "Circuit breaker",
+  strategy_added: "Strategy added",
+  strategy_removed: "Strategy removed",
+  harvest: "Harvest",
 };
 
 // Derived from KIND_COLOR's keys, not hand-typed again, so a new kind

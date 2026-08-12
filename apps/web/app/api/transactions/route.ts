@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ponder } from "@/lib/ponder/client";
 import { toDepositTransaction, toWithdrawTransaction } from "@/lib/ponder/mappers/transactionFlows";
+import { buildVaultsById } from "@/lib/ponder/mappers/vaultMeta";
 import { getTokenPrices, type PriceByAddress } from "@/lib/tokenPrices";
 
 export async function GET() {
@@ -14,7 +15,7 @@ export async function GET() {
     getTokenPrices().catch((): PriceByAddress => ({})),
   ]);
 
-  const vaultsById = new Map(vaults.items.map((v) => [v.id.toLowerCase(), v]));
+  const vaultsById = buildVaultsById(vaults.items);
 
   const entries = [
     ...deposits.items.map((d) => toDepositTransaction(d, vaultsById, prices)),
