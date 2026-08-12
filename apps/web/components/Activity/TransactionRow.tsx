@@ -5,9 +5,10 @@
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";
-import { ChainIcon } from "@/components/Vault/TokenIcon";
+import { TokenIcon } from "@/components/Vault/TokenIcon";
+import { Address } from "@/components/ui/Address";
 import { TX_TYPE_COLOR, TX_TYPE_LABEL, explorerUrl } from "@/shared/transactions";
-import { fmtAddress, fmtUsdFull } from "@/shared/format";
+import { fmtUsdFull } from "@/shared/format";
 import type { TransactionEntry } from "@/types";
 
 const SIGN: Record<TransactionEntry["type"], string> = {
@@ -27,20 +28,12 @@ export function TransactionRow({ entry: e }: { entry: TransactionEntry }) {
               {TX_TYPE_LABEL[e.type]}
             </span>
             <span className="flex items-center gap-1.5 text-sm text-body">
-              <ChainIcon chain={e.chain} />
+              <TokenIcon symbol={e.asset} size="xs" />
               {e.vaultName}
             </span>
           </div>
           <div className="mt-1 flex items-center gap-3 font-mono text-xs text-muted">
-            <span className="text-muted/60">{fmtAddress(e.txHash)}</span>
-            <a
-              href={explorerUrl(e.chain, e.txHash)}
-              target="_blank"
-              rel="noreferrer"
-              className="text-violet-bright transition-colors hover:text-body"
-            >
-              View {"↗"}
-            </a>
+            <Address address={e.txHash} explorerUrl={explorerUrl(e.chain, e.txHash)} size="xs" />
           </div>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-0.5">

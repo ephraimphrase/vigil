@@ -9,6 +9,7 @@
 
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
+import { Address } from "@/components/ui/Address";
 import { TokenIconStack } from "@/components/Vault/TokenIcon";
 import { assetsOf } from "@/components/Vault/vaultFilters";
 import { fmtUsd } from "@/shared/format";
@@ -44,7 +45,10 @@ export function VaultMasthead({ info, policy, depositedUsd, apy }: VaultMasthead
               <h1 className="font-display text-3xl leading-none tracking-tight text-body">{info.name}</h1>
               <Chip mono>{policy.name}</Chip>
             </div>
-            <span className="font-mono text-xs uppercase tracking-wider text-muted/60">{info.chain}</span>
+            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted/60">
+              <span>{info.chain}</span>
+              <Address address={info.vaultContractAddress} chain={info.chain} size="xs" />
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-3 divide-x divide-hairline border-t border-hairline md:border-t-0 md:border-l">

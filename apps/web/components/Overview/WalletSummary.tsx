@@ -7,7 +7,7 @@ import { WalletNotConnected } from "@/components/Wallet/WalletNotConnected";
 import { TokenBalanceRow } from "@/components/Wallet/TokenBalanceRow";
 import { useFaucetModal } from "@/components/Wallet/FaucetModalProvider";
 import { useDepositableTokens } from "@/hooks/useDepositableTokens";
-import { fmtAddress } from "@/shared/format";
+import { Address } from "@/components/ui/Address";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 const DefaultLink: LinkLike = ({ href, className, children }) => (
@@ -45,7 +45,7 @@ export function WalletSummary({ Link = DefaultLink }: { Link?: LinkLike }) {
       ) : (
         <>
           <div className="border-b border-hairline/60 px-4 py-3">
-            <p className="font-mono text-sm text-body">{fmtAddress(account.address, 6, 4)}</p>
+            <Address address={account.address} chain="base-sepolia" size="sm" />
             <div className="mt-2 flex items-center justify-between font-mono text-xs">
               <span className="text-muted/60">Tokens claimed</span>
               <span className="tabular-nums text-body">

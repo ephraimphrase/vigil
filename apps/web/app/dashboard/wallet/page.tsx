@@ -7,11 +7,12 @@ import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { Loader } from "@/components/ui/Loader";
 import { WalletNotConnected } from "@/components/Wallet/WalletNotConnected";
 import { TokenBalanceRow } from "@/components/Wallet/TokenBalanceRow";
+import { Address } from "@/components/ui/Address";
 import { useFaucetModal } from "@/components/Wallet/FaucetModalProvider";
 import { useDepositableTokens } from "@/hooks/useDepositableTokens";
 import { useLazyReveal } from "@/hooks/useLazyReveal";
 import { useTokenPrices } from "@/hooks/useTokenPrices";
-import { fmtAddress, fmtUsdFull } from "@/shared/format";
+import { fmtUsd } from "@/shared/format";
 
 export default function WalletPage() {
   const account = useActiveAccount();
@@ -50,14 +51,16 @@ export default function WalletPage() {
               <span className="h-1.5 w-1.5 rounded-full bg-violet" />
               Wallet
             </span>
-            <p className="mt-1.5 font-mono text-lg text-body">{fmtAddress(account.address, 8, 6)}</p>
+            <div className="mt-1.5">
+              <Address address={account.address} chain="base-sepolia" size="md" lead={8} trail={6} />
+            </div>
             <p className="mt-0.5 text-xs text-muted/60">Base Sepolia</p>
           </div>
 
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
             <div className="flex flex-col gap-0.5">
               <span className="font-mono text-2xl tabular-nums text-body">
-                {pricesLoading ? "…" : fmtUsdFull(portfolioValue)}
+                {pricesLoading ? "…" : fmtUsd(portfolioValue)}
               </span>
               <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Portfolio value</span>
             </div>
