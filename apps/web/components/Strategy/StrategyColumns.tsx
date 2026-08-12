@@ -1,17 +1,20 @@
 import { createColumnHelper, type ColumnDef, type Row } from "@tanstack/react-table";
 
 import type { Strategy } from "../../types";
-import { fmtUsd, fmtFeePct } from "../../shared/format";
+import { fmtFeePct } from "../../shared/format";
 import { ScoreCell } from "../Health/ScoreCell";
 import { Chip } from "../ui/Chip";
 
 const col = createColumnHelper<Strategy>();
 
-// Every strategy carries at least a 0.1% combined fee in practice - never
+// Every strategy carries at least a 3% combined fee in practice - never
 // display less, even if depositFee + withdrawFee nets to 0 in the data.
-const MIN_FEE = 0.001;
+const MIN_FEE = 0.03;
 
-// Metric columns (Health/APY/TVL/Fees) only belong to strategy rows - every
+// This table is a catalog of what strategies each protocol runs, not a
+// live position dashboard - no APY/TVL columns, since neither has a real
+// (non-seeded) source yet. Health still shows (score joins live off
+// health_scores) and metric columns only belong to strategy rows - every
 // depth-0 row is a protocol, and protocols don't get those numbers stated
 // on their own row, whether they group one strategy or many.
 // groupByProtocol still computes the aggregate (sort/filter want it), it's

@@ -8,25 +8,14 @@
 // ─────────────────────────────────────────────────────────────
 
 import NextLink from "next/link";
-import moment from "moment";
 
 import { useStrategies } from "@/hooks/useStrategies";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Loader } from "@/components/ui/Loader";
 import { Chip } from "@/components/ui/Chip";
-import { WeightBar } from "@/components/ui/WeightBar";
 import { BAND_META, resolveBand, bandColor } from "@/shared/health";
-import { fmtUsd, fmtFeePct, fmtScore, fmtAddress } from "@/shared/format";
+import { fmtScore, fmtAddress } from "@/shared/format";
 import type { Strategy } from "@/types";
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="font-mono text-lg tabular-nums text-body">{value}</span>
-      <span className="font-mono text-xs uppercase tracking-wider text-muted/60">{label}</span>
-    </div>
-  );
-}
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -97,7 +86,6 @@ function Masthead({ s }: { s: Strategy }) {
             <span className="font-mono text-sm text-muted">/100</span>
           </div>
           <span className="font-mono text-xs uppercase tracking-wider" style={{ color }}>{BAND_META[band].label}</span>
-          <span className="font-mono text-sm text-body">{s.apy.toFixed(1)}% APY</span>
         </div>
       </div>
     </CornerFrame>
@@ -128,45 +116,6 @@ export function StrategyDetailView({ id }: { id: string }) {
   return (
     <div className="mx-auto flex max-w-[900px] flex-col gap-4 bg-base p-4">
       <Masthead s={s} />
-
-      {/* Position */}
-      <CornerFrame>
-        <div className="grid grid-cols-2 gap-4 p-5 md:grid-cols-4">
-          <Stat label="Allocated" value={fmtUsd(s.allocated)} />
-          <Stat label="Max Withdraw" value={fmtUsd(s.maxWithdraw)} />
-          <Stat label="Max Deposit" value={s.maxDeposit === null ? "Unbounded" : fmtUsd(s.maxDeposit)} />
-          <Stat label="Last Rebalance" value={moment(s.lastRebalance).fromNow()} />
-        </div>
-        <div className="px-5 pb-5">
-          <WeightBar actual={s.actualWeight} target={s.targetWeight} />
-        </div>
-      </CornerFrame>
-
-      {/* Harvest + Fees */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <CornerFrame>
-          <div className="flex flex-col gap-3 p-5">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Harvest</span>
-            <Row label="Last harvest">
-              <span className="font-mono text-sm text-muted">{moment(s.lastHarvest).fromNow()}</span>
-            </Row>
-            <Row label="Harvestable">
-              <Chip mono dotColor={s.harvestable ? "#5FD08A" : "#9F95AB"}>{s.harvestable ? "Yes" : "No"}</Chip>
-            </Row>
-          </div>
-        </CornerFrame>
-        <CornerFrame>
-          <div className="flex flex-col gap-3 p-5">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted/60">Fees</span>
-            <Row label="Deposit">
-              <span className="font-mono text-sm text-muted">{fmtFeePct(s.depositFee)}</span>
-            </Row>
-            <Row label="Withdraw">
-              <span className="font-mono text-sm text-muted">{fmtFeePct(s.withdrawFee)}</span>
-            </Row>
-          </div>
-        </CornerFrame>
-      </div>
 
       {/* Contracts */}
       <CornerFrame>
