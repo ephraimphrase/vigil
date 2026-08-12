@@ -65,7 +65,8 @@ export function Address({
 }: AddressProps) {
   const [copied, setCopied] = useState(false);
   const label = full ? address : fmtAddress(address, lead, trail);
-  const href = explorerUrl ?? `${EXPLORERS[chain.toLowerCase()] ?? EXPLORERS.ethereum}${address}`;
+  const explorerKey = chain.trim().toLowerCase().replace(/\s+/g, "-");
+  const href = explorerUrl ?? `${EXPLORERS[explorerKey] ?? EXPLORERS.ethereum}${address}`;
 
   const handleCopy = async (e: MouseEvent) => {
     e.preventDefault();

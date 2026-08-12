@@ -45,7 +45,8 @@ export function VaultInfoTab({ info }: { info: VaultInfo }) {
         </Collapsible>
 
         <Collapsible label="Chain" value={info.chain}>
-          {info.chain} mainnet — good liquidity and security, transaction costs vary with network demand.
+          Deployed on {info.chain}. Liquidity, security assumptions, and gas costs all follow from that network&apos;s
+          own characteristics, not Vigil&apos;s own risk model.
         </Collapsible>
 
         <Collapsible label="Asset type" value={info.assetType === "stablecoin" ? "Stablecoin" : "Volatile"}>
@@ -55,16 +56,13 @@ export function VaultInfoTab({ info }: { info: VaultInfo }) {
         </Collapsible>
 
         <Collapsible label="Vault type" value={info.vaultType}>
-          Vigil's managed vaults auto-rebalance USDC across several protocol strategies at once, targeting the
-          policy's risk/return profile rather than wrapping a single external pool.
+          Vigil&apos;s managed vaults auto-rebalance {info.asset} across several protocol strategies at once,
+          targeting the policy&apos;s risk/return profile rather than wrapping a single external pool.
         </Collapsible>
 
-        <Collapsible
-          label="Fees"
-          value={`${fmtFeePct(info.managementFeePct)} | ${fmtFeePct(info.performanceFeePct)}`}
-        >
-          Management fees are claimed from principal, pro-rated up to the stated percentage. Performance fees are
-          claimed only from yield earned, up to the stated percentage.
+        <Collapsible label="Performance fee" value={fmtFeePct(info.performanceFeePct)}>
+          Claimed only from yield earned, up to the stated percentage, never from principal. Vigil charges no
+          management fee.
         </Collapsible>
       </div>
     </div>

@@ -4,6 +4,7 @@ import type { VaultData } from "@/types";
 import { logoForTokenAddress } from "./tokenLogo";
 import { weightedApy } from "./adapterApy";
 import { estimateTvlUsd } from "./vaultTvl";
+import { toVaultStrategies } from "./vaultStrategies";
 
 type PonderVault = NonNullable<VaultQuery["vault"]>;
 type PonderAdapter = AdaptersQuery["adapters"]["items"][number];
@@ -50,8 +51,7 @@ export function toVaultData(
       vaultType: vault.kind === VaultKind.Lp ? "LP" : "Single Asset",
       vaultContractAddress: vault.id,
       tokenContractAddress: vault.asset,
-      managementFeePct: 0,
-      performanceFeePct: 0.3,
+      performanceFeePct: 0.03,
       deployedOn: new Date(Number(vault.createdAtTimestamp) * 1000).toISOString(),
       features: [],
       docs: { userDocsUrl: "", devDocsUrl: "", analyticsUrl: "", apiUrl: "" },
@@ -66,6 +66,7 @@ export function toVaultData(
     },
     position: null,
     allocation: [],
+    strategies: toVaultStrategies(adapters, vault.assetDecimals, priceUsd),
     riskChecks: [],
     history: [],
   };

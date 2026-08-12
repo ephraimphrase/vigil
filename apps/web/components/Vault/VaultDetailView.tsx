@@ -90,7 +90,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
     );
   }
 
-  const { info, policy, position, allocation, riskChecks, history } = vault;
+  const { info, policy, position, allocation, strategies, riskChecks, history } = vault;
   const agg = vaultAggregate(allocation);
   const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
   const depositedUsd = withdrawable != null && priceUsd != null ? withdrawable * priceUsd : null;
@@ -116,7 +116,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
               <VaultInfoTab info={info} />
             </section>
             <section id="strategies" className="scroll-mt-16 border-b border-hairline/60 p-4">
-              <VaultAllocation rows={allocation} />
+              <VaultAllocation strategies={strategies} chain={info.chain} />
             </section>
             <section id="risk" className="scroll-mt-16 border-b border-hairline/60 p-4">
               <VaultRiskChecklist rows={riskChecks} />

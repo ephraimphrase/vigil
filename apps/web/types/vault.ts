@@ -38,7 +38,6 @@ export interface VaultInfo {
   vaultType: string;
   vaultContractAddress: string;
   tokenContractAddress: string;
-  managementFeePct: number;
   performanceFeePct: number;
   deployedOn: string;         // ISO date
   features: string[];
@@ -76,6 +75,23 @@ export interface AllocationRow {
   apy: number;
 }
 
+// One of the vault's IVigilProtocolAdapter strategies (Ponder's `adapter`
+// entity) - real, unlike AllocationRow above (still needs a protocol
+// registry for category + the full oracle-weighted target calc for
+// targetWeight, neither wired up yet).
+export interface VaultStrategyRow {
+  id: string;
+  protocolId: string;
+  stratName: string;
+  apy: number;
+  allocated: number;
+  allocatedUsd: number | null;
+  paused: boolean;
+  retired: boolean;
+  lastHarvestAt: string | null; // ISO date, null if never harvested
+  lastHarvestGainUsd: number | null;
+}
+
 // Beefy-checklist-style pass/fail row - vault-level (the strategy set as a
 // whole), not per-protocol. Distinct from protocols' severity-graded RiskRow
 // (see types/protocols.ts) - a different question (did this pass a fixed
@@ -92,6 +108,7 @@ export interface VaultData {
   policy: VaultPolicy;
   position: UserPosition | null;
   allocation: AllocationRow[];
+  strategies: VaultStrategyRow[];
   riskChecks: RiskCheckRow[];
   history: VaultHistoryPoint[];
 }
