@@ -65,7 +65,7 @@ resolve_path() {
   fi
 }
 
-names="$(grep -oE '"[A-Za-z0-9_]+"\s*:' "$MANIFEST" | tr -d '": ')"
+names="$(grep -oE '"[A-Za-z0-9_-]+"\s*:' "$MANIFEST" | tr -d '": ')"
 
 for name in $names; do
   address="$(
