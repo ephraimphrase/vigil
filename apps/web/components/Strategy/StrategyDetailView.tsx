@@ -13,7 +13,7 @@ import { useStrategies } from "@/hooks/useStrategies";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Loader } from "@/components/ui/Loader";
 import { Chip } from "@/components/ui/Chip";
-import { BAND_META, resolveBand, bandColor } from "@/shared/health";
+import { bandColor } from "@/shared/health";
 import { fmtScore, fmtAddress } from "@/shared/format";
 import type { Strategy } from "@/types";
 
@@ -35,7 +35,6 @@ function AddressRow({ label, value }: { label: string; value: string }) {
 }
 
 function Masthead({ s }: { s: Strategy }) {
-  const band = resolveBand(s.score);
   const color = bandColor(s.score);
 
   return (
@@ -85,7 +84,6 @@ function Masthead({ s }: { s: Strategy }) {
             <span className="font-display text-6xl leading-none tracking-tight text-body">{fmtScore(s.score)}</span>
             <span className="font-mono text-sm text-muted">/100</span>
           </div>
-          <span className="font-mono text-xs uppercase tracking-wider" style={{ color }}>{BAND_META[band].label}</span>
         </div>
       </div>
     </CornerFrame>

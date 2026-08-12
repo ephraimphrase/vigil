@@ -67,24 +67,6 @@ export function buildStrategyColumns(): ColumnDef<Strategy, any>[] {
       header: "Health",
       cell: ({ row, getValue }) => (isProtocolLevelRow(row) ? <BlankCell /> : <ScoreCell score={getValue()} />),
     }),
-    col.accessor("apy", {
-      header: "APY",
-      cell: ({ row, getValue }) =>
-        isProtocolLevelRow(row) ? (
-          <BlankCell />
-        ) : (
-          <span className="font-mono text-sm tabular-nums text-text">{getValue().toFixed(1)}%</span>
-        ),
-    }),
-    col.accessor("allocated", {
-      header: "TVL",
-      cell: ({ row, getValue }) =>
-        isProtocolLevelRow(row) ? (
-          <BlankCell />
-        ) : (
-          <span className="font-mono text-sm tabular-nums text-text">{fmtUsd(getValue())}</span>
-        ),
-    }),
     col.display({
       id: "fees",
       header: "Fees",
