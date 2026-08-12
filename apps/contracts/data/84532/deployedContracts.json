@@ -239,5 +239,6 @@
   "StargateV2_pendle-39_stargate": "0x0D3BF13baA1793A4A95777E418e00f4925A18dfA",
   "CompoundV3_pendle-39_compound": "0x00B34EEAe0439cdC62f62f56083C87f620bba34d",
   "CurveConvex_pendle-39_curve": "0x14AC9a00ce7b4F32E258E6E7493BbC9ADb19BD11",
-  "BaseSwap_pendle-39_baseswap": "0x4e9FbA268A823945Bf9331Ada991373530Cd81bA"
+  "BaseSwap_pendle-39_baseswap": "0x4e9FbA268A823945Bf9331Ada991373530Cd81bA",
+  "Faucet": "0x6e8A5cDe5c1d77B05aDAbd4E7afC541F6A5AF2A5"
 }

@@ -6,17 +6,22 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-// Testnet faucet for the SeedToken clones deployed by SeedTokens.s.sol -
-// those tokens mint their entire fixed supply once, to the deployer, at
-// deploy time (SeedToken.initialize) and have no mint() function
-// afterward. This contract holds a pre-funded balance per token (funded by
-// a plain transfer() from the deployer, see DeployFaucet.s.sol) and pushes
-// it out to callers instead.
+// Minimal interface for SeedToken's testnet-only mint(uint256) - mints to
+// whichever address calls it (msg.sender), so Faucet mints to itself first
+// and forwards the same amount to the claimer.
+interface ISeedTokenMintable {
+    function mint(uint256 amount) external;
+}
+
+// Testnet faucet for the SeedToken clones deployed by SeedTokens.s.sol.
+// Mints CLAIM_AMOUNT fresh on every claim rather than paying out of a
+// pre-funded balance - no funding step needed at deploy time, and supply
+// is never a constraint no matter how many tokens or claimers there are.
 contract Faucet is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     uint256 public constant CLAIM_AMOUNT = 1_000 ether;
-    uint256 public constant COOLDOWN = 24 hours;
+    uint256 public constant COOLDOWN = 1 hours;
     // Bounds claimMany's loop so a caller can't grief gas estimation/block
     // limits with an oversized array - comfortably above the current
     // 40-token set.
@@ -51,6 +56,7 @@ contract Faucet is Ownable, ReentrancyGuard {
         require(last == 0 || block.timestamp >= last + COOLDOWN, "Faucet: cooldown");
 
         lastClaimed[token][msg.sender] = block.timestamp;
+        ISeedTokenMintable(token).mint(CLAIM_AMOUNT);
         IERC20(token).safeTransfer(msg.sender, CLAIM_AMOUNT);
         emit Claimed(msg.sender, token, CLAIM_AMOUNT);
     }
@@ -74,6 +80,7 @@ contract Faucet is Ownable, ReentrancyGuard {
             }
 
             lastClaimed[token][msg.sender] = block.timestamp;
+            ISeedTokenMintable(token).mint(CLAIM_AMOUNT);
             IERC20(token).safeTransfer(msg.sender, CLAIM_AMOUNT);
             emit Claimed(msg.sender, token, CLAIM_AMOUNT);
         }
