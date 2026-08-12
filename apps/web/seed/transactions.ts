@@ -1,14 +1,13 @@
 // ─────────────────────────────────────────────────────────────
 // Transactions mock — one wallet's deposit/withdraw/transfer history
-// across a spread of vaults and both chains currently seeded (Ethereum,
-// Base — see seed/index.ts's VAULT_MOCKS), spanning enough of a date
-// range to exercise the Transactions view's custom date-range filter.
-// Vault facts (slug/name/asset/chain) are duplicated by hand rather than
-// imported, same loose-reference-by-id convention seed/activity.ts already
-// uses for protocolId — seed/index.ts imports this file, so importing
-// back from it would cycle.
-// No DB table for this yet, same as activity - served by
-// app/api/transactions/route.ts.
+// across a spread of vaults and both chains (Ethereum, Base), spanning
+// enough of a date range to exercise the Transactions view's custom
+// date-range filter. Vault facts (slug/name/asset/chain) are duplicated by
+// hand rather than imported, same loose-reference-by-id convention
+// seed/activity.ts already uses for protocolId.
+// UNUSED - app/api/transactions/route.ts now reads real deposits/
+// withdrawals from Ponder (lib/ponder/mappers/transactionFlows.ts) instead
+// of this file. Left in place rather than deleted; ask if you want it gone.
 // ─────────────────────────────────────────────────────────────
 
 import moment from "moment";

@@ -8,9 +8,10 @@
 // restyled to our hairline/mono tokens (rounded-none, no shadow/ring)
 // instead of its shadcn defaults - see the `!` overrides below.
 //
-// USDC-only for now, hence USD_RATE hardcoded to 1 - kept as a named
-// constant rather than inlined so the day this vault accepts a second
-// asset, the "amount x rate" line is the one place that changes.
+// The USD-equivalent line under the amount comes from useTokenPrices()
+// (lib/tokenPrices.ts, CoinGecko-backed) - "-" when this asset has no
+// verified price mapping (lib/tokenPriceIds.ts) rather than guessing a
+// 1:1 rate, since most vault assets here aren't stablecoins.
 // ─────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from "react";
@@ -19,12 +20,16 @@ import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
+import { useTokenPrices } from "@/hooks/useTokenPrices";
+import { useVaultDeposit } from "@/hooks/useVaultDeposit";
+import { useVaultWithdraw } from "@/hooks/useVaultWithdraw";
+import { toast } from "@/components/ui/Toast";
 import { previewDeposit, previewWithdraw, parseAmount } from "@/shared/vault";
 import { fmtUsdFull, fmtFeePct } from "@/shared/format";
-import type { UserPosition, VaultInfo } from "@/types";
+import type { VaultInfo } from "@/types";
 
 // ─── CONSTANTS ───
-const USD_RATE = 1; // USDC only, for now — see file header.
 const PERCENT_PILLS = [25, 50, 75, 100] as const;
 const DEPOSIT_FEE = 0;
 const WITHDRAW_FEE = 0;
@@ -33,8 +38,13 @@ const WITHDRAW_FEE = 0;
 type Tab = "deposit" | "withdraw";
 interface DepositWithdrawProps {
   info: VaultInfo;
-  position: UserPosition | null;
   onSubmit?: (tab: Tab, amount: number) => void;
+  /** Called after a deposit/withdraw tx confirms on-chain - lets the parent refresh vault-level data (tvl, apy) that this panel doesn't own. "Your deposit" doesn't need a separate call here - it reads the same withdrawable/refetchWithdrawable this panel already refetches below. */
+  onTxConfirmed?: () => void;
+  /** Lifted to VaultDetailView (useVaultWithdrawable) rather than mounted here too - the masthead's "Your deposit" reads the exact same value, and a second independent hook instance is one more place a post-tx refetch could silently miss. */
+  withdrawable: number | null;
+  withdrawableLoading: boolean;
+  refetchWithdrawable: () => void;
 }
 
 // ─── UTILS ───
@@ -50,26 +60,83 @@ function FeeRow({ label, value, tooltip }: { label: string; value: string; toolt
   );
 }
 
+function showTxToast(action: "Deposit" | "Withdrawal", explorerUrl: string | null) {
+  toast.success(`${action} confirmed`, {
+    description: explorerUrl ? (
+      <a href={explorerUrl} target="_blank" rel="noreferrer" className="underline hover:text-body">
+        View on explorer ↗
+      </a>
+    ) : undefined,
+  });
+}
+
 // ─── MAIN ───
-export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawProps) {
+export function DepositWithdraw({
+  info,
+  onSubmit,
+  onTxConfirmed,
+  withdrawable,
+  withdrawableLoading,
+  refetchWithdrawable,
+}: DepositWithdrawProps) {
   // state
   const [tab, setTab] = useState<Tab>("deposit");
   const [raw, setRaw] = useState("");
 
   // derived
-  const connected = position != null;
-  const max = tab === "deposit" ? position?.walletUsdc ?? 0 : position?.valueUsd ?? 0;
+  const {
+    balance: walletBalance,
+    isLoading: balanceLoading,
+    connected,
+    refetch: refetchBalance,
+  } = useTokenBalance(info.tokenContractAddress);
+  const { deposit, isPending: depositPending } = useVaultDeposit(info.vaultContractAddress, info.tokenContractAddress);
+  const { withdraw, isPending: withdrawPending } = useVaultWithdraw(info.vaultContractAddress, info.tokenContractAddress);
+  const { prices } = useTokenPrices();
+  const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
+
+  const max = tab === "deposit" ? walletBalance ?? 0 : withdrawable ?? 0;
+  const amountLoading = tab === "deposit" ? balanceLoading : withdrawableLoading;
   const amount = parseAmount(raw);
   const overMax = amount != null && amount > max;
+  const submitting = tab === "deposit" ? depositPending : withdrawPending;
 
   const preview = useMemo(() => {
     if (amount == null || amount === 0) return null;
     return tab === "deposit"
       ? { label: "You receive", value: `${previewDeposit(amount, info.sharePrice).toLocaleString("en-US", { maximumFractionDigits: 2 })} shares` }
-      : { label: "You receive", value: fmtUsdFull(previewWithdraw(amount / info.sharePrice, info.sharePrice)) };
-  }, [amount, tab, info.sharePrice]);
+      : {
+          label: "You receive",
+          value: `${previewWithdraw(amount / info.sharePrice, info.sharePrice).toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`,
+        };
+  }, [amount, tab, info.sharePrice, info.asset]);
 
-  const canSubmit = connected && amount != null && amount > 0 && !overMax;
+  const canSubmit = connected && amount != null && amount > 0 && !overMax && !submitting;
+
+  async function handleSubmit() {
+    if (!canSubmit || amount == null) return;
+
+    try {
+      if (tab === "deposit") {
+        const { explorerUrl } = await deposit(raw, info.asset);
+        refetchBalance();
+        refetchWithdrawable();
+        showTxToast("Deposit", explorerUrl);
+      } else {
+        const { explorerUrl } = await withdraw(raw, info.asset);
+        refetchBalance();
+        refetchWithdrawable();
+        showTxToast("Withdrawal", explorerUrl);
+      }
+      setRaw("");
+      onSubmit?.(tab, amount);
+      onTxConfirmed?.();
+    } catch (e) {
+      toast.error(tab === "deposit" ? "Deposit failed" : "Withdrawal failed", {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    }
+  }
 
   return (
     <section className="rounded-none border border-hairline bg-panel/20">
@@ -85,7 +152,14 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
         <div>
           <div className="mb-1 flex items-center justify-between font-mono text-xs text-muted/60">
             <span>{tab === "deposit" ? `${info.asset} amount` : `${info.asset} value`}</span>
-            <span>Available {connected ? fmtUsdFull(max) : "—"}</span>
+            <span>
+              Available{" "}
+              {!connected
+                ? "—"
+                : amountLoading
+                  ? "…"
+                  : `${max.toLocaleString("en-US", { maximumFractionDigits: 4 })} ${info.asset}`}
+            </span>
           </div>
           <InputGroup className="!rounded-none !border-hairline !bg-base !shadow-none !ring-0 before:!hidden focus-within:!border-violet">
             <InputGroupInput
@@ -106,7 +180,9 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
             <span className={overMax ? "" : "text-muted/40"} style={overMax ? { color: "#E0607F" } : undefined}>
               {overMax ? "Exceeds available." : " "}
             </span>
-            <span className="text-muted/40">{fmtUsdFull((amount ?? 0) * USD_RATE)}</span>
+            <span className="text-muted/40">
+              {priceUsd == null ? "-" : fmtUsdFull((amount ?? 0) * priceUsd)}
+            </span>
           </div>
 
           {/* percent pills */}
@@ -141,7 +217,7 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
 
         {/* action */}
         <button
-          onClick={() => canSubmit && onSubmit?.(tab, amount!)}
+          onClick={handleSubmit}
           disabled={!canSubmit}
           className={`w-full rounded-full py-2.5 font-mono text-xs uppercase tracking-wider transition-colors ${
             canSubmit
@@ -149,7 +225,15 @@ export function DepositWithdraw({ info, position, onSubmit }: DepositWithdrawPro
               : "cursor-not-allowed border border-hairline text-muted/40"
           }`}
         >
-          {!connected ? "Connect wallet" : tab === "deposit" ? "Deposit" : "Withdraw"}
+          {!connected
+            ? "Connect wallet"
+            : submitting
+              ? tab === "deposit"
+                ? "Depositing…"
+                : "Withdrawing…"
+              : tab === "deposit"
+                ? "Deposit"
+                : "Withdraw"}
         </button>
 
         {/* fees + disclaimer */}

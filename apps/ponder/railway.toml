@@ -1,0 +1,27 @@
+# Root Directory for this service must stay the monorepo root (not
+# apps/ponder) - ponder.config.ts reads
+# apps/contracts/data/84532/deployedContracts.json via a relative path
+# outside this directory, so apps/contracts must be present in the build
+# context (same reasoning as apps/web's railway.toml re: @repo/ui). Set
+# this file as the service's Config File Path (apps/ponder/railway.toml)
+# while leaving Root Directory as "/".
+[build]
+builder = "RAILPACK"
+buildCommand = "pnpm install --frozen-lockfile"
+
+[deploy]
+# --schema $RAILWAY_DEPLOYMENT_ID (not the fixed "ponder" schema
+# package.json's own start script uses) is Ponder's own documented
+# requirement for zero-downtime deploys on Railway - each deployment
+# indexes into its own schema, and traffic only cuts over once that
+# schema's backfill has caught up to realtime.
+# See: https://ponder.sh/docs/production/railway
+startCommand = "cd apps/ponder && ./node_modules/.bin/ponder start --schema $RAILWAY_DEPLOYMENT_ID"
+healthcheckPath = "/ready"
+# /ready only returns 200 once historical backfill has caught up to
+# realtime - Ponder's own Railway guide recommends the full 1-hour max
+# Railway allows, not a short timeout like the other services here, since
+# a genuine first-time backfill can legitimately take a while.
+healthcheckTimeout = 3600
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

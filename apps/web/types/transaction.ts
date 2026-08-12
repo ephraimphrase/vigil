@@ -15,12 +15,12 @@ export interface TransactionEntry {
   id: string;
   ts: string;
   type: TransactionType;
-  chain: string;        // matches VaultInfo.chain ("Ethereum" | "Base")
+  chain: string;       
   vaultSlug: string;
   vaultName: string;
   asset: string;
   amount: number;        // in asset units, always positive
-  amountUsd: number;
+  amountUsd: number | null; // null until a price feed is wired up - render "-", never fabricate one
   shares?: number;
   txHash: string;
 }

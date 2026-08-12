@@ -4,14 +4,17 @@
 // the numeric fields (market data, deltas, chart ticks).
 // ─────────────────────────────────────────────────────────────
 
-const usdCompact = new Intl.NumberFormat("en-US", {
-  style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 2,
-});
+import numbro from "numbro";
+
 const usdFull = new Intl.NumberFormat("en-US", {
   style: "currency", currency: "USD", maximumFractionDigits: 2,
 });
 
-export const fmtUsd = (v: number) => usdCompact.format(v);
+// Intl's own compact notation only ever gives locale-cased suffixes
+// ("$3.66K") - numbro's `average` mode gives the lowercase k/m/b DESIGN.md's
+// mono-numeral style wants ("$3.66k"), so dashboard stat tiles read as
+// data, not a currency-formatter default.
+export const fmtUsd = (v: number) => numbro(v).formatCurrency({ average: true, mantissa: 2 });
 export const fmtUsdFull = (v: number) => usdFull.format(v);
 export const fmtScore = (v: number) => String(Math.round(v));
 

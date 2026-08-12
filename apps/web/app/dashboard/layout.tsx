@@ -7,6 +7,7 @@ import NextLink from "next/link";
 import { AppShell } from "@/components/Layouts/AppShell";
 import { NAV, isActive } from "@/components/Layouts/nav.config";
 import { ConnectWallet } from "@/components/Wallet/ConnectWallet";
+import { FaucetTriggerButton } from "@/components/Wallet/FaucetTriggerButton";
 
 function titleFor(pathname: string): string {
   for (const section of NAV) {
@@ -29,7 +30,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       autoArmed={autoArmed}
       onToggleAuto={() => setAutoArmed((v) => !v)}
       Link={NextLink}
-      wallet={<ConnectWallet />}
+      wallet={
+        <div className="flex items-center gap-2">
+          <FaucetTriggerButton />
+          <ConnectWallet />
+        </div>
+      }
     >
       {children}
     </AppShell>

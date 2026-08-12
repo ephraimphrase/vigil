@@ -8,12 +8,12 @@ import { useApi } from "@/hooks/useApi";
 import { PortfolioSummary } from "@/components/Overview/PortfolioSummary";
 import { MyProtocols } from "@/components/Overview/MyProtocols";
 import { YourPositions } from "@/components/Overview/YourPositions";
-import { EventFeed } from "@/components/Overview/EventFeed";
+import { WalletSummary } from "@/components/Overview/WalletSummary";
 import type { VaultSummary } from "@/types";
 
 export default function DashboardOverviewPage() {
   const { data, isLoading } = useOverview();
-  const { portfolio, positions, events } = data;
+  const { portfolio, positions } = data;
   const account = useActiveAccount();
   const { data: vaults, isLoading: vaultsLoading } = useApi<VaultSummary[]>("/api/vaults", []);
   const yourVaultPositions = vaults.filter((v) => v.positionValueUsd !== null);
@@ -31,7 +31,7 @@ export default function DashboardOverviewPage() {
         <MyProtocols positions={positions} isLoading={isLoading} Link={NextLink} />
       </div>
       <div className="lg:sticky lg:top-4 lg:h-[calc(100vh-8rem)]">
-        <EventFeed initial={events} isLoading={isLoading} />
+        <WalletSummary Link={NextLink} />
       </div>
     </div>
   );

@@ -21,25 +21,10 @@ import { PiMagnifyingGlassLight } from "react-icons/pi";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
 import type { ThirdwebContract } from "thirdweb";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
-import { useApi } from "@/hooks/useApi";
-import { useFaucet, useFaucetContract, type FaucetToken } from "@/hooks/useFaucet";
-import { testTokens } from "@/lib/testTokens";
+import { Loader } from "@/components/ui/Loader";
+import { useDepositableTokens } from "@/hooks/useDepositableTokens";
+import { useFaucet, useFaucetContract } from "@/hooks/useFaucet";
 import { toast } from "@/components/ui/Toast";
-import type { VaultSummary } from "@/types";
-
-const FAUCET_CHAIN_ID = "84532";
-
-interface DisplayToken extends FaucetToken {
-  name: string;
-  logoURI: string;
-}
-
-// token.json accumulates every token ever deployed across every redeploy
-// (458 and counting) - most of those don't back any vault that currently
-// exists. Cross-referencing against /api/vaults's own asset addresses
-// keeps the faucet limited to "tokens you can actually go deposit
-// somewhere with" instead of a pile of orphaned test tokens.
-const ALL_TOKENS: DisplayToken[] = testTokens[FAUCET_CHAIN_ID] ?? [];
 
 function cooldownLabel(availableAt: bigint): string {
   const remainingMs = Number(availableAt) * 1000 - Date.now();
@@ -125,15 +110,11 @@ function FaucetModalBody({
 }) {
   const account = useActiveAccount();
   const { claimMany, isPending } = useFaucet();
-  const { data: vaults, isLoading: vaultsLoading } = useApi<VaultSummary[]>("/api/vaults", []);
+  const { tokens, isLoading: vaultsLoading } = useDepositableTokens();
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [claimableAt, setClaimableAt] = useState<readonly bigint[] | undefined>();
 
-  const tokens = useMemo(() => {
-    const liveAssets = new Set(vaults.map((v) => v.tokenContractAddress.toLowerCase()));
-    return ALL_TOKENS.filter((t) => liveAssets.has(t.address.toLowerCase()));
-  }, [vaults]);
   const tokenAddresses = useMemo(() => tokens.map((t) => t.address as `0x${string}`), [tokens]);
 
   // Reset the selection to "everything claimable" each time the modal opens
@@ -174,6 +155,16 @@ function FaucetModalBody({
   };
 
   const selectedClaimable = tokens.filter((t) => selected.has(t.address) && !cooldowns.has(t.address));
+  const selectableVisible = visible.filter((t) => !cooldowns.has(t.address));
+  const allVisibleSelected = selectableVisible.length > 0 && selectableVisible.every((t) => selected.has(t.address));
+
+  function toggleSelectAll() {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      selectableVisible.forEach((t) => (allVisibleSelected ? next.delete(t.address) : next.add(t.address)));
+      return next;
+    });
+  }
 
   async function handleClaim() {
     try {
@@ -208,9 +199,33 @@ function FaucetModalBody({
         />
       </div>
 
+      <div className="flex items-center justify-between border-b border-hairline px-6 py-2">
+        <label
+          className={`flex items-center gap-2 ${
+            selectableVisible.length === 0 ? "cursor-not-allowed opacity-40" : "cursor-pointer"
+          }`}
+        >
+          <input
+            type="checkbox"
+            checked={allVisibleSelected}
+            disabled={selectableVisible.length === 0}
+            onChange={toggleSelectAll}
+            className="h-3.5 w-3.5 rounded-none border border-hairline bg-transparent accent-violet"
+          />
+          <span className="font-mono text-xs uppercase tracking-wider text-muted">
+            {allVisibleSelected ? "Deselect all" : "Select all"}
+          </span>
+        </label>
+        <span className="font-mono text-xs text-muted/60">
+          {search ? `${visible.length} matching` : `${tokens.length} tokens`}
+        </span>
+      </div>
+
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-2">
         {vaultsLoading ? (
-          <span className="px-3 py-4 text-sm text-muted">Loading tokens…</span>
+          <div className="flex flex-1 items-center justify-center py-12">
+            <Loader />
+          </div>
         ) : visible.length === 0 ? (
           <span className="px-3 py-4 text-sm text-muted">No matching tokens.</span>
         ) : (

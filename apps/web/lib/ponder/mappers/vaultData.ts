@@ -1,16 +1,31 @@
-import type { VaultQuery } from "@/lib/ponder/generated/sdk";
+import type { AdaptersQuery, DepositsQuery, VaultQuery, WithdrawalsQuery } from "@/lib/ponder/generated/sdk";
 import { VaultKind } from "@/lib/ponder/generated/types";
 import type { VaultData } from "@/types";
 import { logoForTokenAddress } from "./tokenLogo";
+import { weightedApy } from "./adapterApy";
+import { estimateTvlUsd } from "./vaultTvl";
 
 type PonderVault = NonNullable<VaultQuery["vault"]>;
+type PonderAdapter = AdaptersQuery["adapters"]["items"][number];
+type PonderDeposit = DepositsQuery["deposits"]["items"][number];
+type PonderWithdrawal = WithdrawalsQuery["withdrawals"]["items"][number];
 
 const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "USDE", "FRAX", "GHO"]);
 
 // Position, allocation, risk checks, and history all need data this query
 // doesn't have (wallet-specific deposits, protocol/health-oracle
 // correlation, a time series) - left empty/null until that's wired up.
-export function toVaultData(vault: PonderVault): VaultData {
+// `adapters`/`deposits`/`withdrawals` are this vault's own rows (separate
+// queries, all filtered by `where: { vault: id }`) and `priceUsd` this
+// vault's asset's live CoinGecko price (lib/tokenPrices.ts) - apy and tvl
+// are the two info fields that aren't derivable from the vault row alone.
+export function toVaultData(
+  vault: PonderVault,
+  adapters: PonderAdapter[],
+  deposits: PonderDeposit[],
+  withdrawals: PonderWithdrawal[],
+  priceUsd: number | null,
+): VaultData {
   return {
     info: {
       slug: vault.id,
@@ -24,7 +39,8 @@ export function toVaultData(vault: PonderVault): VaultData {
       // format this unconditionally.
       sharePrice: 1,
       idle: NaN,
-      tvl: NaN,
+      tvl: estimateTvlUsd(deposits, withdrawals, vault.assetDecimals, priceUsd),
+      apy: weightedApy(adapters),
       benchmarkDeltaPct: NaN,
       chain: "Base Sepolia",
       description: "-",
@@ -35,7 +51,7 @@ export function toVaultData(vault: PonderVault): VaultData {
       vaultContractAddress: vault.id,
       tokenContractAddress: vault.asset,
       managementFeePct: 0,
-      performanceFeePct: 0.1,
+      performanceFeePct: 0.3,
       deployedOn: new Date(Number(vault.createdAtTimestamp) * 1000).toISOString(),
       features: [],
       docs: { userDocsUrl: "", devDocsUrl: "", analyticsUrl: "", apiUrl: "" },

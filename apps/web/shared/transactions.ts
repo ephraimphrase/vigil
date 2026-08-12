@@ -44,10 +44,10 @@ export function matchesQuery(entry: TransactionEntry, query: string): boolean {
   return [entry.vaultName, entry.asset, entry.chain, entry.txHash].some((f) => f.toLowerCase().includes(q));
 }
 
-// ─── EXPLORER LINKS ───
 const EXPLORER_BASE: Record<string, string> = {
   Ethereum: "https://etherscan.io/tx/",
   Base: "https://basescan.org/tx/",
+  "Base Sepolia": "https://sepolia.basescan.org/tx/",
 };
 
 export function explorerUrl(chain: string, txHash: string): string {
