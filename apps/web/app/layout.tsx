@@ -29,7 +29,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Vigil — Autonomous Protocol Risk Monitoring',
+    default: 'Vigil · Autonomous Protocol Risk Monitoring',
     template: '%s · Vigil',
   },
   description: SITE_DESCRIPTION,
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: '/',
     siteName: SITE_NAME,
-    title: 'Vigil — Autonomous Protocol Risk Monitoring',
+    title: 'Vigil · Autonomous Protocol Risk Monitoring',
     description: SITE_DESCRIPTION,
     locale: 'en_US',
     images: [
@@ -64,13 +64,13 @@ export const metadata: Metadata = {
         url: '/vigil-logo.png',
         width: 300,
         height: 300,
-        alt: 'Vigil — Autonomous protocol risk monitoring',
+        alt: 'Vigil · Autonomous protocol risk monitoring',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vigil — Autonomous Protocol Risk Monitoring',
+    title: 'Vigil · Autonomous Protocol Risk Monitoring',
     description: SITE_DESCRIPTION,
     images: ['/vigil-logo.png'],
   },
