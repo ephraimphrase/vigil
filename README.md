@@ -1,45 +1,191 @@
-# Vigil: Autonomous Risk Mitigation System
+<p align="center">
+  <a href="https://vigil.xyz">
+    <img src="apps/web/public/vigil-logo.png" alt="Vigil" width="140" />
+  </a>
+</p>
 
-Vigil is an autonomous protocol risk monitoring and consequence execution system. It continuously tracks off-chain and on-chain data to calculate real-time AI-driven health scores for over 1,000 protocols. If a protocol enters critical risk territory (e.g., smart contract exploit, liquidity crisis, or SEC regulatory action), Vigil automatically connects to **KeeperHub** via an MCP Server to execute emergency withdrawal workflows and pull your funds to safety.
+<h1 align="center">Vigil</h1>
 
-## 🧠 Architecture: The Global Oracle
-Instead of relying on rigid, monolithic data scrapers and expensive localized LLM calls, Vigil operates as a **Global Oracle**:
-1. **Dynamic Ingestion (The Funnel):** Vigil exposes a schema-less REST endpoint (`/webhook/ingest`). External scripts, KeeperHub workflows, and third-party APIs pump raw metrics (TVL, Twitter Panic, Flashloans) directly into this funnel.
-2. **High-Speed Data Bus:** All ingested data is instantly categorized and mapped into a high-speed Redis database (`domain` -> `category` -> `metric`).
-3. **The AI Score Engine:** Every 15 minutes, Vigil bundles the entire Redis JSON tree for a protocol and passes it to an LLM (Claude/OpenRouter) to produce a single, unified Health Score (0-100).
-4. **Trigger Evaluation:** Users configure Custom Triggers against this Global Score (e.g., *"If Aave drops below 30"*).
+<p align="center">
+  <strong>Autonomous protocol risk monitoring and consequence execution.</strong><br />
+  Vigil scores DeFi protocol health in real time and automatically reduces exposure before risk becomes loss.
+</p>
 
-## 🚀 The Data Pipelines
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Frontend-Next.js%2016-black?logo=next.js&logoColor=white" />
+  <img alt="Solidity" src="https://img.shields.io/badge/Contracts-Solidity%20%2F%20Foundry-363636?logo=solidity&logoColor=white" />
+  <img alt="Ponder" src="https://img.shields.io/badge/Indexer-Ponder-7C3AED" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/Scoring-FastAPI-009688?logo=fastapi&logoColor=white" />
+  <img alt="Base Sepolia" src="https://img.shields.io/badge/Testnet-Base%20Sepolia-0052FF?logo=coinbase&logoColor=white" />
+  <img alt="License" src="https://img.shields.io/badge/License-Private-lightgrey" />
+</p>
 
-### The Fast Lane (Instant)
-Critical on-chain metrics where seconds matter.
-* **Data Sources:** Binance/Pyth Websockets (Price Ticks), Chainlink (Oracles), DeFiLlama.
-* **Mechanism:** Data is streamed instantly into Redis, bypassing the 15-minute cron jobs to provide immediate liquidation and de-peg awareness.
+<p align="center">
+  <img alt="Built with Turborepo" src="https://img.shields.io/badge/Built%20with-Turborepo-EF4444?logo=turborepo&logoColor=white" />
+  &nbsp;
+  <img alt="Powered by KeeperHub" src="https://img.shields.io/badge/Powered%20by-KeeperHub-8B5CF6" />
+</p>
 
-### The Slow Lane (15-Minute Polling)
-Fundamental, social, and governance metrics.
-* **Data Sources:** Snapshot GraphQL (DAO Proposals), Google News RSS (Headlines), LunarCrush/Santiment (Social Sentiment).
-* **Mechanism:** Lightweight Python scripts poll these free APIs and push the data into the Vigil Webhook.
+<p align="center">
+  <a href="./docs/README.md">Docs</a>
+  ·
+  <a href="./apps/contracts/DEPLOYMENT.md">Deploy Contracts</a>
+  ·
+  <a href="./docs/keeperhub.md">KeeperHub</a>
+  ·
+  <a href="./apps/web">Web App</a>
+  ·
+  <a href="./apps/contracts">Contracts</a>
+  ·
+  <a href="./apps/api">Scoring API</a>
+</p>
 
-## ⚡ Execution Engine: KeeperHub MCP
-When Vigil detects severe negative sentiment (Score < 40), the execution engine (`apps/api/execution/keeperhub.py`) fires:
-1. Opens an SSE connection to `https://app.keeperhub.com/mcp`.
-2. Authenticates using the `KEEPERHUB_API_KEY`.
-3. Discovers available user workflows (e.g., `emergency-withdraw`, `reduce-exposure-50`).
-4. Uses an autonomous Agentic Wallet pattern to handle x402 (Payment Challenges) securely and execute the withdrawal on-chain.
-5. Employs positive sentiment detection to trigger `re-enter-position` workflows when the protocol fully recovers.
+---
 
-## 🛠 Tech Stack
-* **Backend:** FastAPI (Python), `asyncio`
-* **State & Caching:** Redis (Real-time data bus), SQLite (Long-term user configurations)
-* **LLM Engine:** OpenRouter API (Claude 3.5 Sonnet)
-* **Execution:** KeeperHub MCP Server
-* **Frontend:** React Dashboard (Work In Progress)
+## About
 
-## 🔑 Getting Started (Free Tier Setup)
-Vigil is designed to scale across 1,000 protocols with **$0 in API data costs**:
-1. Clone the repository.
-2. Create `apps/api/.env` and add your required keys:
-   * `KEEPERHUB_API_KEY=your_key`
-   * `OPENROUTER_API_KEY=your_key`
-3. The default ingestion scrapers use 100% free endpoints (DeFiLlama TVL, Snapshot GraphQL, Google News RSS, CoinGecko Batch Pricing).
+Vigil continuously tracks on-chain and off-chain signals — TVL, liquidations,
+governance activity, social sentiment, security disclosures — for a set of
+DeFi protocols, and turns them into a single 0–100 health score per protocol.
+Deposits sit in ERC-4626 vaults (`VigilVault`) that split funds across
+several protocol adapters, weighted by each adapter's current health score.
+When a protocol's score drops, the vault's own weighting math pulls exposure
+away from it automatically on the next rebalance — no push notification
+waiting for a human to act on it.
+
+This repo holds the full stack: the vaults and oracle contracts, the indexer
+that makes on-chain state queryable, the scoring backend, and the dashboard.
+The piece that closes the loop — actually calling `setScore()` and
+`rebalance()` on a schedule — is **KeeperHub**, an external workflow
+automation platform. See [Architecture](#architecture) below.
+
+## Features
+
+- **Health scoring.** An LLM synthesizes on-chain and off-chain signals
+  (TVL, liquidations, whale flows, governance, news, social sentiment) into a
+  0–100 score with plain-language reasoning per protocol — recomputed every
+  cycle, not hand-curated.
+- **Autonomous rebalancing.** `VigilVault` weights its protocol adapters by
+  live health score. A score drop shows up as a position change on the next
+  rebalance, not as an alert someone has to act on.
+- **KeeperHub-executed, on-chain.** Every score push and rebalance is a real
+  on-chain transaction, triggered on a schedule, auditable on Base Sepolia —
+  not a simulated or off-chain-only decision.
+- **A faucet that doesn't need a funded treasury.** Test tokens mint
+  on-demand (`Faucet.sol`) and forward to the caller in the same
+  transaction — claim several at once with one signature, no pre-funded pool
+  to run dry.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    API["apps/api<br/>FastAPI · ingestion + LLM scoring"] -->|writes health_scores| PG[(Postgres)]
+    PG -->|SQL read, every 15 min| KH{{"KeeperHub (external)<br/>scheduled workflow"}}
+    KH -->|HealthOracle.setScore| ORACLE[["HealthOracle"]]
+    KH -->|VigilVault.rebalance| VAULT[["VigilVault ×N"]]
+    ORACLE -.weights adapters.-> VAULT
+    VAULT -->|emits events| PONDER["apps/ponder<br/>indexes + serves GraphQL"]
+    PONDER -->|GraphQL| WEB["apps/web<br/>Next.js dashboard"]
+```
+
+| Layer | What it does | Lives in |
+|---|---|---|
+| Scoring | Ingests signals, prompts an LLM, persists `{score, reasoning}` to Postgres | [`apps/api`](./docs/api.md) |
+| **Execution (external)** | Every 15 min: pushes the latest score on-chain via `HealthOracle.setScore()`, then calls `VigilVault.rebalance()` on every vault | **KeeperHub** — [`docs/keeperhub.md`](./docs/keeperhub.md) |
+| On-chain | ERC-4626 vaults, the health oracle, protocol adapters, testnet token faucet | [`apps/contracts`](./apps/contracts) |
+| Indexing | Watches every contract event, serves it over GraphQL — how the frontend discovers vaults without polling the chain | [`apps/ponder`](./docs/ponder.md) |
+| Frontend | Dashboard, vault detail, protocol health, wallet + faucet UI | [`apps/web`](./docs/web.md) |
+
+The middle row is the one thing that's easy to miss: **nothing in this
+repo's own code calls `setScore()` or `rebalance()`.** That loop is real,
+it's just configured on KeeperHub rather than written here — an exported
+copy of the workflow lives at `vigil-work-flow.workflow.json`. Read
+[`docs/keeperhub.md`](./docs/keeperhub.md) before assuming that automation
+is either fully in-repo or missing entirely.
+
+## Tech stack
+
+- **Frontend** — Next.js 16 (App Router), TypeScript, Tailwind CSS v4,
+  thirdweb (wallet connect + contract calls), TanStack Table, Recharts,
+  Drizzle ORM (direct Postgres reads for protocol/score data).
+- **Contracts** — Solidity, Foundry, OpenZeppelin (`ERC4626`, `AccessControl`,
+  `ReentrancyGuard`), deployed to Base Sepolia.
+- **Indexer** — [Ponder](https://ponder.sh), Postgres, GraphQL.
+- **Scoring backend** — Python, FastAPI, an LLM via OpenRouter, Redis
+  (signal cache), Postgres (score history).
+- **Execution** — [KeeperHub](https://www.keeperhub.com) (external, MCP
+  workflow automation).
+- **Monorepo** — pnpm workspaces + Turborepo.
+
+## Getting started
+
+```bash
+git clone <this repo>
+cd vigil
+pnpm install
+```
+
+Each app needs its own env file — copy the relevant `.env.example` (`apps/web`,
+`apps/api`, `apps/contracts`) and fill in what it asks for before running
+that app.
+
+**Contracts** (local anvil, or a real testnet with `RPC_URL`/`DEPLOYER_KEY`
+set in `apps/contracts/.env`):
+
+```bash
+cd apps/contracts
+./deploy.sh          # anvil (or a fork) → WETH9 → seed tokens → Faucet →
+                      # core stack → syncs addresses/ABIs into apps/web
+```
+
+Full walkthrough, including a real Base Sepolia deploy step-by-step:
+[`apps/contracts/DEPLOYMENT.md`](./apps/contracts/DEPLOYMENT.md).
+
+**Everything else**, from the repo root:
+
+```bash
+pnpm dev              # turbo runs `dev` in every app in parallel
+```
+
+Or per app via turbo filters — `pnpm --filter web dev`,
+`pnpm --filter ponder dev`, `pnpm --filter contracts chain`. The scoring
+API runs separately (`cd apps/api && uvicorn main:app --reload`) and needs
+nothing from the JS side to work in isolation.
+
+## Documentation
+
+Start at [`docs/README.md`](./docs/README.md) — it indexes the per-app docs
+and walks through how data actually flows end to end, including the two
+things that trip up almost everyone new to this repo: `deployedContracts.json`
+being the seam every downstream service reads from, and KeeperHub's contract
+addresses being hardcoded rather than synced automatically.
+
+| Doc | Covers |
+|---|---|
+| [`docs/README.md`](./docs/README.md) | Monorepo index, end-to-end data flow |
+| [`docs/keeperhub.md`](./docs/keeperhub.md) | The external automation loop, exactly what it triggers and when |
+| [`docs/ponder.md`](./docs/ponder.md) | Indexer config, how vaults/adapters get discovered without hardcoding addresses |
+| [`docs/web.md`](./docs/web.md) | Frontend routes and its three separate data sources |
+| [`docs/api.md`](./docs/api.md) | Scoring backend, and what its own `README.md` gets wrong |
+| [`apps/contracts/documentation/`](./apps/contracts/documentation/README.md) | Contract-by-contract reference |
+| [`apps/contracts/DEPLOYMENT.md`](./apps/contracts/DEPLOYMENT.md) | Local + Base Sepolia deploy steps |
+
+## Current state
+
+Worth knowing before assuming a feature is either fully live or fake:
+
+- Every vault deployed today is `VigilVault.VaultKind.Single` — the
+  `Basket` kind exists in the contract's enum but nothing deploys one yet.
+- Real protocol integrations (`src/beefy_strategies/`) can't be deployed
+  yet — missing infrastructure. Every adapter you'll find on-chain right
+  now is a `MockStrategyAdapter` labeled with a real protocol's name, so the
+  scoring and rebalancing logic is real even though the yield isn't.
+- `apps/api` computes and stores scores; it does not sign or send any
+  on-chain transaction itself, by design — see
+  [`docs/api.md`](./docs/api.md) for exactly what is and isn't implemented
+  there versus what KeeperHub does externally.
+
+## License
+
+Private — not currently licensed for reuse.

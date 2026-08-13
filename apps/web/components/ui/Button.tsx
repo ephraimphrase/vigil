@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { BiRightArrowAlt } from "react-icons/bi";
 
 type ButtonVariant = "primary" | "ghost";
@@ -24,9 +25,9 @@ function ArrowBubble() {
 
 export function Button({ href, variant = "primary", icon = false, className, children }: ButtonProps) {
   if (variant === "ghost") {
-    
+
     return (
-      <a
+      <Link
         href={href}
         className={`group inline-flex rounded-full p-px transition-transform hover:-translate-y-px [background:linear-gradient(135deg,#D9B2EF,#412D4F)] ${className ?? ""}`}
       >
@@ -36,17 +37,17 @@ export function Button({ href, variant = "primary", icon = false, className, chi
           {children}
           {icon && <ArrowBubble />}
         </span>
-      </a>
+      </Link>
     );
   }
 
   return (
-    <a
+    <Link
       href={href}
       className={`group inline-flex items-center gap-2 rounded-full py-1.5 pl-6 font-body text-sm font-normal uppercase transition-transform hover:-translate-y-px ${icon ? "pr-2" : "pr-6"} ${PRIMARY_CLASSES} ${className ?? ""}`}
     >
       {children}
       {icon && <ArrowBubble />}
-    </a>
+    </Link>
   );
 }

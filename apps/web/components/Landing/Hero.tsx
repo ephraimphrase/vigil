@@ -52,7 +52,7 @@ export function Hero() {
               <Button href="/dashboard" variant="primary" icon={true} >
                 Get started
               </Button>
-              <Button href="/protocols" variant="ghost">
+              <Button href="/protocols" variant="ghost" className="py-3">
                 Monitor live protocols
               </Button>
             </div>
