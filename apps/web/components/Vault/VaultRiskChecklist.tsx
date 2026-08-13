@@ -19,7 +19,7 @@ export function VaultRiskChecklist({ rows }: { rows: RiskCheckRow[] }) {
     return (
       <div className="flex flex-col items-start gap-2 py-4">
         <span className="font-mono text-xs uppercase tracking-wider text-muted">No checks run yet</span>
-        <span className="text-sm text-muted/60">This vault's risk gates haven't been evaluated.</span>
+        <span className="text-sm text-muted/60">This vault&apos;s risk gates haven&apos;t been evaluated.</span>
       </div>
     );
   }
