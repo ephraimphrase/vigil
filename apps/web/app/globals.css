@@ -135,6 +135,29 @@
   left: 125%;
 }
 
+/* Pipeline node card - a real gradient border. border-color can't take a
+   gradient directly, and border-image ignores border-radius, so this
+   masks a gradient-filled ::before down to just its edge ring, letting
+   rounded-lg corners clip correctly. Fades from the violet accent to
+   fully transparent. */
+.pipeline-node {
+  position: relative;
+}
+
+.pipeline-node::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--color-violet), transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
 /* Footer link underline - grows in from the left on hover, retreats
    to the right on leave (transform-origin flips per state). */
 .footer-link {

@@ -1,3 +1,5 @@
+import { MdKeyboardDoubleArrowDown } from "react-icons/md";
+
 // ─── TYPES ─────────────────────────────────────
 interface FlowNode {
     title: string;
@@ -58,14 +60,17 @@ interface FlowNode {
             </div>
   
             {/* ── vertical flow diagram ── */}
-            <div className="relative pl-9">
-              <div className="absolute bottom-2.5 left-2.5 top-2.5 w-0.5 bg-gradient-to-b from-[#E5DBF1] to-[#9B8FAC] opacity-40" />
+            <div className="relative pl-14">
+              <MdKeyboardDoubleArrowDown className="absolute left-[11px] top-0 h-3.5 w-3.5 -translate-x-1/2 text-violet" />
+              <div className="absolute bottom-[14px] left-[10px] top-[14px] w-[2px] bg-gradient-to-b from-violet to-violet/0" />
+              <MdKeyboardDoubleArrowDown className="absolute bottom-0 left-[11px] h-3.5 w-3.5 -translate-x-1/2 text-violet" />
               {FLOW.map((node) => (
                 <div
                   key={node.title}
-                  className="relative mb-7 border border-[#CAC0D5]/20 bg-gradient-to-br from-[#B481CD]/20 to-[#C0ABDE]/5 px-5 py-4"
+                  className="pipeline-node relative mb-7 bg-gradient-to-br from-[#B481CD]/20 to-[#C0ABDE]/0 px-5 py-4 rounded-lg"
                 >
-                  <span className="absolute -left-[1.95rem] top-5 h-2.5 w-2.5 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
+                  <span className="absolute -left-[45px] top-[25px] h-px w-[45px] bg-violet/50" />
+                  <span className="absolute -left-[50px] top-5 h-2.5 w-2.5 rounded-full bg-violet shadow-[0_0_3.76px_0_var(--color-violet)]" />
                   <div className="font-semibold">{node.title}</div>
                   <div className="mt-0.5 text-sm text-text-muted">{node.desc}</div>
                 </div>
