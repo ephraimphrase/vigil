@@ -12,7 +12,6 @@
 
 import type { ComponentType, ReactNode } from "react";
 import { PiVaultLight } from "react-icons/pi";
-import { ScoreCell } from "@/components/Health/ScoreCell";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { WalletNotConnected } from "@/components/Wallet/WalletNotConnected";
 import { Loader } from "@/components/ui/Loader";
@@ -37,10 +36,6 @@ export function YourPositions({ Link = DefaultLink }: { Link?: LinkLike }) {
           <span>value</span>
           <span>·</span>
           <span>pnl</span>
-          <span>·</span>
-          <span>apy</span>
-          <span>·</span>
-          <span>health</span>
         </span>
       </header>
       {!connected ? (
@@ -57,7 +52,7 @@ export function YourPositions({ Link = DefaultLink }: { Link?: LinkLike }) {
             <li key={p.vaultSlug}>
               <Link
                 href={`/dashboard/vault/${p.vaultSlug}`}
-                className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-panel/40"
+                className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 transition-colors hover:bg-panel/40"
               >
                 <div className="flex items-center gap-3">
                   <TokenIcon symbol={p.asset} logoURI={p.assetLogoURI} size="md" />
@@ -74,8 +69,6 @@ export function YourPositions({ Link = DefaultLink }: { Link?: LinkLike }) {
                     {p.pnlUsd != null ? fmtSigned(p.pnlUsd) : "-"}
                   </span>
                 </div>
-                <span className="w-14 text-right font-mono text-sm tabular-nums text-muted">{p.apy.toFixed(1)}%</span>
-                <ScoreCell score={p.health} />
               </Link>
             </li>
           ))}
