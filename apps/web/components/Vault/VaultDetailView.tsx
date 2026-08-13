@@ -2,11 +2,14 @@
 
 
 import { useEffect, useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
 
 import { useVault } from "@/hooks/useVault";
 import { useVaultWithdrawable } from "@/hooks/useVaultWithdrawable";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { useTokenPrices } from "@/hooks/useTokenPrices";
-import { vaultAggregate } from "@/shared/vault";
+import { vaultAggregate, previewDeposit } from "@/shared/vault";
+import type { UserPosition } from "@/types";
 import { Loader } from "@/components/ui/Loader";
 import { Tabs } from "@/components/ui/Tabs";
 import { VaultMasthead } from "@/components/Vault/VaultMasthead";
@@ -64,13 +67,19 @@ function useScrollSpy(ids: DetailTab[], ready: boolean): DetailTab {
 }
 
 export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (tab: Tab, amount: number) => void }) {
-  const { data: vault, isLoading, refetch: refetchVault } = useVault(slug);
+  const account = useActiveAccount();
+  const { data: vault, isLoading, refetch: refetchVault } = useVault(slug, account?.address);
   const activeTab = useScrollSpy(SECTION_IDS, !isLoading && vault != null);
   const {
     balance: withdrawable,
     isLoading: withdrawableLoading,
     refetch: refetchWithdrawable,
   } = useVaultWithdrawable(vault?.info.vaultContractAddress, vault?.info.tokenContractAddress);
+  const {
+    balance: walletBalance,
+    isLoading: walletBalanceLoading,
+    refetch: refetchWalletBalance,
+  } = useTokenBalance(vault?.info.tokenContractAddress);
   const { prices } = useTokenPrices();
 
   if (isLoading) {
@@ -90,10 +99,27 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
     );
   }
 
-  const { info, policy, position, allocation, strategies, riskChecks, history } = vault;
+  const { info, policy, costBasisUsd, allocation, strategies, riskChecks, history } = vault;
   const agg = vaultAggregate(allocation);
   const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
   const depositedUsd = withdrawable != null && priceUsd != null ? withdrawable * priceUsd : null;
+
+  // Shares aren't a separate on-chain read - previewDeposit/previewRedeem
+  // (shared/vault.ts) and every other share-price display on this page
+  // already assume a 1:1 asset:share ratio (info.sharePrice, no real
+  // getter wired yet), so a genuine balanceOf read here would show a
+  // number that quietly disagrees with the rest of the page. Deriving from
+  // the same `withdrawable` read the masthead uses keeps "Your position"
+  // and "Your deposit" from ever drifting apart.
+  const userPosition: UserPosition | null = account
+    ? {
+        shares: withdrawable != null ? previewDeposit(withdrawable, info.sharePrice) : null,
+        valueUsd: depositedUsd,
+        costBasisUsd,
+        pnlUsd: depositedUsd != null && costBasisUsd != null ? depositedUsd - costBasisUsd : null,
+        walletUsdc: walletBalance != null && priceUsd != null ? walletBalance * priceUsd : null,
+      }
+    : null;
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 bg-base p-4">
@@ -102,7 +128,7 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
       <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
         {/* main column */}
         <div className="flex min-w-0 flex-col gap-4">
-          <VaultPositionSummary info={info} position={position} deployed={agg.deployed} />
+          <VaultPositionSummary info={info} position={userPosition} deployed={agg.deployed} />
 
           <div className="rounded-none border border-hairline bg-panel/20">
             <div className="sticky top-0 z-10 bg-panel">
@@ -136,6 +162,9 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
             withdrawable={withdrawable}
             withdrawableLoading={withdrawableLoading}
             refetchWithdrawable={refetchWithdrawable}
+            walletBalance={walletBalance}
+            walletBalanceLoading={walletBalanceLoading}
+            refetchWalletBalance={refetchWalletBalance}
           />
         </div>
       </div>

@@ -122,6 +122,24 @@ def save_signals(protocol: str, onchain: dict, offchain: dict) -> None:
         logger.error("[DB] save_signals failed: %s", e)
 
 
+def save_market_data(protocol: str, market: dict) -> None:
+    """Overwrites protocols.market with this sweep's freshly-fetched
+    CoinGecko snapshot (already mapped to apps/web's Market shape by
+    scoring/scorer.py's _map_market_data) - a full replace rather than a
+    merge like save_signals, since it's always a complete point-in-time
+    snapshot, not partial data to layer onto what's there."""
+    try:
+        with Session(engine) as session:
+            row = session.get(Protocol, protocol)
+            if not row:
+                return
+            row.market = market
+            session.add(row)
+            session.commit()
+    except Exception as e:
+        logger.error("[DB] save_market_data failed: %s", e)
+
+
 def save_typed_signals(protocol: str, typed: dict) -> None:
     """Merges freshly-scored typed signals into protocols.signals["typed"] -
     only that key is touched, "onchain"/"offchain" are left as whatever

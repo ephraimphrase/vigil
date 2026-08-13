@@ -13,19 +13,23 @@ type PonderWithdrawal = WithdrawalsQuery["withdrawals"]["items"][number];
 
 const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "USDE", "FRAX", "GHO"]);
 
-// Position, allocation, risk checks, and history all need data this query
-// doesn't have (wallet-specific deposits, protocol/health-oracle
-// correlation, a time series) - left empty/null until that's wired up.
-// `adapters`/`deposits`/`withdrawals` are this vault's own rows (separate
-// queries, all filtered by `where: { vault: id }`) and `priceUsd` this
-// vault's asset's live CoinGecko price (lib/tokenPrices.ts) - apy and tvl
-// are the two info fields that aren't derivable from the vault row alone.
+// Allocation, risk checks, and history all need data this query doesn't
+// have (protocol/health-oracle correlation, a time series) - left
+// empty/null until that's wired up. `adapters`/`deposits`/`withdrawals`
+// are this vault's own rows (separate queries, all filtered by
+// `where: { vault: id }`) and `priceUsd` this vault's asset's live
+// CoinGecko price (lib/tokenPrices.ts) - apy and tvl are the two info
+// fields that aren't derivable from the vault row alone. `costBasisUsd`
+// is the route's problem (it needs a request-specific address to filter
+// deposits/withdrawals by owner, which this pure mapper doesn't have),
+// passed straight through.
 export function toVaultData(
   vault: PonderVault,
   adapters: PonderAdapter[],
   deposits: PonderDeposit[],
   withdrawals: PonderWithdrawal[],
   priceUsd: number | null,
+  costBasisUsd: number | null,
 ): VaultData {
   return {
     info: {
@@ -66,7 +70,7 @@ export function toVaultData(
       autonomyDefault: "watch",
       excludedProtocols: [],
     },
-    position: null,
+    costBasisUsd,
     allocation: [],
     strategies: toVaultStrategies(adapters, vault.assetDecimals, priceUsd),
     riskChecks: [],

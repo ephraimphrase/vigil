@@ -15,12 +15,12 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Tabs } from "@/components/ui/Tabs";
-import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { useTokenPrices } from "@/hooks/useTokenPrices";
 import { useVaultDeposit } from "@/hooks/useVaultDeposit";
 import { useVaultWithdraw } from "@/hooks/useVaultWithdraw";
@@ -45,6 +45,10 @@ interface DepositWithdrawProps {
   withdrawable: number | null;
   withdrawableLoading: boolean;
   refetchWithdrawable: () => void;
+  /** Lifted to VaultDetailView (useTokenBalance) for the same reason as withdrawable - "Your position"'s walletUsdc reads this exact value too. */
+  walletBalance: number | null;
+  walletBalanceLoading: boolean;
+  refetchWalletBalance: () => void;
 }
 
 // ─── UTILS ───
@@ -78,25 +82,24 @@ export function DepositWithdraw({
   withdrawable,
   withdrawableLoading,
   refetchWithdrawable,
+  walletBalance,
+  walletBalanceLoading,
+  refetchWalletBalance,
 }: DepositWithdrawProps) {
   // state
   const [tab, setTab] = useState<Tab>("deposit");
   const [raw, setRaw] = useState("");
 
   // derived
-  const {
-    balance: walletBalance,
-    isLoading: balanceLoading,
-    connected,
-    refetch: refetchBalance,
-  } = useTokenBalance(info.tokenContractAddress);
+  const account = useActiveAccount();
+  const connected = !!account;
   const { deposit, isPending: depositPending } = useVaultDeposit(info.vaultContractAddress, info.tokenContractAddress);
   const { withdraw, isPending: withdrawPending } = useVaultWithdraw(info.vaultContractAddress, info.tokenContractAddress);
   const { prices } = useTokenPrices();
   const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
 
   const max = tab === "deposit" ? walletBalance ?? 0 : withdrawable ?? 0;
-  const amountLoading = tab === "deposit" ? balanceLoading : withdrawableLoading;
+  const amountLoading = tab === "deposit" ? walletBalanceLoading : withdrawableLoading;
   const amount = parseAmount(raw);
   const overMax = amount != null && amount > max;
   const submitting = tab === "deposit" ? depositPending : withdrawPending;
@@ -119,12 +122,12 @@ export function DepositWithdraw({
     try {
       if (tab === "deposit") {
         const { explorerUrl } = await deposit(raw, info.asset);
-        refetchBalance();
+        refetchWalletBalance();
         refetchWithdrawable();
         showTxToast("Deposit", explorerUrl);
       } else {
         const { explorerUrl } = await withdraw(raw, info.asset);
-        refetchBalance();
+        refetchWalletBalance();
         refetchWithdrawable();
         showTxToast("Withdrawal", explorerUrl);
       }

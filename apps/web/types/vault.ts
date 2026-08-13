@@ -56,12 +56,19 @@ export interface VaultHistoryPoint {
   tvl: number;
 }
 
+// Built client-side (components/Vault/VaultDetailView.tsx) from a live
+// maxWithdraw read (useVaultWithdrawable, also feeds the masthead's "Your
+// deposit" so the two numbers can't drift) plus VaultData.costBasisUsd,
+// the one piece that needs indexed deposit/withdrawal history rather than
+// a live read. Every field is nullable rather than defaulting to 0 -
+// "unknown" (price feed down, read still resolving) and "genuinely zero"
+// are different states this section shouldn't blur together.
 export interface UserPosition {
-  shares: number;
-  valueUsd: number;
-  costBasisUsd: number;
-  pnlUsd: number;
-  walletUsdc: number;
+  shares: number | null;
+  valueUsd: number | null;
+  costBasisUsd: number | null;
+  pnlUsd: number | null;
+  walletUsdc: number | null;
 }
 
 export interface AllocationRow {
@@ -106,7 +113,14 @@ export interface RiskCheckRow {
 export interface VaultData {
   info: VaultInfo;
   policy: VaultPolicy;
-  position: UserPosition | null;
+  /**
+   * This vault's requester net deposits minus withdrawals, in USD - null
+   * with no `?address=` on the request (no wallet to compute it for) or no
+   * verified price for this asset. The live half of a position (current
+   * value, share count) comes from an on-chain read instead - see
+   * UserPosition, built client-side from this plus that.
+   */
+  costBasisUsd: number | null;
   allocation: AllocationRow[];
   strategies: VaultStrategyRow[];
   riskChecks: RiskCheckRow[];

@@ -1,8 +1,8 @@
-import { toTokens } from "thirdweb";
 import type { AdaptersQuery, DepositsQuery, VaultsQuery, WithdrawalsQuery } from "@/lib/ponder/generated/sdk";
 import { weightedApy } from "./adapterApy";
 import { weightedHealth } from "./protocolHealth";
 import { logoForTokenAddress } from "./tokenLogo";
+import { netCostBasisAssets } from "./costBasis";
 
 type PonderVault = VaultsQuery["vaults"]["items"][number];
 type PonderDeposit = DepositsQuery["deposits"]["items"][number];
@@ -58,13 +58,8 @@ export function toPortfolioCandidates(
     if (!vault) continue;
 
     const decimals = vault.assetDecimals;
-    const depositedRaw = deposits
-      .filter((d) => d.vault.toLowerCase() === vaultId)
-      .reduce((sum, d) => sum + BigInt(d.assets), 0n);
-    const withdrawnRaw = withdrawals
-      .filter((w) => w.vault.toLowerCase() === vaultId)
-      .reduce((sum, w) => sum + BigInt(w.assets), 0n);
-    const netRaw = depositedRaw > withdrawnRaw ? depositedRaw - withdrawnRaw : 0n;
+    const vaultDeposits = deposits.filter((d) => d.vault.toLowerCase() === vaultId);
+    const vaultWithdrawals = withdrawals.filter((w) => w.vault.toLowerCase() === vaultId);
 
     candidates.push({
       vaultAddress: vault.id,
@@ -74,7 +69,7 @@ export function toPortfolioCandidates(
       assetAddress: vault.asset,
       assetLogoURI: logoForTokenAddress(vault.asset),
       decimals,
-      costBasisAssets: Number(toTokens(netRaw, decimals)),
+      costBasisAssets: netCostBasisAssets(vaultDeposits, vaultWithdrawals, decimals),
       apy: weightedApy(adaptersByVault.get(vaultId) ?? []),
       health: weightedHealth(adaptersByVault.get(vaultId) ?? [], scoreByProtocol),
     });
