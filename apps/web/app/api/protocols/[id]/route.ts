@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { asc, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { protocols, healthScores, triggers } from "@/db/schema";
 
@@ -24,9 +24,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     .select({ timestamp: healthScores.timestamp, score: healthScores.score })
     .from(healthScores)
     .where(eq(healthScores.protocol, id))
-    .orderBy(asc(healthScores.timestamp))
+    .orderBy(desc(healthScores.timestamp))
     .limit(14);
-  const history = rawHistory.map((h) => ({ timestamp: h.timestamp, score: h.score ?? 0 }));
+  const history = rawHistory
+    .map((h) => ({ timestamp: h.timestamp, score: h.score ?? 0 }))
+    .reverse();
   const scoreHistory = history.map((h, i) => {
     const window = history.slice(Math.max(0, i - 1), i + 1);
     const avg24h = Math.round(window.reduce((s, w) => s + w.score, 0) / window.length);

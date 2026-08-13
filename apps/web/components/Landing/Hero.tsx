@@ -9,7 +9,7 @@ interface Stat {
 }
 
 const STATS: Stat[] = [
-  { n: "1,240+", l: "Protocols monitored" },
+  { n: "22+", l: "Protocols monitored" },
   { n: "<60s", l: "Signal → executed transaction" },
   { n: "100%", l: "Actions logged onchain" },
 ];
