@@ -1,6 +1,8 @@
 import { ponder } from "@/lib/ponder/client";
 
 // Local-dev tool, not linked from the main nav.
+export const dynamic = "force-dynamic";
+
 export default async function DebugPonderPage() {
   const [{ vaults }, { adapters }] = await Promise.all([
     ponder.Vaults({ limit: 20, orderBy: "createdAtTimestamp", orderDirection: "desc" }),
