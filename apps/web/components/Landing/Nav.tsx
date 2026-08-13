@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "../ui/Button";
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -24,6 +25,7 @@ export function Nav() {
     <nav className="sticky top-0 z-50  backdrop-blur-md">
       <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5 font-display text-lg font-extrabold tracking-wide">
+          <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 shrink-0" priority />
           VIGIL
         </Link>
 

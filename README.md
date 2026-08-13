@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://vigil.xyz">
-    <img src="apps/web/public/vigil-logo.png" alt="Vigil" width="140" />
+    <img src="apps/web/public/banner.png" alt="Vigil" width="100%" />
   </a>
 </p>
 

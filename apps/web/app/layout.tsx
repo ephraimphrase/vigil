@@ -61,9 +61,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/vigil-logo.png',
-        width: 300,
-        height: 300,
+        url: 'https://i.imgur.com/9J9gOaX.png',
+        width: 3780,
+        height: 1890,
         alt: 'Vigil · Autonomous protocol risk monitoring',
       },
     ],
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Vigil · Autonomous Protocol Risk Monitoring',
     description: SITE_DESCRIPTION,
-    images: ['/vigil-logo.png'],
+    images: ['https://i.imgur.com/9J9gOaX.png'],
   },
 };
 

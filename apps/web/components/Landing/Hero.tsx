@@ -44,21 +44,20 @@ export function Hero() {
 
             <p className="mb-8 mt-5 max-w-[480px] text-lg text-text-muted">
               An autonomous agent that scores DeFi protocol health in real time and
-              rebalances your positions before risk becomes loss — no alerts to miss,
-              no trades to make yourself.
+              rebalances your positions before risk becomes loss 
             </p>
 
             <div className="mb-11 flex flex-wrap items-center gap-3.5">
               <Button href="/dashboard" variant="primary" icon={true} >
                 Get started
               </Button>
-              <Button href="/protocols" variant="ghost" className="py-3">
+              <Button href="/protocols" variant="ghost" >
                 Monitor live protocols
               </Button>
             </div>
         </div>
 
-          <div className="h-[110px] w-[250px] border border-[#CAC0D5]/20 rounded-none bg-[#1e1425] absolute top-[24rem] right-[1rem] z-[99999] flex items-center justify-center px-3">
+          <div className="h-[110px] w-[250px] border border-[#CAC0D5]/20 rounded-none bg-[#1e1425] absolute top-[22rem] right-[1rem] z-[99999] flex items-center justify-center px-3">
       <span className="absolute -left-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
       <span className="absolute -right-1.5 -top-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />
       <span className="absolute -bottom-1.5 -left-1.5 h-3 w-3 rounded-full bg-[#9F95AB] shadow-[0_0_3.76px_0_#9259DA]" />

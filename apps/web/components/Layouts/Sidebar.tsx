@@ -1,6 +1,7 @@
 
 
 import type { ComponentType, ReactNode } from "react";
+import Image from "next/image";
 import { PiHouseLight } from "react-icons/pi";
 import { NAV, isActive } from "./nav.config";
 
@@ -20,7 +21,7 @@ export function Sidebar({ pathname, badges, Link = DefaultLink }: SidebarProps) 
   return (
     <aside className="flex h-full w-56 shrink-0 flex-col border-r border-hairline bg-base">
       <div className="flex items-center gap-2 border-b border-hairline px-5 py-4">
-        <span className="h-2 w-2 rounded-full bg-violet shadow-[0_0_4px_#9259DA]" />
+        <Image src="/logo.png" alt="" width={24} height={24} className="h-6 w-6 shrink-0" priority />
         <span className="font-display text-lg tracking-tight text-body">Vigil</span>
       </div>
 

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface FooterLink {
     label: string;
     href: string;
@@ -23,12 +25,11 @@ interface FooterLink {
           <div className="mb-12 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
             <div>
               <div className="mb-3.5 flex items-center gap-2.5 font-display text-lg font-extrabold tracking-wide">
-                <span className="h-2 w-2 rounded-full bg-healthy shadow-[0_0_10px_var(--color-healthy)]" />
+                <Image src="/logo.png" alt="" width={24} height={24} className="h-6 w-6 shrink-0" />
                 VIGIL
               </div>
               <p className="max-w-[280px] text-sm text-text-muted">
-                Autonomous protocol health monitoring and portfolio rebalancing, executed
-                onchain through KeeperHub. Built for the KeeperHub Hackathon, July–August 2026.
+                Autonomous protocol health monitoring and portfolio rebalancing.
               </p>
             </div>
   
@@ -37,8 +38,7 @@ interface FooterLink {
           </div>
   
           <div className="flex flex-wrap justify-between gap-2.5 border-t border-border pt-6 text-sm text-text-dim">
-            <span>© 2026 Vigil. Built for KeeperHub Hackathon.</span>
-            <span>Not financial advice.</span>
+            <span>© 2026 Vigil.</span>
           </div>
         </div>
       </footer>
