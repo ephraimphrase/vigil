@@ -61,9 +61,9 @@ interface FlowNode {
   
             {/* ── vertical flow diagram ── */}
             <div className="relative pl-14">
-              <MdKeyboardDoubleArrowDown className="absolute left-[11px] top-0 h-3.5 w-3.5 -translate-x-1/2 text-violet" />
-              <div className="absolute bottom-[14px] left-[10px] top-[14px] w-[2px] bg-gradient-to-b from-violet to-violet/0" />
-              <MdKeyboardDoubleArrowDown className="absolute bottom-0 left-[11px] h-3.5 w-3.5 -translate-x-1/2 text-violet" />
+              <MdKeyboardDoubleArrowDown className="absolute left-[10.5px] top-0 h-4 w-4 -translate-x-1/2 text-violet" />
+              <div className="absolute bottom-4 left-2.5 top-4 w-px bg-violet" />
+              <MdKeyboardDoubleArrowDown className="absolute bottom-0 left-[10.5px] h-4 w-4 -translate-x-1/2 text-violet" />
               {FLOW.map((node) => (
                 <div
                   key={node.title}
