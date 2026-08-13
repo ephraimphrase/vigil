@@ -4,10 +4,8 @@
   </a>
 </p>
 
-<h1 align="center">Vigil</h1>
-
 <p align="center">
-  <strong>Autonomous protocol risk monitoring and consequence execution.</strong><br />
+  <strong>Autonomous protocol risk monitoring </strong><br />
   Vigil scores DeFi protocol health in real time and automatically reduces exposure before risk becomes loss.
 </p>
 
@@ -17,7 +15,7 @@
   <img alt="Ponder" src="https://img.shields.io/badge/Indexer-Ponder-7C3AED" />
   <img alt="FastAPI" src="https://img.shields.io/badge/Scoring-FastAPI-009688?logo=fastapi&logoColor=white" />
   <img alt="Base Sepolia" src="https://img.shields.io/badge/Testnet-Base%20Sepolia-0052FF?logo=coinbase&logoColor=white" />
-  <img alt="License" src="https://img.shields.io/badge/License-Private-lightgrey" />
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-green" />
 </p>
 
 <p align="center">
@@ -33,7 +31,7 @@
   ·
   <a href="./docs/keeperhub.md">KeeperHub</a>
   ·
-  <a href="./apps/web">Web App</a>
+  <a href="https://vigil-vault.up.railway.app/">Web App</a>
   ·
   <a href="./apps/contracts">Contracts</a>
   ·
@@ -121,14 +119,22 @@ is either fully in-repo or missing entirely.
 ## Getting started
 
 ```bash
-git clone <this repo>
+git clone https://github.com/ephraimphrase/vigil
 cd vigil
 pnpm install
 ```
 
-Each app needs its own env file — copy the relevant `.env.example` (`apps/web`,
-`apps/api`, `apps/contracts`) and fill in what it asks for before running
-that app.
+Two things need to be in place before anything runs:
+
+- **Env files.** Each app needs its own — copy the relevant `.env.example`
+  (`apps/web`, `apps/api`, `apps/contracts`) and fill in what it asks for
+  before running that app.
+- **Docker.** Postgres (indexer + score history) and Redis (signal cache)
+  run via the root `docker-compose.yml`:
+
+  ```bash
+  docker compose up -d
+  ```
 
 **Contracts** (local anvil, or a real testnet with `RPC_URL`/`DEPLOYER_KEY`
 set in `apps/contracts/.env`):
@@ -171,21 +177,6 @@ addresses being hardcoded rather than synced automatically.
 | [`apps/contracts/documentation/`](./apps/contracts/documentation/README.md) | Contract-by-contract reference |
 | [`apps/contracts/DEPLOYMENT.md`](./apps/contracts/DEPLOYMENT.md) | Local + Base Sepolia deploy steps |
 
-## Current state
-
-Worth knowing before assuming a feature is either fully live or fake:
-
-- Every vault deployed today is `VigilVault.VaultKind.Single` — the
-  `Basket` kind exists in the contract's enum but nothing deploys one yet.
-- Real protocol integrations (`src/beefy_strategies/`) can't be deployed
-  yet — missing infrastructure. Every adapter you'll find on-chain right
-  now is a `MockStrategyAdapter` labeled with a real protocol's name, so the
-  scoring and rebalancing logic is real even though the yield isn't.
-- `apps/api` computes and stores scores; it does not sign or send any
-  on-chain transaction itself, by design — see
-  [`docs/api.md`](./docs/api.md) for exactly what is and isn't implemented
-  there versus what KeeperHub does externally.
-
 ## License
 
-Private — not currently licensed for reuse.
+MIT — see [`LICENCE`](./LICENCE).
