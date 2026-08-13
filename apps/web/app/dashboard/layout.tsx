@@ -8,6 +8,7 @@ import { AppShell } from "@/components/Layouts/AppShell";
 import { NAV, isActive } from "@/components/Layouts/nav.config";
 import { ConnectWallet } from "@/components/Wallet/ConnectWallet";
 import { FaucetTriggerButton } from "@/components/Wallet/FaucetTriggerButton";
+import { TestnetDisclaimer } from "@/components/Layouts/TestnetDisclaimer";
 
 function titleFor(pathname: string): string {
   for (const section of NAV) {
@@ -23,21 +24,24 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [autoArmed, setAutoArmed] = useState(true);
 
   return (
-    <AppShell
-      pathname={pathname}
-      title={titleFor(pathname)}
-      systemState="running"
-      autoArmed={autoArmed}
-      onToggleAuto={() => setAutoArmed((v) => !v)}
-      Link={NextLink}
-      wallet={
-        <div className="flex items-center gap-2">
-          <FaucetTriggerButton />
-          <ConnectWallet />
-        </div>
-      }
-    >
-      {children}
-    </AppShell>
+    <>
+      <TestnetDisclaimer />
+      <AppShell
+        pathname={pathname}
+        title={titleFor(pathname)}
+        systemState="running"
+        autoArmed={autoArmed}
+        onToggleAuto={() => setAutoArmed((v) => !v)}
+        Link={NextLink}
+        wallet={
+          <div className="flex items-center gap-2">
+            <FaucetTriggerButton />
+            <ConnectWallet />
+          </div>
+        }
+      >
+        {children}
+      </AppShell>
+    </>
   );
 }

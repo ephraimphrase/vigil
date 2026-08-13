@@ -1,0 +1,156 @@
+.stage {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pulseRing {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 205, 255, 0.35);
+  animation: pulseWave 3.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+.pulseRing:nth-child(2) {
+  animation-delay: 1.2s;
+}
+.pulseRing:nth-child(3) {
+  animation-delay: 2.4s;
+}
+
+.halo {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  animation: spin 10s linear infinite;
+}
+.halo svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.haloArc {
+  fill: none;
+  stroke: url(#halo-grad);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 35 250;
+}
+
+.groundShadow {
+  position: absolute;
+  bottom: -4px;
+  width: 59px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55), transparent 72%);
+  animation: shadowBreathe 5s ease-in-out infinite;
+  z-index: 1;
+}
+
+.mark {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  z-index: 3;
+  animation: float 5s ease-in-out infinite;
+  transform: translateZ(20px);
+}
+
+.markImg {
+  object-fit: contain;
+  filter: drop-shadow(0 9px 15px rgba(0, 0, 0, 0.55));
+}
+
+.rim {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 205, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.sheen {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 4;
+  pointer-events: none;
+}
+.sheen::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -60%;
+  width: 45%;
+  height: 180%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  transform: rotate(20deg);
+  animation: sweep 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateZ(20px) translateY(0px);
+  }
+  50% {
+    transform: translateZ(20px) translateY(-5px);
+  }
+}
+@keyframes shadowBreathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(0.82);
+    opacity: 0.3;
+  }
+}
+@keyframes pulseWave {
+  0% {
+    transform: scale(0.86);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sweep {
+  0% {
+    left: -60%;
+  }
+  45% {
+    left: 120%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .pulseRing,
+  .halo,
+  .groundShadow,
+  .mark,
+  .sheen::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}

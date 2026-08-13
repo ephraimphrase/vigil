@@ -51,7 +51,7 @@ export function Hero() {
               <Button href="/dashboard" variant="primary" icon={true} >
                 Get started
               </Button>
-              <Button href="/protocols" variant="ghost" >
+              <Button href="/protocols" variant="ghost" className="h-[52px]">
                 Monitor live protocols
               </Button>
             </div>
