@@ -8,7 +8,7 @@ interface FlowNode {
   const FLOW: FlowNode[] = [
     {
       title: "Onchain + offchain signals",
-      desc: "TVL, liquidations, whale wallets, GitHub activity, sentiment, security news — ingested continuously.",
+      desc: "TVL, whale activity, GitHub activity, sentiment, and security news, ingested continuously.",
     },
     {
       title: "Signal aggregator",
@@ -24,7 +24,7 @@ interface FlowNode {
     },
     {
       title: "KeeperHub execution",
-      desc: "Gas estimation, MEV protection, and an onchain audit trail — automatically.",
+      desc: "Gas estimation, MEV protection, and an onchain audit trail, all automatic.",
     },
   ];
   
@@ -46,8 +46,8 @@ interface FlowNode {
                 to an action.
               </h2>
               <p className="mb-4 max-w-[440px] text-text-muted">
-                Vigil pulls signals other tools treat as separate feeds — onchain data
-                and offchain chatter — into one continuously-updating picture. An LLM
+                Vigil pulls signals other tools treat as separate feeds (onchain data
+                and offchain chatter) into one continuously-updating picture. An LLM
                 turns that picture into a single health score with reasoning attached,
                 and a decision engine acts on it the moment a threshold is crossed.
               </p>

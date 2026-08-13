@@ -16,10 +16,10 @@ const BAND_TEXT: Record<Band, string> = {
 };
 
 const CARDS: DecisionCard[] = [
-  { range: "80 – 100", action: "Hold", desc: "Protocol is healthy. No action taken.", band: "healthy" },
-  { range: "60 – 79", action: "Reduce 25%", desc: "Early caution signal. Position trimmed.", band: "caution" },
-  { range: "40 – 59", action: "Reduce 50%", desc: "Elevated risk. Exposure cut in half.", band: "warn" },
-  { range: "Below 40", action: "Full exit", desc: "Critical. Position closed entirely.", band: "danger" },
+  { range: "80 – 100", action: "Fully weighted", desc: "Gets its full share of the pool, proportional to score.", band: "healthy" },
+  { range: "60 – 79", action: "Weight reduced", desc: "Share shrinks in direct proportion as the score falls.", band: "caution" },
+  { range: "40 – 59", action: "Minority weight", desc: "A shrinking slice, with capital rotating elsewhere.", band: "warn" },
+  { range: "Below 40 or stale", action: "Zero weight", desc: "Target allocation collapses to zero on the next rebalance.", band: "danger" },
 ];
 
 
@@ -60,8 +60,9 @@ export function DecisionLogic() {
         </div>
 
         <div className="mt-5 max-w-2xl border-l-2 border-violet pl-4 text-sm text-text-muted">
-          A 15-point drop from a protocol&apos;s 24-hour rolling average triggers immediate
-          review — regardless of where the absolute score sits.
+          There&apos;s no fixed threshold to cross: every rebalance recalculates each
+          protocol&apos;s target weight directly from its live score, relative to
+          every other protocol in the vault.
         </div>
       </div>
     </section>

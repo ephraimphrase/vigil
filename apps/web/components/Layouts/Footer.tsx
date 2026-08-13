@@ -1,21 +1,22 @@
 import Image from "next/image";
+import { PiArrowUpRightLight } from "react-icons/pi";
 
 interface FooterLink {
     label: string;
     href: string;
   }
-  
+
   const PRODUCT_LINKS: FooterLink[] = [
     { label: "How it works", href: "#pipeline" },
     { label: "Features", href: "#features" },
     { label: "Decision logic", href: "#decisions" },
     { label: "FAQ", href: "#faq" },
   ];
-  
+
   const RESOURCE_LINKS: FooterLink[] = [
-    { label: "Docs", href: "#" },
-    { label: "GitHub", href: "#" },
-    { label: "Audit trail", href: "#" },
+    { label: "GitHub", href: "https://github.com/ephraimphrase/vigil" },
+    { label: "Telegram", href: "https://t.me/vigil_guard" },
+    { label: "Substack", href: "https://vigilguardfi.substack.com" },
   ];
   
   export function Footer() {
@@ -34,9 +35,9 @@ interface FooterLink {
             </div>
   
             <FooterCol title="Product" links={PRODUCT_LINKS} />
-            <FooterCol title="Resources" links={RESOURCE_LINKS} />
+            <FooterCol title="Resources" links={RESOURCE_LINKS} external />
           </div>
-  
+
           <div className="flex flex-wrap justify-between gap-2.5 border-t border-border pt-6 text-sm text-text-dim">
             <span>© 2026 Vigil.</span>
           </div>
@@ -44,14 +45,20 @@ interface FooterLink {
       </footer>
     );
   }
-  
-  function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
+
+  function FooterCol({ title, links, external = false }: { title: string; links: FooterLink[]; external?: boolean }) {
     return (
       <div>
         <h4 className="mb-3.5 font-mono text-xs uppercase tracking-wide text-text-dim">{title}</h4>
         {links.map((l) => (
-          <a key={l.label} href={l.href} className="mb-2.5 block text-sm text-text-muted hover:text-text">
+          <a
+            key={l.label}
+            href={l.href}
+            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="mb-2.5 flex items-center gap-1 text-sm text-text-muted hover:text-text"
+          >
             {l.label}
+            {external && <PiArrowUpRightLight className="h-3.5 w-3.5" />}
           </a>
         ))}
       </div>

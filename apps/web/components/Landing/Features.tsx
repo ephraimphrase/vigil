@@ -12,7 +12,7 @@ const FEATURES: Feature[] = [
   {
     idx: "01",
     title: "Health Scoring",
-    desc: "Claude synthesizes onchain and offchain signals into a 0–100 score with plain-language reasoning, refreshed continuously — not on a schedule.",
+    desc: "Claude synthesizes onchain and offchain signals into a 0–100 score with plain-language reasoning, refreshed continuously rather than on a fixed schedule.",
   },
   {
     idx: "02",

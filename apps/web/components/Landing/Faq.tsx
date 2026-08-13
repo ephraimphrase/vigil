@@ -13,19 +13,19 @@ interface FaqEntry {
 const FAQS: FaqEntry[] = [
   {
     q: "Is Vigil a trading bot?",
-    a: "No. Vigil doesn't chase yield or make speculative calls — it only acts to reduce risk when a protocol's health score drops.",
+    a: "No. Vigil doesn't chase yield or make speculative calls; it only acts to reduce risk when a protocol's health score drops.",
   },
   {
     q: "How fast does it react?",
-    a: "Signal to executed transaction in under 60 seconds, with no human approval step in between.",
+    a: "Scores refresh and vaults rebalance on a fixed 15-minute cycle, with no human approval step in between.",
   },
   {
     q: "Does Vigil custody my funds?",
-    a: "No. Every action executes directly from your positions through KeeperHub's onchain layer — Vigil never holds your assets.",
+    a: "Your deposit sits in the vault's own smart contract, not a centralized wallet or operator. There's no team key that can move it anywhere the contract's own rebalancing logic doesn't already allow.",
   },
   {
-    q: "Can I override a decision?",
-    a: "Yes. Thresholds and auto-execution can be adjusted or paused per protocol at any time.",
+    q: "Is this actually live, or a simulation?",
+    a: "Live on Base Sepolia today: every vault, score, and rebalance you see is a real onchain transaction, not a mock.",
   },
   {
     q: "What if a protocol's score recovers?",

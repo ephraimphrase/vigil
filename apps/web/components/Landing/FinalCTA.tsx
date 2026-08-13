@@ -1,5 +1,4 @@
 import { Button } from "../ui/Button";
-import { ConnectWallet } from "../Wallet/ConnectWallet";
 import Image from "next/image"
 
 export function FinalCTA() {
@@ -18,9 +17,11 @@ export function FinalCTA() {
             in seconds.
           </h2>
         <div className="relative flex flex-wrap items-center gap-3.5">
-            <ConnectWallet />
-            <Button href="#" variant="ghost">
-              Read the docs
+            <Button href="/dashboard" variant="primary" icon={true}>
+              Get started
+            </Button>
+            <Button href="https://t.me/vigil_guard" variant="ghost" external className="h-[52px]">
+              Community
             </Button>
           </div>
         </div>

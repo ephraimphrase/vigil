@@ -1,17 +1,19 @@
 const ONCHAIN = [
     "TVL trend",
-    "Liquidation spikes",
-    "Whale & team outflows",
-    "Contract pause events",
-    "Governance risk",
+    "Holder concentration",
+    "Protocol fees",
+    "Trading volume",
+    "Yield rates",
   ];
-  
+
   const OFFCHAIN = [
-    "GitHub commit velocity",
-    "Social sentiment",
+    "GitHub commit activity",
+    "Community sentiment",
     "Security & exploit news",
-    "Team wallet activity",
-    "Regulatory news",
+    "General news coverage",
+    "Social activity",
+    "Market data",
+    "Governance (DAO)",
   ];
   
   export function SignalsTracked() {

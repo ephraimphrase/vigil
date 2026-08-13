@@ -8,7 +8,7 @@ interface ProtocolTick {
   const PROTOCOLS: ProtocolTick[] = [
     { name: "Aave", score: 92 },
     { name: "Curve", score: 81 },
-    { name: "Lyra", score: 34 },
+    { name: "Silo Finance", score: 34 },
     { name: "Compound", score: 88 },
     { name: "Pendle", score: 58 },
     { name: "GMX", score: 76 },

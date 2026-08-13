@@ -10,7 +10,7 @@ interface Stat {
 
 const STATS: Stat[] = [
   { n: "22+", l: "Protocols monitored" },
-  { n: "<60s", l: "Signal → executed transaction" },
+  { n: "15 min", l: "Score refresh & rebalance cycle" },
   { n: "100%", l: "Actions logged onchain" },
 ];
 
