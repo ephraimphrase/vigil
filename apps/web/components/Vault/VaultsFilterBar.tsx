@@ -60,39 +60,45 @@ export function VaultsFilterBar({
   onAdvancedFiltersChange,
 }: VaultsFilterBarProps) {
   return (
-    <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1">
-      {TYPE_TABS.map((t) => (
-        <FilterPill key={t.id} active={typeFilter === t.id} onClick={() => onTypeFilterChange(t.id)}>
-          {t.label}
+    <div className="flex flex-col gap-2 md:flex-row md:flex-nowrap md:items-center md:overflow-x-auto md:pb-1">
+      <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+        {TYPE_TABS.map((t) => (
+          <FilterPill key={t.id} active={typeFilter === t.id} onClick={() => onTypeFilterChange(t.id)}>
+            {t.label}
+          </FilterPill>
+        ))}
+      </div>
+      <span className="hidden h-4 w-px shrink-0 bg-hairline md:block" />
+      <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+        <FilterPill active={chainFilter === "all"} onClick={() => onChainFilterChange("all")}>
+          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-hairline bg-surface-2 text-violet-bright">
+            <PiGlobeLight className="h-2.5 w-2.5" />
+          </span>
+          All Chains
         </FilterPill>
-      ))}
-      <span className="h-4 w-px shrink-0 bg-hairline" />
-      <FilterPill active={chainFilter === "all"} onClick={() => onChainFilterChange("all")}>
-        <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-hairline bg-surface-2 text-violet-bright">
-          <PiGlobeLight className="h-2.5 w-2.5" />
-        </span>
-        All Chains
-      </FilterPill>
-      {chains.map((chain) => (
-        <FilterPill key={chain} active={chainFilter === chain} onClick={() => onChainFilterChange(chain)}>
-          <ChainIcon chain={chain} />
-          {chain}
-        </FilterPill>
-      ))}
-      <span className="h-4 w-px shrink-0 bg-hairline" />
-      <InputGroup className="w-64 shrink-0">
-        <InputGroupAddon>
-          <SearchIcon aria-hidden="true" />
-        </InputGroupAddon>
-        <InputGroupInput
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Search vault"
-          type="search"
-          aria-label="Search vault"
-        />
-      </InputGroup>
-      <VaultsFilterDialog assets={assets} value={advancedFilters} onApply={onAdvancedFiltersChange} />
+        {chains.map((chain) => (
+          <FilterPill key={chain} active={chainFilter === chain} onClick={() => onChainFilterChange(chain)}>
+            <ChainIcon chain={chain} />
+            {chain}
+          </FilterPill>
+        ))}
+      </div>
+      <span className="hidden h-4 w-px shrink-0 bg-hairline md:block" />
+      <div className="flex flex-nowrap items-center gap-2">
+        <InputGroup className="w-full shrink-0 md:w-64">
+          <InputGroupAddon>
+            <SearchIcon aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            placeholder="Search vault"
+            type="search"
+            aria-label="Search vault"
+          />
+        </InputGroup>
+        <VaultsFilterDialog assets={assets} value={advancedFilters} onApply={onAdvancedFiltersChange} />
+      </div>
     </div>
   );
 }

@@ -25,7 +25,16 @@ export function AppShell({
 
   return (
     <div className="flex h-screen bg-base text-body">
-      <Sidebar pathname={pathname} badges={badges} Link={Link} open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <Sidebar
+        pathname={pathname}
+        badges={badges}
+        Link={Link}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        systemState={systemState}
+        autoArmed={autoArmed}
+        onToggleAuto={onToggleAuto}
+      />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar
           title={title}

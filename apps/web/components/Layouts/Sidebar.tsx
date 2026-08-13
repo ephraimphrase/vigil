@@ -4,6 +4,8 @@ import type { ComponentType, ReactNode } from "react";
 import Image from "next/image";
 import { PiHouseLight, PiXLight } from "react-icons/pi";
 import { NAV, isActive } from "./nav.config";
+import { StatusPill, type SystemState } from "./StatusPill";
+import { KillSwitch } from "@/components/ui/KillSwitch";
 
 type LinkLike = ComponentType<{ href: string; className?: string; children: ReactNode }>;
 
@@ -14,13 +16,19 @@ interface SidebarProps {
   /** Mobile drawer state - ignored at `md:` and up, where the sidebar is always visible and static. */
   open: boolean;
   onClose: () => void;
+  /** System status controls - shown only in the mobile drawer; the Topbar carries them at `md:` and up. */
+  systemState?: SystemState;
+  autoArmed?: boolean;
+  onToggleAuto?: () => void;
 }
 
 const DefaultLink: LinkLike = ({ href, className, children }) => (
   <a href={href} className={className}>{children}</a>
 );
 
-export function Sidebar({ pathname, badges, Link = DefaultLink, open, onClose }: SidebarProps) {
+export function Sidebar({
+  pathname, badges, Link = DefaultLink, open, onClose, systemState, autoArmed, onToggleAuto,
+}: SidebarProps) {
   return (
     <>
       {/* Backdrop - mobile only, dismisses the drawer on tap outside it. */}
@@ -52,6 +60,13 @@ export function Sidebar({ pathname, badges, Link = DefaultLink, open, onClose }:
             <PiXLight className="h-5 w-5" />
           </button>
         </div>
+
+        {systemState && onToggleAuto && (
+          <div className="flex items-center justify-between gap-2 border-b border-hairline px-5 py-3 md:hidden">
+            <StatusPill state={systemState} />
+            <KillSwitch armed={!!autoArmed} onToggle={onToggleAuto} />
+          </div>
+        )}
 
         <nav className="flex-1 overflow-y-auto px-3 py-4">
         {NAV.map((section) => (

@@ -62,7 +62,7 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
 
   return (
     <div className="flex h-full flex-col overflow-x-auto">
-      <div className="min-w-[500px]">
+      <div className="min-w-[600px]">
         <HeaderRow table={table} />
       </div>
 
@@ -73,7 +73,7 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
       ) : rows.length === 0 ? (
         <EmptyState query="" label="strategies" />
       ) : (
-        <div ref={scrollRef} className="min-h-0 min-w-[500px] flex-1 overflow-y-auto">
+        <div ref={scrollRef} className="min-h-0 min-w-[600px] flex-1 overflow-y-auto">
           <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
             {virtualizer.getVirtualItems().map((vr) => {
               const row = rows[vr.index];
