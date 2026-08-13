@@ -18,6 +18,8 @@ import { getTokenPrices, type PriceByAddress } from "@/lib/tokenPrices";
 const LIMIT = 500;
 const RECENT_FIRST = { limit: LIMIT, orderBy: "timestamp", orderDirection: "desc" } as const;
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const [
     { vaults },

@@ -4,11 +4,9 @@ export interface ProtocolRow {
   id: string;
   name: string;
   ticker: string;
-  icon: string;   
+  icon: string;
   score: number;
   delta24h: number;
-  tvl: number;
-  tvlDelta24h: number;
   riskFlags: string[];
 }
 

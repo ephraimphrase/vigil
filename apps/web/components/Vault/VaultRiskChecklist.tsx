@@ -15,6 +15,15 @@ const PASS = BAND_META.hold.color;
 const FAIL = BAND_META.exit.color;
 
 export function VaultRiskChecklist({ rows }: { rows: RiskCheckRow[] }) {
+  if (rows.length === 0) {
+    return (
+      <div className="flex flex-col items-start gap-2 py-4">
+        <span className="font-mono text-xs uppercase tracking-wider text-muted">No checks run yet</span>
+        <span className="text-sm text-muted/60">This vault's risk gates haven't been evaluated.</span>
+      </div>
+    );
+  }
+
   const failed = rows.filter((r) => !r.passed).length;
 
   return (

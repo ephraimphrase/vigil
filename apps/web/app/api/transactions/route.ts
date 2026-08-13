@@ -4,6 +4,8 @@ import { toDepositTransaction, toWithdrawTransaction } from "@/lib/ponder/mapper
 import { buildVaultsById } from "@/lib/ponder/mappers/vaultMeta";
 import { getTokenPrices, type PriceByAddress } from "@/lib/tokenPrices";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const [{ vaults }, { deposits }, { withdrawals }, prices] = await Promise.all([
     ponder.Vaults({ limit: 1000 }),

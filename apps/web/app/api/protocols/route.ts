@@ -24,7 +24,6 @@ export async function GET() {
     const delta24h = latest !== undefined && prior !== undefined ? latest - prior : 0;
     return {
       id, name, ticker: ticker ?? "", icon: icon ?? "", score, delta24h,
-      tvl: 0, tvlDelta24h: 0,
       riskFlags: (assessment as { riskFlags?: string[] }).riskFlags ?? [],
     };
   });

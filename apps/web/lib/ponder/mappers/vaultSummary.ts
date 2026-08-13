@@ -45,7 +45,9 @@ export function toVaultSummary(
     vaultType: vault.kind === VaultKind.Lp ? "LP" : "Single Asset",
     vaultContractAddress: vault.id,
     tokenContractAddress: vault.asset,
-    performanceFeePct: 0.03,
+    // No performance-fee getter exists on the vault contract yet - NaN
+    // marks "unknown" (fmtFeePct renders "-") rather than a fabricated %.
+    performanceFeePct: NaN,
     deployedOn: new Date(Number(vault.createdAtTimestamp) * 1000).toISOString(),
     features: [],
     docs: { userDocsUrl: "", devDocsUrl: "", analyticsUrl: "", apiUrl: "" },

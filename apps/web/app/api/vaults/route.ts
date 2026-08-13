@@ -3,6 +3,8 @@ import { ponder } from "@/lib/ponder/client";
 import { toVaultSummary } from "@/lib/ponder/mappers/vaultSummary";
 import { getTokenPrices, type PriceByAddress } from "@/lib/tokenPrices";
 
+export const dynamic = "force-dynamic";
+
 function groupByVault<T extends { vault: string }>(items: T[]): Map<string, T[]> {
   const grouped = new Map<string, T[]>();
   for (const item of items) {

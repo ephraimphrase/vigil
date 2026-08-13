@@ -1,7 +1,6 @@
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
 import type { ProtocolRow } from "../../types";
-import { fmtUsd } from "../../shared/format";
 import { ScoreCell } from "../Health/ScoreCell";
 import { DeltaCell } from "../Health/DeltaCell";
 import { BandLabel } from "../Health/BandLabel";
@@ -39,18 +38,6 @@ export function buildColumns(): ColumnDef<ProtocolRow, any>[] {
     col.accessor("delta24h", {
       header: "24h Δ",
       cell: ({ getValue }) => <DeltaCell value={getValue()} />,
-    }),
-    col.accessor("tvl", {
-      header: "TVL",
-      cell: ({ getValue }) => (
-        <span className="font-mono text-sm tabular-nums text-text">
-          {fmtUsd(getValue())}
-        </span>
-      ),
-    }),
-    col.accessor("tvlDelta24h", {
-      header: "TVL 24h",
-      cell: ({ getValue }) => <DeltaCell value={getValue()} suffix="%" />,
     }),
     col.accessor("score", {
       id: "action",
