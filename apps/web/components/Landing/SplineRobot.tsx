@@ -8,7 +8,7 @@ import Image from 'next/image';
 // ─── CONSTANTS ───
 const SCENE_URL =
   'https://prod.spline.design/o-weaVtgyLtpV3EB/scene.splinecode';
-const POSTER_SRC = '/robot-poster.webp'; // static still of the same camera angle
+const POSTER_SRC = '/robot-static.png'; // static still of the same camera angle
 const IDLE_TIMEOUT_MS = 2500; // force-mount even if the main thread never idles
 
 // ─── COMPONENTS ───

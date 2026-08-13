@@ -58,7 +58,7 @@ const ONCHAIN = [
         <h3 className="mb-4 font-mono text-sm uppercase tracking-wide text-text-dim">{label}</h3>
         <div className="flex flex-wrap gap-2.5">
           {tags.map((t) => (
-            <span key={t} className="glass-pill rounded-full px-4 py-2 text-sm">
+            <span key={t} className="glass-pill signal-pill rounded-full px-4 py-2 text-sm">
               {t}
             </span>
           ))}

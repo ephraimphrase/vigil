@@ -55,7 +55,7 @@ interface FooterLink {
             key={l.label}
             href={l.href}
             {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className="mb-2.5 flex items-center gap-1 text-sm text-text-muted hover:text-text"
+            className="footer-link mb-2.5 flex w-fit items-center gap-1 text-sm text-text-muted transition-colors hover:text-text"
           >
             {l.label}
             {external && <PiArrowUpRightLight className="h-3.5 w-3.5" />}
