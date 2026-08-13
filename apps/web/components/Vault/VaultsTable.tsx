@@ -46,30 +46,32 @@ export function VaultsTable({ table, query, isLoading, onOpenVault }: VaultsTabl
   const rows = table.getRowModel().rows;
 
   return (
-    <div className="flex flex-col">
-      <HeaderRow table={table} />
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader />
-        </div>
-      ) : rows.length === 0 ? (
-        <EmptyState query={query} label="vaults" />
-      ) : (
-        rows.map((row) => (
-          <div
-            key={row.id}
-            onClick={() => onOpenVault(row.original.slug)}
-            className="grid cursor-pointer items-center border-b border-hairline/60 px-3 py-3 transition-colors hover:bg-panel/40"
-            style={{ gridTemplateColumns: VAULT_GRID_COLS }}
-          >
-            {row.getVisibleCells().map((cell) => (
-              <div key={cell.id} className="pr-4">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </div>
-            ))}
+    <div className="overflow-x-auto">
+      <div className="flex min-w-[530px] flex-col">
+        <HeaderRow table={table} />
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader />
           </div>
-        ))
-      )}
+        ) : rows.length === 0 ? (
+          <EmptyState query={query} label="vaults" />
+        ) : (
+          rows.map((row) => (
+            <div
+              key={row.id}
+              onClick={() => onOpenVault(row.original.slug)}
+              className="grid cursor-pointer items-center border-b border-hairline/60 px-3 py-3 transition-colors hover:bg-panel/40"
+              style={{ gridTemplateColumns: VAULT_GRID_COLS }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div key={cell.id} className="pr-4">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }

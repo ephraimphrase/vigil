@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentType, ReactNode } from "react";
+import { useState, type ComponentType, type ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { Breadcrumbs } from "./Breadcrumbs";
@@ -21,11 +21,20 @@ interface AppShellProps {
 export function AppShell({
   pathname, title, systemState, autoArmed, onToggleAuto, badges, Link, wallet, children,
 }: AppShellProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="flex h-screen bg-base text-body">
-      <Sidebar pathname={pathname} badges={badges} Link={Link} />
+      <Sidebar pathname={pathname} badges={badges} Link={Link} open={menuOpen} onClose={() => setMenuOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar title={title} systemState={systemState} autoArmed={autoArmed} onToggleAuto={onToggleAuto} wallet={wallet} />
+        <Topbar
+          title={title}
+          systemState={systemState}
+          autoArmed={autoArmed}
+          onToggleAuto={onToggleAuto}
+          wallet={wallet}
+          onMenuClick={() => setMenuOpen(true)}
+        />
         <main className="min-h-0 flex-1 overflow-y-auto">
           <Breadcrumbs />
           {children}

@@ -69,8 +69,10 @@ export function ProtocolsTable({
   });
 
   return (
-    <div className="flex h-full flex-col">
-      <HeaderRow table={table} />
+    <div className="flex h-full flex-col overflow-x-auto">
+      <div className="min-w-[704px]">
+        <HeaderRow table={table} />
+      </div>
 
       {isLoading ? (
         <div className="flex flex-1 items-center justify-center py-12">
@@ -79,7 +81,7 @@ export function ProtocolsTable({
       ) : rows.length === 0 ? (
         <EmptyState query={query} />
       ) : (
-        <div ref={scrollRef} className="min-h-0 flex-1 overflow-auto">
+        <div ref={scrollRef} className="min-h-0 min-w-[704px] flex-1 overflow-y-auto">
           <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
             {virtualizer.getVirtualItems().map((vr) => {
               const row = rows[vr.index];
