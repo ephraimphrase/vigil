@@ -1,19 +1,9 @@
-// ─────────────────────────────────────────────────────────────
-// Formatters — pure, no domain logic. App-shared.
-// Most signal `raw` values arrive pre-formatted as strings; these cover
-// the numeric fields (market data, deltas, chart ticks).
-// ─────────────────────────────────────────────────────────────
-
 import numbro from "numbro";
 
 const usdFull = new Intl.NumberFormat("en-US", {
   style: "currency", currency: "USD", maximumFractionDigits: 2,
 });
 
-// Intl's own compact notation only ever gives locale-cased suffixes
-// ("$3.66K") - numbro's `average` mode gives the lowercase k/m/b DESIGN.md's
-// mono-numeral style wants ("$3.66k"), so dashboard stat tiles read as
-// data, not a currency-formatter default.
 export const fmtUsd = (v: number) => numbro(v).formatCurrency({ average: true, mantissa: 2 });
 export const fmtUsdFull = (v: number) => usdFull.format(v);
 export const fmtScore = (v: number) => String(Math.round(v));
@@ -25,9 +15,6 @@ export const fmtSigned = (v: number, suffix = "") => {
 
 export const fmtPct = (v: number) => `${(v * 100).toFixed(0)}%`;
 
-// Fee-precision percent: whole numbers stay bare, fractional ones keep 2dp
-// (0% not 0.00%, but 0.1% not 0%). NaN marks "not yet derivable" (no
-// on-chain fee getter exists) - render "-" rather than a fabricated %.
 export const fmtFeePct = (v: number) => {
   if (!Number.isFinite(v)) return "-";
   const pct = v * 100;

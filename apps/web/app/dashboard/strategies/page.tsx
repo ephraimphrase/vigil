@@ -22,8 +22,6 @@ export default function StrategiesPage() {
   const router = useRouter();
   const { data, isLoading } = useStrategies();
 
-  // Grouping is a presentational fold of the flat list - one row per
-  // protocol, multi-strategy protocols expandable.
   const grouped = useMemo(() => groupByProtocol(data.strategies), [data.strategies]);
 
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT);
@@ -31,9 +29,6 @@ export default function StrategiesPage() {
   const table = useReactTable({
     data: grouped,
     columns,
-    // Every protocol row is permanently expanded - no collapse control
-    // anywhere in the UI, so `expanded: true` (not wired to any setter)
-    // is a fixed "always all rows expanded" state, not a toggleable one.
     state: { sorting, expanded: true },
     onSortingChange: setSorting,
     getSubRows: (row: Strategy) => row.subRows,

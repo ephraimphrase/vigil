@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// useTransactionsTable — headless TanStack table for the Transactions
-// view's filter state, mirroring useActivityTable.ts's structure. Three
-// column filters (chain, type — both Sets, empty = "match everything",
-// see components/ui/FilterSelect.tsx for why that's the opposite
-// convention from the Log's kind chips — and a custom date range) plus a
-// free-text global filter for the search box.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import {
   useReactTable,

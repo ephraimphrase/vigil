@@ -1,18 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// FilterSelect — anchored multi-select dropdown pill. Reusable "select"
-// filter control (Chain, Transaction type, ...), built on @base-ui/react's
-// Popover (same primitive family as the Dialog VaultsFilterDialog already
-// uses, just anchored instead of centered). Checkbox rows reuse
-// VaultsFilterDialog's ToggleRow styling (rounded-none, hairline border,
-// accent-violet) rather than introducing base-ui's own Checkbox part.
-//
-// Empty selection = "match everything" (the collapsed "All ..." state) —
-// deliberately opt-in, the opposite convention from the Log's kind chips
-// (which start fully-selected and you opt out per chip). Both read
-// correctly for their own control; see shared/transactions.ts's header
-// comment for why they differ.
-// ─────────────────────────────────────────────────────────────
-
 "use client";
 
 import type { ReactNode } from "react";

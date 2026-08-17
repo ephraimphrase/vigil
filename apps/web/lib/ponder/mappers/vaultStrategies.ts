@@ -6,9 +6,6 @@ type PonderAdapter = AdaptersQuery["adapters"]["items"][number];
 
 const BPS_DIVISOR = 100;
 
-// One row per adapter this vault has ever added (active, paused, or
-// retired) - a full history, not just what's currently live, since
-// "what strategies has this vault used" is the point of the tab.
 export function toVaultStrategies(adapters: PonderAdapter[], decimals: number, priceUsd: number | null): VaultStrategyRow[] {
   return adapters
     .map((a): VaultStrategyRow => {

@@ -1,11 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// VaultPerformanceChart — the Performance tab. Sub-tabbed (30-Day APY /
-// Performance / TVL) over the vault's own history series, same
-// hairline-grid/violet-line recharts styling as ScoreChart.tsx.
-// ─────────────────────────────────────────────────────────────
-
 import { useState } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Tabs } from "@/components/ui/Tabs";

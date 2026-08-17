@@ -56,13 +56,6 @@ export interface VaultHistoryPoint {
   tvl: number;
 }
 
-// Built client-side (components/Vault/VaultDetailView.tsx) from a live
-// maxWithdraw read (useVaultWithdrawable, also feeds the masthead's "Your
-// deposit" so the two numbers can't drift) plus VaultData.costBasisUsd,
-// the one piece that needs indexed deposit/withdrawal history rather than
-// a live read. Every field is nullable rather than defaulting to 0 -
-// "unknown" (price feed down, read still resolving) and "genuinely zero"
-// are different states this section shouldn't blur together.
 export interface UserPosition {
   shares: number | null;
   valueUsd: number | null;
@@ -82,10 +75,6 @@ export interface AllocationRow {
   apy: number;
 }
 
-// One of the vault's IVigilProtocolAdapter strategies (Ponder's `adapter`
-// entity) - real, unlike AllocationRow above (still needs a protocol
-// registry for category + the full oracle-weighted target calc for
-// targetWeight, neither wired up yet).
 export interface VaultStrategyRow {
   id: string;
   protocolId: string;
@@ -99,10 +88,6 @@ export interface VaultStrategyRow {
   lastHarvestGainUsd: number | null;
 }
 
-// Beefy-checklist-style pass/fail row - vault-level (the strategy set as a
-// whole), not per-protocol. Distinct from protocols' severity-graded RiskRow
-// (see types/protocols.ts) - a different question (did this pass a fixed
-// gate? vs. how severe is this open issue?).
 export interface RiskCheckRow {
   id: string;
   label: string;
@@ -127,12 +112,6 @@ export interface VaultData {
   history: VaultHistoryPoint[];
 }
 
-// Row shape for the /dashboard/vault picker. `apy` and `score` are both
-// derived from the vault's own allocation (vaultAggregate, shared/vault.ts
-// - score is its dollar-weighted health); `riskFlagged` from its own
-// riskChecks; `positionValueUsd` from its own position - all computed once
-// at seed-build time from that same vault's VaultData, never hand-entered
-// a second time.
 export interface VaultSummary extends VaultInfo {
   score: number;
   riskFlagged: number;

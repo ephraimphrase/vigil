@@ -1,11 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Health domain — score bands, status colors, severity mapping.
-// App-shared (protocols list + detail both consume this). Status color
-// is the ONLY sanctioned use of non-violet color (brief §2): thin rules,
-// dots, range labels — never fills.
-// ─────────────────────────────────────────────────────────────
-
-
 export type Band = "hold" | "reduce_25" | "reduce_50" | "exit";
 export type Severity = "info" | "low" | "medium" | "high" | "critical";
 

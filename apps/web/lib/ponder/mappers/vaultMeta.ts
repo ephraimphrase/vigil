@@ -12,9 +12,6 @@ export interface VaultMeta {
   assetAddress: string | undefined;
 }
 
-// Shared by every mapper that needs "which vault, which asset, how many
-// decimals" from just a vault address - transactionFlows.ts and
-// vaultActivity.ts both key off this instead of each re-deriving it.
 export function buildVaultsById(vaults: PonderVault[]): Map<string, PonderVault> {
   return new Map(vaults.map((v) => [v.id.toLowerCase(), v]));
 }

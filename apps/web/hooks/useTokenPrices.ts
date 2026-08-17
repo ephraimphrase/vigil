@@ -1,12 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// useTokenPrices — polls /api/token-prices (server-cached, 60s TTL - see
-// that route) so open pages track live prices without a manual refresh,
-// instead of the plain fetch-once-per-mount useApi gives every other hook.
-// One shared address -> USD map; callers key into it themselves.
-// ─────────────────────────────────────────────────────────────
-
 import { useEffect, useState } from "react";
 
 const REFRESH_MS = 60_000;

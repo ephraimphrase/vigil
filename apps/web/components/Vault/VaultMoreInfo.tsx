@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultMoreInfo — the More Info tab: contract addresses, live share price,
-// deployment date, and doc/analytics links. Vault/token addresses repeat
-// what's already in the Vault Info tab's Addresses row - intentional,
-// that's exactly how the Yearn reference duplicates them too.
-// ─────────────────────────────────────────────────────────────
-
 import type { ReactNode } from "react";
 import { Address } from "@/components/ui/Address";
 import { fmtDateLong } from "@/shared/format";

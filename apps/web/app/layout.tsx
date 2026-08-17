@@ -61,12 +61,6 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        // Server actually returns Content-Type: image/jpeg for this URL
-        // despite the .png extension - declaring it explicitly stops
-        // Next.js inferring (and emitting) the wrong og:image:type from
-        // the URL's extension. Strict unfurlers (Telegram) reject on that
-        // mismatch; lenient ones (Discord) don't check and render fine
-        // either way - which is exactly the split we were seeing.
         url: 'https://i.imgur.com/9J9gOaX.png',
         width: 3780,
         height: 1890,

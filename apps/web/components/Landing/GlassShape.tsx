@@ -1,6 +1,3 @@
-// ─── COMPONENT ─────────────────────────────────────
-// Layered rotated, gradient-filled facets standing in for the reference
-// design's 3D glass renders — pure CSS, no image assets required.
 export function GlassShape() {
     return (
       <div className="relative min-h-[280px] w-full animate-float">

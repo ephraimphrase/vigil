@@ -1,17 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ActionTray — live progress cards for long-running, multi-step actions
-// (e.g. a batched faucet claim across several tokens). Ported from
-// fce-orderbook's ActionTray.tsx - same start()/advance()/detail()/
-// failStep()/finish()/fail() state machine, restyled with Vigil's tokens
-// (hairline borders, mono/uppercase labels, violet/healthy/danger rule
-// colors) instead of its bespoke CSS. Distinct from components/ui/Toast.tsx
-// (Base UI's Toast primitive, single-message notifications) - this is a
-// bespoke stack for a job with a known, fixed set of steps and per-step
-// timing, which Toast has no concept of.
-// ─────────────────────────────────────────────────────────────
-
 import {
   createContext,
   useCallback,
@@ -129,11 +117,6 @@ export function TrayProvider({ children }: { children: ReactNode }) {
         },
       ]);
 
-      // Step cursor lives in the closure - the caller drives it, and no
-      // render depends on it, so a ref would only add noise. Every updater
-      // below reads `at`, a snapshot of the cursor taken when the method is
-      // CALLED, not when React flushes - otherwise calls batched into one
-      // tick would all see whichever value the last call left behind.
       let cursor = 0;
       const update = (mut: (j: Job) => Job) =>
         setJobs((prev) => prev.map((j) => (j.id === id ? mut(j) : j)));
@@ -144,9 +127,6 @@ export function TrayProvider({ children }: { children: ReactNode }) {
           ...j,
           steps: j.steps.map((s, i) => {
             if (i < at) {
-              // 'failed' is terminal - a step marked by failStep() must
-              // survive the batch advancing past it, or the card would
-              // claim success.
               if (s.status === "done" || s.status === "failed") return s;
               return { ...s, status: "done", detail: undefined, endedAt: s.endedAt ?? Date.now() };
             }
@@ -177,8 +157,6 @@ export function TrayProvider({ children }: { children: ReactNode }) {
       const finish = ({ summary }: { summary?: Record<string, string> } = {}) => {
         update((j) => ({
           ...j,
-          // Steps marked failed via failStep() stay failed - the job
-          // completed, but not every part of it succeeded.
           steps: j.steps.map((s) =>
             s.status === "failed"
               ? s

@@ -17,9 +17,6 @@ type AbiFunction = {
   stateMutability: string;
 };
 
-// Best-effort text -> ABI-typed value. Arrays/tuples are entered as raw
-// JSON (e.g. `[1,2,3]`) rather than getting per-element inputs - covers
-// the common primitive-arg case cleanly, punts on nested-input UX.
 function parseInput(type: string, raw: string): unknown {
   if (type.endsWith("[]") || type.startsWith("tuple")) {
     return raw.trim() === "" ? [] : JSON.parse(raw);

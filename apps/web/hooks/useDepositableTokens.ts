@@ -1,14 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// useDepositableTokens — testTokens.ts accumulates every token ever
-// deployed across every redeploy; this cross-references it against
-// /api/vaults' own asset addresses so callers only ever see tokens you can
-// actually go deposit somewhere with (never a vault's own share token,
-// which isn't in testTokens.ts to begin with). Shared by FaucetModal and
-// the wallet pages so the two can't drift into showing different lists.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo } from "react";
 import { useApi } from "@/hooks/useApi";
 import { testTokens, type TestToken } from "@/lib/testTokens";

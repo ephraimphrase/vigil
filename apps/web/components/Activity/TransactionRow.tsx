@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// TransactionRow — one wallet transaction. Flat, not expandable like
-// ActivityRow: a deposit/withdraw is a single discrete on-chain action,
-// not a staged decision with retries/proof to drill into.
-// ─────────────────────────────────────────────────────────────
-
 import moment from "moment";
 import { TokenIcon } from "@/components/Vault/TokenIcon";
 import { Address } from "@/components/ui/Address";

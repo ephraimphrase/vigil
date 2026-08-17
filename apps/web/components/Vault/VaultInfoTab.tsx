@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultInfoTab — the Vault Info tab: what this vault is, in Yearn's own
-// field set (Addresses / Chain / Asset Type / Vault Type / Fees). Each
-// field is a Collapsible - label + always-visible value collapsed, the
-// explanatory blurb only mounts once expanded, matching Yearn's own
-// click-to-reveal treatment. No Policy section - that's Vigil-specific and
-// isn't part of what this tab is reproducing.
-// ─────────────────────────────────────────────────────────────
-
 import { Chip } from "@/components/ui/Chip";
 import { Collapsible } from "@/components/ui/Collapsible";
 import { Address } from "@/components/ui/Address";

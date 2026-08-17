@@ -1,11 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// DateRangePicker — trigger pill + modal popup, calendar grid from
-// react-day-picker (range mode) restyled through its `classNames`/
-// `components` hooks so day cells stay mono/sharp per DESIGN.md
-// instead of the library's own look. Popup shell reuses the app's
-// Dialog + CornerFrame primitives (see VaultsFilterDialog).
-// ─────────────────────────────────────────────────────────────
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -60,11 +52,6 @@ function toRdpRange(range: DateRange): RdpDateRange | undefined {
   return { from: range.start, to: range.end ?? undefined };
 }
 
-// ─── STYLE HOOKS FOR REACT-DAY-PICKER ───
-// Every UI/DayFlag/SelectionState key we care about gets one of our own
-// utility classes; keys left unset render with no class at all (the
-// library's stylesheet is never imported), so nothing shadcn-flavored
-// can leak in.
 const classNames = {
   [UI.Root]: "font-sans",
   [UI.Months]: "flex gap-6",

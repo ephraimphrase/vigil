@@ -78,8 +78,6 @@ export function StrategiesTable({ table, isLoading, onOpenStrategy }: Strategies
             {virtualizer.getVirtualItems().map((vr) => {
               const row = rows[vr.index];
               if (!row) return null;
-              // Protocol rows (depth 0) are always expanded and unclickable -
-              // there's nothing left to toggle. Only leaf strategy rows open.
               const isLeaf = row.depth > 0;
               return (
                 <div

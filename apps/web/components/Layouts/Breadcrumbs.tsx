@@ -16,11 +16,6 @@ import { NAV } from "@/components/Layouts/nav.config";
 
 const NAV_LABELS = new Map(NAV.flatMap((section) => section.items).map((item) => [item.href, item.label]));
 
-// Vault slugs are the one dynamic segment humanize() can't fake its way
-// through - "steth-eth-lp" needs to read "stETH-ETH LP", not "Steth Eth
-// Lp", and that casing only exists in the vault's own `name`. Fetched
-// directly here (not via useVault/useApi) so a page that isn't a vault
-// detail page never issues the request.
 const VAULT_DETAIL_RE = /^\/dashboard\/vault\/([^/]+)$/;
 
 function useVaultBreadcrumbName(pathname: string): string | null {

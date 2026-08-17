@@ -1,12 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// FaucetModalProvider — mounts a single FaucetModal instance app-wide so
-// any component (header icon, wallet page CTA, ConnectWallet's details
-// footer) can open the same modal via useFaucetModal() instead of each
-// owning its own open state and its own <FaucetModal> mount.
-// ─────────────────────────────────────────────────────────────
-
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { FaucetModal } from "@/components/Wallet/FaucetModal";
 

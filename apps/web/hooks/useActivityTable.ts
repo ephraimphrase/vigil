@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// useActivityTable — headless TanStack table for filter/sort STATE only.
-// Rows are custom-rendered (the staged timeline), not flexRender'd cells,
-// but filtering/sorting still runs through the same column-filter/sort
-// machinery the rest of the app's tables use, rather than a bespoke
-// useState+useMemo predicate. Three independent filters: kind (a set -
-// multi-select chips), protocol (single select), date range (presets).
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import {
   useReactTable,

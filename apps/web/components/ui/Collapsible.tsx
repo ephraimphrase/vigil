@@ -1,13 +1,5 @@
 "use client";
 
-// Tree-style disclosure row: mono uppercase label (+ optional always-visible
-// summary value) with a chevron toggle. Body always renders - open/closed is
-// a grid-template-rows 0fr<->1fr transition (not conditional mount/unmount),
-// which is what makes the height animate smoothly without measuring it in
-// JS. Used by VaultInfoTab for the Addresses/Chain/Asset Type/Vault
-// Type/Fees blocks - each collapsed to its label+value by default,
-// expanding to show the explanatory blurb underneath.
-
 import { useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 

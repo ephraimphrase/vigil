@@ -7,9 +7,6 @@ import { chainForId } from "@/lib/chains";
 import { thirdwebClient } from "@/lib/thirdweb-client";
 import { deployedContracts } from "@/lib/deployedContracts";
 
-// Debug page: call any read/write function on any contract
-// script/lib/DeployRegistrar.sol registered, without writing one-off UI
-// per contract. Local-dev tool, not linked from the main nav.
 export default function DebugPage() {
   const chainIds = Object.keys(deployedContracts);
   const [chainId, setChainId] = useState(chainIds[0] ?? "31337");

@@ -1,17 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ProtocolsView — composition only. Wires the table hook to header /
-// toolbar / table. Shared between the public /protocols route (no
-// dashboard chrome) and /dashboard/protocols (rendered inside AppShell)
-// so the two never drift apart - see app/protocols/page.tsx and
-// app/dashboard/protocols/page.tsx, which are both thin wrappers around
-// this.
-//
-// Data: fetched from /api/protocols - no mock import here, so the raw
-// dataset never ships in the client bundle.
-// ─────────────────────────────────────────────────────────────
-
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
@@ -24,9 +12,6 @@ import { ProtocolsToolbar } from "@/components/Protocol/ProtocolsToolbar";
 import { ProtocolsTable } from "@/components/Protocol/ProtocolsTable";
 
 interface ProtocolsViewProps {
-  // Detail links resolve to `${basePath}/${id}` - pass "/dashboard/protocols"
-  // when rendering inside the dashboard shell so drilling into a protocol
-  // doesn't drop the sidebar.
   basePath?: string;
 }
 

@@ -1,14 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// PortfolioSummary — the dashboard's one headline: total value + P&L
-// across every vault the connected wallet holds, real (usePortfolio(),
-// /api/portfolio/[address]). "Vaults"/"Current APY" are real too; "30-day
-// APY" is honestly "-" - Vigil doesn't index a share-price time series
-// (and adapter yield rates are immutable on-chain anyway), so there's no
-// trailing window to compute, see types/portfolio.ts.
-// ─────────────────────────────────────────────────────────────
-
 import type { ReactNode } from "react";
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";

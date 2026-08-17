@@ -1,21 +1,6 @@
-// ─────────────────────────────────────────────────────────────
-// Transactions domain — PURE. Mirrors shared/activity.ts's structure for
-// the sibling "what did MY wallet do" feed (see types/transaction.ts for
-// why this is a separate domain from the automation Log). Color/label
-// maps, custom date-range filtering (the Log keeps its fixed presets —
-// this view's DateRangePicker needs an arbitrary {start,end}), free-text
-// search, and CSV/JSON export.
-// ─────────────────────────────────────────────────────────────
-
 import type { TransactionEntry, TransactionType } from "@/types";
 import type { DateRange } from "@/components/ui/DateRangePicker";
 
-// ─── COLOR / LABEL MAPS ───
-// No new hexes: deposit reuses the existing "healthy" green (inflow),
-// transfer reuses primary violet (a neutral share movement). Withdraw
-// deliberately stays neutral grey rather than amber/red — a withdrawal is
-// a routine user action, not a risk event, and DESIGN.md reserves
-// red/amber for score-band severity.
 export const TX_TYPE_COLOR: Record<TransactionType, string> = {
   deposit: "#5FD08A",
   withdraw: "#9F95AB",

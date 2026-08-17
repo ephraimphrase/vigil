@@ -1,9 +1,3 @@
-// The connected wallet's real cross-vault position, served by
-// /api/portfolio/[address] (lib/ponder/mappers/portfolio.ts). Distinct
-// from OverviewData's `Portfolio`/`Position` (still seed-mocked) - this is
-// the real replacement for PortfolioSummary specifically; MyProtocols/
-// YourPositions haven't been wired to real data yet.
-
 export interface PortfolioVaultPosition {
   vaultSlug: string;
   vaultName: string;

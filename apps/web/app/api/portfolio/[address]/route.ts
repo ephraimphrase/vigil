@@ -8,7 +8,6 @@ import { thirdwebClient } from "@/lib/thirdweb-client";
 import { chainForId } from "@/lib/chains";
 import type { PortfolioSummaryData, PortfolioVaultPosition } from "@/types";
 
-// Same chain every other route/hook hardcodes - Vigil only indexes Base Sepolia.
 const CHAIN_ID = "84532";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ address: string }> }) {
@@ -29,8 +28,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ address
       ponder.ProtocolRegistereds({ limit: 1000 }),
       ponder.ScoreUpdateds({ limit: 1000 }),
       ponder.EmergencyZeroeds({ limit: 1000 }),
-      // Pricing is best-effort - a CoinGecko hiccup should degrade
-      // currentUsd/costBasisUsd/pnlUsd to "unknown", not fail the portfolio.
       getTokenPrices().catch((): PriceByAddress => ({})),
     ]);
 
@@ -50,8 +47,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ address
         });
         currentAssets = Number(toTokens(maxWithdrawRaw, c.decimals));
       } catch {
-        // A single vault's read failing (RPC hiccup) shouldn't fail the
-        // whole portfolio - drop it from this response, not zero it out.
         return null;
       }
 

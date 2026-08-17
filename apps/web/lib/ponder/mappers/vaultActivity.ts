@@ -32,11 +32,6 @@ export function buildAdaptersById(adapters: PonderAdapter[]): Map<string, Ponder
   return new Map(adapters.map((a) => [a.id.toLowerCase(), a]));
 }
 
-// adapterEvacuated/adapterRetiredEvent/adapterHarvested only carry the
-// adapter's address, not its stratName or (for retired/harvested) even
-// its vault - both live on the adapter's own current entity record, which
-// still exists (with retired: true) after removal, same as the Strategies
-// tab already relies on.
 function adapterMeta(adaptersById: Map<string, PonderAdapter>, adapterAddress: string) {
   const a = adaptersById.get(adapterAddress.toLowerCase());
   return {

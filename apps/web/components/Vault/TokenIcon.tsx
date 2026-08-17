@@ -1,12 +1,5 @@
 import type { CSSProperties } from "react";
 
-// CoinGecko's coin image CDN - same source protocol icons already use a
-// different CDN for (icons.llamao.fi). Each URL below was verified live
-// against api.coingecko.com/api/v3/coins/{id} before hardcoding, so this
-// isn't a guessed path. Assets without an entry (LP tokens, anything
-// exotic) fall back to a generated mono-letter badge. Shared between the
-// filter dialog's asset picker, the vault table's row icon, and the vault
-// masthead so a given symbol always renders the same way everywhere.
 const COINGECKO_ICONS: Partial<Record<string, string>> = {
   ETH: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png",
   USDC: "https://coin-images.coingecko.com/coins/images/6319/large/USDC.png",
@@ -65,10 +58,6 @@ export function TokenIcon({ symbol, size = "md", className = "", style, logoURI 
   );
 }
 
-// CoinGecko's asset_platforms endpoint has dedicated chain logos (distinct
-// from any single coin's icon) - each URL verified live before hardcoding,
-// same as COINGECKO_ICONS above. Chains without an entry fall back to a
-// generated mono-letter badge.
 const CHAIN_ICONS: Partial<Record<string, string>> = {
   Ethereum: "https://coin-images.coingecko.com/asset_platforms/images/279/large/ethereum.png",
   Base: "https://coin-images.coingecko.com/asset_platforms/images/131/large/base.png",
@@ -101,10 +90,6 @@ export function ChainIcon({ chain, size = "xs" }: { chain: string; size?: IconSi
 
 const MAX_STACKED_ICONS = 4;
 
-// Overlapping cluster for multi-asset (LP) vaults - a single-asset vault
-// just passes a one-item array so callers don't need to branch on count.
-// Caps at 4 icons; anything beyond that collapses into a "+N" badge rather
-// than growing the row unbounded once a vault has a longer underlying list.
 export function TokenIconStack({
   symbols,
   size = "md",

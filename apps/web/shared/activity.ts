@@ -1,18 +1,5 @@
-// ─────────────────────────────────────────────────────────────
-// Activity domain — PURE. Kind/stage color maps (the thin left-rule per
-// DESIGN.md's status conventions), CSV/JSON export, date-range presets.
-// KIND_COLOR used to be a private const duplicated inside EventFeed.tsx;
-// it's the single source now so Overview's ticker and the Activity
-// timeline can't disagree on what color a "trigger" row is.
-// ─────────────────────────────────────────────────────────────
-
 import type { ActivityEntry, EventKind, StageStatus } from "@/types";
 
-// ─── COLOR MAPS ───
-// Composed entirely from DESIGN.md's sanctioned status palette (green/
-// lime/amber/red + violet/violet-bright/neutral) - no new hexes invented.
-// circuit_breaker shares alert's red; it reads as more severe through
-// weight/icon in the row, not a second red.
 export const KIND_COLOR: Record<EventKind, string> = {
   score: "#9F95AB",
   cycle: "#5FD08A",
@@ -41,8 +28,6 @@ export const KIND_LABEL: Record<EventKind, string> = {
   harvest: "Harvest",
 };
 
-// Derived from KIND_COLOR's keys, not hand-typed again, so a new kind
-// only ever needs adding in one place.
 export const ALL_KINDS = Object.keys(KIND_COLOR) as EventKind[];
 
 export const STAGE_COLOR: Record<StageStatus, string> = {

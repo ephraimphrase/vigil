@@ -12,12 +12,6 @@ type PonderWithdrawal = WithdrawalsQuery["withdrawals"]["items"][number];
 
 const STABLECOIN_SYMBOLS = new Set(["USDC", "USDT", "DAI", "USDE", "FRAX", "GHO"]);
 
-// Static/unknown until vault-detail wiring: score and the other aggregate
-// metrics need protocol-allocation data that isn't in this query. NaN
-// marks "unknown" so VaultsColumns can render "-" instead of a misleading
-// 0. apy and tvl are the exceptions - real, from this vault's own slice of
-// /api/vaults' Adapters/Deposits/Withdrawals({ limit }) calls plus its
-// asset's live price (lib/tokenPrices.ts).
 export function toVaultSummary(
   vault: PonderVault,
   adapters: PonderAdapter[],
@@ -45,8 +39,6 @@ export function toVaultSummary(
     vaultType: vault.kind === VaultKind.Lp ? "LP" : "Single Asset",
     vaultContractAddress: vault.id,
     tokenContractAddress: vault.asset,
-    // No performance-fee getter exists on the vault contract yet - NaN
-    // marks "unknown" (fmtFeePct renders "-") rather than a fabricated %.
     performanceFeePct: NaN,
     deployedOn: new Date(Number(vault.createdAtTimestamp) * 1000).toISOString(),
     features: [],

@@ -1,18 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ProtocolDetailView — composition only, organized by depth tier:
-//   GLANCE : Masthead + Assessment
-//   SCAN   : Score chart · Signal breakdown · Risk · Triggers
-//   DEEP   : Details (contracts/incidents/deps) · Ask
-// A two-column grid keeps market/side context beside the main column on
-// wide viewports; single column below. No data logic here.
-//
-// Shared between the public /protocols/[id] route (no dashboard chrome)
-// and /dashboard/protocols/[id] (rendered inside AppShell) - see the two
-// thin route wrappers that just resolve the id param and render this.
-// ─────────────────────────────────────────────────────────────
-
 import { useProtocolDetail } from "@/hooks/useProtocolsDetails";
 import { Loader } from "@/components/ui/Loader";
 import { Masthead } from "@/components/Protocol/MastHead";

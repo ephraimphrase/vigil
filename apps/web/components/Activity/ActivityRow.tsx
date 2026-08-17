@@ -1,14 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// ActivityRow — one audit-trail entry. Collapsed = a single summary line;
-// expanded = the full trigger → simulation → submission → gas/retries →
-// outcome stage list, plus retries / per-strategy results / proof links
-// when the entry carries them. The staged rendering is the whole point:
-// failure and partial states get their own visible rows, never collapsed
-// into a single ✓/✗.
-// ─────────────────────────────────────────────────────────────
-
 import { useState } from "react";
 import moment from "moment";
 import { PiWarningOctagonLight } from "react-icons/pi";

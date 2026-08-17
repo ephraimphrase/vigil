@@ -1,6 +1,3 @@
-// Circle's official USDC mark, inlined so there's no runtime network
-// dependency. Sized via `className` (default `size-6`) - pass `!size-N`
-// when the parent forces its own descendant svg sizing (e.g. InputGroupAddon).
 export function UsdcIcon({ className = "size-6" }: { className?: string }) {
   return (
     <svg className={`${className} shrink-0`} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden>

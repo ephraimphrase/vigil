@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// TransactionsHeader — filter row for the wallet-transactions view: chain
-// + type dropdowns (FilterSelect), a custom date range (DateRangePicker),
-// free-text search, and export. Mirrors ActivityHeader.tsx's filter row
-// for the Log, just with this view's actual filter shapes.
-// ─────────────────────────────────────────────────────────────
-
 import { PiGlobeLight, PiMagnifyingGlassLight } from "react-icons/pi";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { FilterSelect } from "@/components/ui/FilterSelect";

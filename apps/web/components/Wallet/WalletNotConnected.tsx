@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// WalletNotConnected — drop-in replacement for any "your data" panel body
-// when there's no active wallet. Same shape as EmptyState (icon, mono
-// uppercase label, muted sans line) plus the actual connect CTA inline, so
-// the dead end is actionable rather than just informative. Reuses
-// ConnectWallet (thirdweb) rather than a bespoke button - one connect flow,
-// themed once, everywhere it's triggered.
-// ─────────────────────────────────────────────────────────────
-
 import { PiWalletLight } from "react-icons/pi";
 import { ConnectWallet } from "./ConnectWallet";
 

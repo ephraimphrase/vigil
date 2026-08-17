@@ -1,18 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// VaultsPage — vault picker. A real table (header + search + sortable
-// columns), not cards - vaults are comparison data (TVL, APY, risk), and
-// every other entity list in this app (protocols, strategies) is already a
-// table; cards would've been the odd one out. Empty state (no vaults, or a
-// search with no matches) is the same EmptyState the other tables use, so
-// "nothing here" never just renders blank. Row click stays inside the
-// dashboard shell (/dashboard/vault/[slug]) rather than dropping to the
-// bare public /vault/[slug] route - same split as protocols
-// (/dashboard/protocols/[id] vs /protocols/[id]), both rendering the same
-// VaultDetailView so the two can't drift apart.
-// ─────────────────────────────────────────────────────────────
-
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";

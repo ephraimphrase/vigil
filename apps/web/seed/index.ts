@@ -1,16 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Seed data — the single entry point every API route imports from, and
-// what scripts/seed-db.ts loads into the shared Postgres DB. Not "mock"
-// data sitting alongside real data - this IS the source of truth for
-// anything not yet read live from Postgres (see app/api/protocols/route.ts
-// and app/api/protocols/[id]/route.ts, which query the DB directly).
-// Small/computed data (overview) lives here directly; strategies and the
-// protocol list stay as their own JSON files and get assembled below
-// rather than inlined. Vault has no seed of its own anymore - both
-// app/api/vaults/route.ts and app/api/vault/[slug]/route.ts read live from
-// Ponder (lib/ponder/mappers/vaultSummary.ts, vaultData.ts).
-// ─────────────────────────────────────────────────────────────
-
 import moment from "moment";
 import type { OverviewData, StrategiesData, ProtocolRow, ActivityData, TransactionsData } from "../types";
 import { ACTIVITY_ENTRIES } from "./activity";
@@ -52,7 +39,4 @@ const protocols = protocolsData as ProtocolRow[];
 const activity: ActivityData = { entries: ACTIVITY_ENTRIES };
 const transactions: TransactionsData = { entries: TRANSACTION_ENTRIES };
 
-// No protocolDetail here - app/api/protocols/[id]/route.ts queries the
-// `protocols` table in Postgres directly. protocol-detail/*.json still
-// exists as seed input for scripts/seed-db.ts, not served from here.
 export const SEED = { overview, strategies, protocols, activity, transactions };

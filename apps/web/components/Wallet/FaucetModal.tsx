@@ -1,20 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// FaucetModal — lets a connected wallet claim test tokens (testTokens.ts,
-// synced from apps/contracts/data/84532/token.json) from the Faucet
-// contract in one batched claimMany() transaction. Controlled dialog (no
-// own trigger) - opened from ConnectWallet.tsx's details-modal footer, same
-// Base UI Dialog pattern as VaultsFilterDialog.tsx.
-//
-// The token list renders regardless of whether Faucet is deployed yet -
-// only the cooldown lookup and the claim action need the live contract, and
-// those degrade to "unknown cooldown" / a disabled button instead of
-// hiding the whole list. CooldownFetcher below only mounts (and only then
-// calls useReadContract) once a contract exists, so this never has to pass
-// a null/undefined contract into a hook that requires a real one.
-// ─────────────────────────────────────────────────────────────
-
 import { useEffect, useMemo, useState } from "react";
 import { Dialog } from "@base-ui/react/dialog";
 import { PiMagnifyingGlassLight } from "react-icons/pi";
@@ -117,8 +102,6 @@ function FaucetModalBody({
 
   const tokenAddresses = useMemo(() => tokens.map((t) => t.address as `0x${string}`), [tokens]);
 
-  // Reset the selection to "everything claimable" each time the modal opens
-  // (or once the live-vault list resolves, since `tokens` starts empty).
   useEffect(() => {
     if (!open) return;
     setSearch("");

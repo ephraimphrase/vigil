@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Vault math — PURE. Deposit/withdraw previews and amount parsing. No
-// React, no rounding surprises: shares and assets convert through
-// sharePrice only. Mirrors ERC4626 previewDeposit / previewRedeem.
-// ─────────────────────────────────────────────────────────────
-
 // ─── UTILS ───
 /** USDC in → shares minted. */
 export const previewDeposit = (usdc: number, sharePrice: number): number =>
@@ -20,14 +14,6 @@ export function parseAmount(input: string): number | null {
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
-// ─── AGGREGATES ───
-// Dollar-weighted average across a vault's own allocation rows - same
-// weighting shared/rebalance.ts's aggregate() uses for the (separate)
-// global strategies domain, just typed to AllocationRow's fields. Each
-// vault computes its own headline APY/health/deployed from its own
-// allocation - never from another vault's or from the global strategies
-// list - so a multi-vault picker can't show one vault's numbers on
-// another's page.
 export interface VaultAggregate {
   deployed: number;
   weightedHealth: number;

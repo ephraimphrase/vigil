@@ -22,9 +22,6 @@ export async function GET() {
     ponder.Adapters({ limit: 1000 }),
     ponder.Deposits({ limit: 1000 }),
     ponder.Withdrawals({ limit: 1000 }),
-    // Pricing is best-effort - a CoinGecko hiccup should degrade TVL to
-    // "unknown" (estimateTvlUsd(..., null) -> NaN -> "-"), not take down
-    // the whole vault list.
     getTokenPrices().catch((): PriceByAddress => ({})),
   ]);
 

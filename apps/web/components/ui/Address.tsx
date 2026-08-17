@@ -1,20 +1,9 @@
 "use client";
 
-// Reusable onchain address: truncated mono text, linked out to a block
-// explorer (defaults to Etherscan, but any EVM chain/testnet can override
-// via `chain` - or `explorerUrl` for anything not in EXPLORERS at all, e.g.
-// a private/staging deployment), plus a copy-to-clipboard icon. Every
-// display concern (truncation length, whether it's a link, whether it has
-// a copy button, text size) is a prop rather than a second component, so
-// callers don't reinvent this for "just the address, no link" cases.
-
 import { useState, type MouseEvent } from "react";
 import { PiArrowSquareOut, PiCheck, PiCopy } from "react-icons/pi";
 import { fmtAddress } from "@/shared/format";
 
-// Base explorer URL per chain, keyed lowercase - add a chain here and every
-// caller that passes it gets the right explorer for free. Anything not
-// listed falls back to Etherscan mainnet.
 const EXPLORERS: Record<string, string> = {
   ethereum: "https://etherscan.io/address/",
   sepolia: "https://sepolia.etherscan.io/address/",

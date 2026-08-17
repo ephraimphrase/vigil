@@ -37,13 +37,6 @@ function scrollToSection(id: DetailTab) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// Active tab tracks whichever section is currently at the top of the
-// viewport, not which one was last clicked - clicking just scrolls there.
-// `ready` gates the effect: VaultDetailView calls this hook before its
-// isLoading/not-found early returns (hooks can't be conditional), so on
-// first mount the <section> elements don't exist in the DOM yet - without
-// `ready`, the observer would attach to nothing and never re-attach once
-// the real content (and its section ids) actually renders.
 function useScrollSpy(ids: DetailTab[], ready: boolean): DetailTab {
   const [active, setActive] = useState<DetailTab>(ids[0] ?? "performance");
 
@@ -104,13 +97,6 @@ export function VaultDetailView({ slug, onSubmit }: { slug: string; onSubmit?: (
   const priceUsd = prices[info.tokenContractAddress.toLowerCase()] ?? null;
   const depositedUsd = withdrawable != null && priceUsd != null ? withdrawable * priceUsd : null;
 
-  // Shares aren't a separate on-chain read - previewDeposit/previewRedeem
-  // (shared/vault.ts) and every other share-price display on this page
-  // already assume a 1:1 asset:share ratio (info.sharePrice, no real
-  // getter wired yet), so a genuine balanceOf read here would show a
-  // number that quietly disagrees with the rest of the page. Deriving from
-  // the same `withdrawable` read the masthead uses keeps "Your position"
-  // and "Your deposit" from ever drifting apart.
   const userPosition: UserPosition | null = account
     ? {
         shares: withdrawable != null ? previewDeposit(withdrawable, info.sharePrice) : null,

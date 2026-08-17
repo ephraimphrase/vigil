@@ -1,19 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultAllocation — the Strategies tab: donut + sortable, expandable
-// table of the vault's own adapters, real (Ponder's `adapter` entity -
-// lib/ponder/mappers/vaultStrategies.ts). Every adapter the vault has
-// ever added, active/paused/retired alike - "what strategies has this
-// vault used" is the point, not just what's currently live.
-//
-// No per-strategy management/performance fee row (unlike a Yearn-style
-// reference) - VigilVault's fees are vault-level, not per-adapter; adapters
-// don't charge their own fees in this contract system, so showing a fake
-// "0.00%" would just be lying. Expanded detail shows what's actually
-// real instead: status, last harvest, and the adapter's own address
-// (via the existing <Address> component - copy + block-explorer link
-// already built in).
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import moment from "moment";
 import { ChevronDown } from "lucide-react";

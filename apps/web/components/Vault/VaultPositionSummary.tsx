@@ -1,16 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultPositionSummary — the connected wallet's slice of the pool, plus the
-// pool-wide deployed-vs-idle split (idle is a valid state, not a problem
-// to hide). Every stat here carries a tooltip - depositors need to
-// understand shares/cost-basis/deployed-vs-idle before they trust the
-// numbers, and labels/copy use `info.asset` rather than hardcoding
-// "USDC" since this page also serves non-stablecoin vaults. `deployed`
-// is passed in (derived once, in VaultDetailView, via
-// vaultAggregate(vault.allocation) - this vault's own rows) rather than
-// recomputed here from totalAssets - idle, so there is one formula for
-// "deployed" per vault, not two that can drift.
-// ─────────────────────────────────────────────────────────────
-
 import { Section } from "@/components/Section";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { AnnotationText } from "@/components/ui/AnnotationText";
@@ -18,9 +5,6 @@ import { deltaColor } from "@/shared/health";
 import { fmtUsd, fmtUsdFull, fmtSigned } from "@/shared/format";
 import type { UserPosition, VaultInfo } from "@/types";
 
-// null (price feed down, a live read still resolving) renders "-" rather
-// than a fabricated $0 - matches YourPositions.tsx's same convention for
-// the cross-vault summary.
 const usd = (v: number | null) => (v != null ? fmtUsdFull(v) : "-");
 const usdShort = (v: number | null) => (v != null ? fmtUsd(v) : "-");
 const signed = (v: number | null) => (v != null ? fmtSigned(v) : "-");

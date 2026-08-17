@@ -1,13 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// useFaucet — claims test tokens from the Faucet contract (apps/contracts/
-// src/token/Faucet.sol) in a single claimMany() transaction/signature,
-// driving an ActionTray job through it. Faucet.sol has no post-deploy mint
-// on the SeedToken clones it distributes - see that contract's header
-// comment for why this exists instead of a simpler per-token mint() call.
-// ─────────────────────────────────────────────────────────────
-
 import { useCallback, useState } from "react";
 import { getContract, prepareContractCall, prepareEvent, parseEventLogs, waitForReceipt } from "thirdweb";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";

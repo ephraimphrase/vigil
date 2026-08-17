@@ -4,13 +4,6 @@ type PonderProtocolRegistered = ProtocolRegisteredsQuery["protocolRegistereds"][
 type PonderScoreUpdated = ScoreUpdatedsQuery["scoreUpdateds"]["items"][number];
 type PonderEmergencyZeroed = EmergencyZeroedsQuery["emergencyZeroeds"]["items"][number];
 
-// Latest known score per protocolId, merging all three event types by
-// recency - a scoreUpdated after a protocol's last emergencyZero
-// supersedes the zero, and vice versa. Doesn't replicate the on-chain
-// staleness-window check (VigilVault._weightOf) - that also needs the
-// oracle's stalenessWindow, a contract read this mapper doesn't have.
-// "Most recently reported score" is a defensible simplification for a
-// dashboard summary column, not a substitute for the real safety check.
 export function latestScoreByProtocol(
   registrations: PonderProtocolRegistered[],
   updates: PonderScoreUpdated[],
@@ -40,9 +33,6 @@ interface WeighableAdapter {
   retired: boolean;
 }
 
-// Same allocation-weighting shape as adapterApy.ts's weightedApy - a
-// vault's "health" is its adapters' protocol scores weighted by how much
-// is actually parked in each, not a flat average across strategies.
 export function weightedHealth(adapters: WeighableAdapter[], scoreByProtocol: Map<string, number>): number {
   const live = adapters.filter((a) => !a.retired);
 

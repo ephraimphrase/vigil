@@ -1,12 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// StrategyDetailView — one strategy's full record, expanding what the
-// StrategiesTable row only has room to hint at (paused/retired badge,
-// description tooltip). Composition only, same CornerFrame/Chip language
-// as ProtocolDetailView. No data logic here - useStrategies() + find().
-// ─────────────────────────────────────────────────────────────
-
 import NextLink from "next/link";
 
 import { useStrategies } from "@/hooks/useStrategies";

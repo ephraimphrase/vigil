@@ -27,6 +27,7 @@ export function toDepositTransaction(
     amountUsd: amountUsd(amount, assetAddress, prices),
     shares: toAmount(d.shares, decimals),
     txHash: d.txHash,
+    sender: d.sender.toLowerCase(),
   };
 }
 
@@ -49,5 +50,6 @@ export function toWithdrawTransaction(
     amountUsd: amountUsd(amount, assetAddress, prices),
     shares: toAmount(w.shares, decimals),
     txHash: w.txHash,
+    sender: w.sender.toLowerCase(),
   };
 }

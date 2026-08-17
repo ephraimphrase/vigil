@@ -1,18 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Verifies which real CoinGecko coin each testTokens.ts entry impersonates
-// and writes lib/tokenPriceIds.ts (address -> coingecko id), so runtime
-// pricing (app/api/token-prices/route.ts) never has to guess by symbol.
-//
-// Symbol alone is NOT enough - "dai" matches 28 CoinGecko coins, "wsteth"
-// matches 15. Every test token's logoURI is a real CoinGecko image URL
-// (embeds that coin's numeric image id), so a candidate is only accepted
-// when ITS OWN CoinGecko image id matches ours exactly - i.e. the two are
-// provably the same coin, not just same-ticker.
-//
-// Run with: pnpm sync-token-prices (after sync-test-tokens, since this
-// reads lib/testTokens.ts)
-// ─────────────────────────────────────────────────────────────
-
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

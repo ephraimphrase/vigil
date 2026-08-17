@@ -1,19 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Activity mock — the audit trail. One of every EventKind, plus the three
-// scenarios the staged-timeline UI exists to prove: a partial exit (3 of 5
-// strategies, 2 reverted), a reverted-then-retried execution (gas
-// backoff), and a circuit-breaker trip. Also covers: a trigger that leads
-// to an alert instead of an execution (trigger ≠ execution), and an
-// aborted simulation that caught a bad trade before it happened.
-// UNUSED - app/api/activity/route.ts now reads real score/rebalance/
-// strategy-lifecycle/harvest events from Ponder
-// (lib/ponder/mappers/vaultActivity.ts) instead of this file. The
-// trigger/simulation/approval kinds this file covers have no real backing
-// yet (no decision engine deployed) - left unpopulated rather than mixing
-// fake rows into an otherwise-real feed. Left in place rather than
-// deleted; ask if you want it gone.
-// ─────────────────────────────────────────────────────────────
-
 import moment from "moment";
 import type { ActivityEntry } from "../types";
 

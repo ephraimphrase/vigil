@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Postgres client — the shared DB apps/api also writes to (see
-// /docker-compose.yml, apps/api/db/models.py). Server-only: nothing here
-// may be imported by a "use client" file, or the pg driver ships to the
-// browser.
-// ─────────────────────────────────────────────────────────────
-
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "./schema";

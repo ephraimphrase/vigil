@@ -1,13 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Seeds the shared Postgres DB. `protocols` table + 14 days of
-// health_scores per protocol are what app/api/protocols/[id]/route.ts
-// actually queries - this script is the only place that data comes from.
-// Every protocol's full detail lives as its own file under
-// seed/protocol-detail/*.json (one consistent source, no separate compact
-// TS array to keep in sync with it).
-// Run with: pnpm seed:db
-// ─────────────────────────────────────────────────────────────
-
 import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
@@ -23,9 +13,6 @@ const PROTOCOL_DETAILS = fs
   .filter((f) => f.endsWith(".json") && f !== "_meta.json")
   .map((f) => JSON.parse(fs.readFileSync(path.join(detailDir, f), "utf8")));
 
-// Deterministic 14-day walk ending at `endScore`, small day-to-day noise
-// driven by the string itself (not Math.random) so re-running the seed
-// produces the same history rather than a new one every time.
 function scoreWalk(id: string, endScore: number): { score: number; ts: string }[] {
   let seed = [...id].reduce((s, c) => s + c.charCodeAt(0), 0);
   const next = () => {
@@ -83,8 +70,6 @@ async function main() {
     console.log(`seeded protocols: ${detail.identity.id}`);
   }
 
-  // 14 days of health_scores per protocol, so score history charts have
-  // real data instead of a single "now" point.
   for (const detail of PROTOCOL_DETAILS) {
     const id = detail.identity.id;
     const endScore = SEED.protocols.find((p) => p.id === id)?.score ?? 75;

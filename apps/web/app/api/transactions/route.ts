@@ -11,9 +11,6 @@ export async function GET() {
     ponder.Vaults({ limit: 1000 }),
     ponder.Deposits({ limit: 500, orderBy: "timestamp", orderDirection: "desc" }),
     ponder.Withdrawals({ limit: 500, orderBy: "timestamp", orderDirection: "desc" }),
-    // Pricing is best-effort - a CoinGecko hiccup should degrade amountUsd
-    // to "unknown" (rendered as "-" by TransactionRow), not take down the
-    // whole Transactions view.
     getTokenPrices().catch((): PriceByAddress => ({})),
   ]);
 

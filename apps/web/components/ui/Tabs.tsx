@@ -1,8 +1,3 @@
-// Mono-uppercase tab strip with a violet underline indicator - the pattern
-// DepositWithdraw originated (deposit/withdraw switch), now shared with the
-// vault detail page's section tabs and its Performance sub-tabs. `fullWidth`
-// stretches tabs into equal columns (the 2-tab deposit/withdraw switch);
-// without it, tabs sit left-aligned and only take the width they need.
 interface TabDef<T extends string> {
   id: T;
   label: string;

@@ -24,12 +24,6 @@ export interface PortfolioVaultCandidate {
   health: number;
 }
 
-// Every vault this owner has ever deposited into or withdrawn from -
-// `deposits`/`withdrawals` are expected pre-filtered to this owner (the
-// route's Ponder queries do that via `where: { owner }`), so this is pure
-// grouping/arithmetic, no further filtering. A vault the owner never
-// touched has nothing to compute and is never a candidate to check
-// on-chain.
 export function toPortfolioCandidates(
   vaults: PonderVault[],
   deposits: PonderDeposit[],

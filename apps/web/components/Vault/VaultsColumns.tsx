@@ -1,16 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultsColumns — column defs for the /dashboard/vault picker table.
-// Mirrors Columns.tsx / StrategyColumns.tsx: createColumnHelper, one column
-// per concern, mono for every number. The Vault cell shows a real per-row
-// icon (or a stacked cluster for LP/multi-asset vaults) via assetsOf(), not
-// a fixed icon - vaults span USDC/WETH/WBTC/DAI/USDT/LP now, not just USDC.
-// chain/asset-type/vault-type ride as a subtitle line under the name, same
-// icon+name+subtitle shape as StrategyColumns' protocol rows. Trimmed to
-// the picker's core comparison metrics - TVL, APY, fee, one health score
-// per row - rather than every field VaultSummary carries; deposit position
-// and per-check risk detail live on the vault detail page instead.
-// ─────────────────────────────────────────────────────────────
-
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
 import type { VaultSummary } from "../../types";

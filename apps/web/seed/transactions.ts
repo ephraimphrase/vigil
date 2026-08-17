@@ -1,15 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Transactions mock — one wallet's deposit/withdraw/transfer history
-// across a spread of vaults and both chains (Ethereum, Base), spanning
-// enough of a date range to exercise the Transactions view's custom
-// date-range filter. Vault facts (slug/name/asset/chain) are duplicated by
-// hand rather than imported, same loose-reference-by-id convention
-// seed/activity.ts already uses for protocolId.
-// UNUSED - app/api/transactions/route.ts now reads real deposits/
-// withdrawals from Ponder (lib/ponder/mappers/transactionFlows.ts) instead
-// of this file. Left in place rather than deleted; ask if you want it gone.
-// ─────────────────────────────────────────────────────────────
-
 import moment from "moment";
 import type { TransactionEntry } from "../types";
 
@@ -30,6 +18,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 5_000,
     shares: 4_812.4,
     txHash: "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t2",
@@ -43,6 +32,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 1_200,
     shares: 1_158.9,
     txHash: "0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t3",
@@ -56,6 +46,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 8_500,
     shares: 8_310.2,
     txHash: "0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t4",
@@ -69,6 +60,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 12_950,
     shares: 3.42,
     txHash: "0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t5",
@@ -82,6 +74,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 2_000,
     shares: 1_925.0,
     txHash: "0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t6",
@@ -95,6 +88,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 26_800,
     shares: 0.244,
     txHash: "0x6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t7",
@@ -108,6 +102,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 6_000,
     shares: 5_874.1,
     txHash: "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t8",
@@ -121,6 +116,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 4_200,
     shares: 3_960.7,
     txHash: "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t9",
@@ -134,6 +130,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 3_000,
     shares: 2_932.5,
     txHash: "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t10",
@@ -147,6 +144,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 37_200,
     shares: 9.81,
     txHash: "0xa0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t11",
@@ -160,6 +158,7 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 15_000,
     shares: 14_402.3,
     txHash: "0xb1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c",
+    sender: "0x000000000000000000000000000000000000a1",
   },
   {
     id: "t12",
@@ -173,5 +172,6 @@ export const TRANSACTION_ENTRIES: TransactionEntry[] = [
     amountUsd: 800,
     shares: 772.6,
     txHash: "0xc2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d",
+    sender: "0x000000000000000000000000000000000000a1",
   },
 ];

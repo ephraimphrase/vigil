@@ -1,5 +1,3 @@
-
-
 import { useEffect, useRef, useState } from "react";
 import { useApi, type ApiResult } from "./useApi";
 import type { FeedEvent, OverviewData } from "../types";
@@ -25,12 +23,6 @@ const SAMPLE: Omit<FeedEvent, "id" | "ts">[] = [
 
 export function useEventStream(initial: FeedEvent[], max = 40): FeedEvent[] {
   const [events, setEvents] = useState<FeedEvent[]>(initial);
-  // `initial` starts as [] while useOverview's fetch is in flight, then
-  // becomes the real seed events once it resolves - but this component
-  // never remounts between those two renders, so useState's initial value
-  // alone would miss the real data. Sync exactly once, the first time
-  // `initial` actually has something in it; never again after, so it
-  // can't wipe out synthetic events the interval below has appended since.
   const seeded = useRef(initial.length > 0);
   useEffect(() => {
     if (!seeded.current && initial.length > 0) {

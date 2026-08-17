@@ -1,7 +1,3 @@
-// Typed client for apps/ponder's GraphQL API. lib/ponder/generated/ is
-// generated - re-run `pnpm ponder:codegen` (with apps/ponder running) after
-// changing an operation or the indexer schema.
-
 import { GraphQLClient } from "graphql-request";
 import { getSdk } from "./generated/sdk";
 

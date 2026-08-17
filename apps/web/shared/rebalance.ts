@@ -1,11 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Rebalance logic — PURE, no React. The card renders these; it does not
-// decide what a rebalance is. Two independent drivers:
-//   1. health   — band maps to a de-risk action (decision table)
-//   2. drift     — actual vs target weight beyond a threshold
-// rebalanceState combines them into what the engine will do next.
-// ─────────────────────────────────────────────────────────────
-
 import { resolveBand, BAND_META, type Band } from "@/shared/health";
 import type { Strategy } from "../types";
 

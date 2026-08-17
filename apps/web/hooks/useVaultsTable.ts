@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// useVaultsTable — builds the headless table instance for the /dashboard/
-// vault picker. Mirrors useProtocolsTable: sort default, debounced global
-// search. No watchlist concept here (that's a protocols thing); no
-// virtualization either - a vault picker measures in the dozens at most,
-// not the hundreds protocols/strategies can reach, so the extra machinery
-// buys nothing yet.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import {
   useReactTable,

@@ -1,13 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// ActivityHeader — the Log tab's filter row: kind chips, protocol select,
-// date-range presets, export. Chips for kind (small fixed set, want
-// multi-select at a glance); a native select for protocol (large set,
-// single choice); plain hairline buttons for date presets - three
-// different controls because they're three different shapes of choice,
-// not one dropdown pattern stamped three times. Page title lives once in
-// app/dashboard/activity/page.tsx, above both tabs.
-// ─────────────────────────────────────────────────────────────
-
 import { KIND_COLOR, KIND_LABEL, DATE_PRESETS, type DateRangePreset } from "@/shared/activity";
 import { toCsv, toJson, downloadBlob } from "@/shared/activity";
 import type { ActivityEntry, EventKind } from "@/types";

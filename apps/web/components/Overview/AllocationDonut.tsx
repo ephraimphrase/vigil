@@ -1,13 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// AllocationDonut — real per-vault deposit share (PortfolioSummary.tsx
-// passes usePortfolio()'s positions, valued in USD). Fixed violet -> blue
-// progression (never cycled - a slice's color is tied to its rank by
-// value, same categorical-hue rule as everywhere else color carries
-// identity in this app), capped at 8 distinct vaults; anything past that
-// collapses into a single neutral "Others" slice rather than repeating
-// colors or growing the legend unbounded.
-// ─────────────────────────────────────────────────────────────
-
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { fmtUsd, fmtPct } from "@/shared/format";
 

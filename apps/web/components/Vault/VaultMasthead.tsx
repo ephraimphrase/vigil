@@ -1,12 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// VaultMasthead — the page's one corner-node frame (motif budget: masthead
-// only, per DESIGN.md §7a). Glanceable identity: icon, name, chain, policy
-// badge, TVL, headline APY, your deposit. Granular numbers (shares, share
-// price, deployed vs. idle) live in VaultPositionSummary below, not here.
-// The long per-vault description moved to the Vault Info tab - Yearn's own
-// masthead doesn't carry prose either, just identity + stats.
-// ─────────────────────────────────────────────────────────────
-
 import { CornerFrame } from "@/components/ui/CornerFrame";
 import { Chip } from "@/components/ui/Chip";
 import { Address } from "@/components/ui/Address";

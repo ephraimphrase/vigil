@@ -95,8 +95,6 @@ export interface Identity {
   description: string;
   launchDate: string;
   ageDays: number;
-  // Ingestion config apps/api's fetchers read straight off this row -
-  // see apps/api/db/models/protocols.py for what each polls.
   githubRepo?: string | null;
   coingeckoId?: string | null;
   defillamaSlug?: string[] | null;
@@ -159,6 +157,3 @@ export interface ProtocolDetail {
   askSuggestions: string[];
 }
 
-// The old single-file {meta, protocols} wrapper is gone - each protocol is
-// its own file under seed/protocol-detail/ now (see _meta.json for the
-// shared meta block, kept for reference but not currently served).

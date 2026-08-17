@@ -46,8 +46,6 @@ export async function GET() {
     ponder.AdapterEvacuateds(RECENT_FIRST),
     ponder.AdapterRetiredEvents(RECENT_FIRST),
     ponder.AdapterHarvesteds(RECENT_FIRST),
-    // Pricing is best-effort - a CoinGecko hiccup should degrade amounts to
-    // token units (amountLabel's own fallback), not fail the whole feed.
     getTokenPrices().catch((): PriceByAddress => ({})),
   ]);
 

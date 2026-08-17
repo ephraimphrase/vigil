@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// Protocols · score bands + status colors
-// The ONLY place status color is allowed (design brief §2). Colors here
-// render as 2px rules / range labels / signed deltas — never as fills.
-// ─────────────────────────────────────────────────────────────
-
 // ─── TYPES ───
 export interface Band {
   min: number;    // inclusive lower bound

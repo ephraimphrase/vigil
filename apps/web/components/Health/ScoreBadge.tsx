@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// ScoreBadge — compact score readout: mono numeral + band-colored rule.
-// Shared by Overview (compact rows) and Strategies (cards) so there's one
-// health display, two densities. `size` toggles density.
-// ─────────────────────────────────────────────────────────────
-
 import { bandColor } from "@/shared/health";
 import { fmtScore } from "@/shared/format";
 

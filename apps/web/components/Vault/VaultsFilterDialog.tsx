@@ -66,10 +66,6 @@ function ToggleRow({
   );
 }
 
-// Its own full panel, not an inline dropdown - once real token lists back
-// this (multiple assets per vault, more vaults overall) an inline checklist
-// under the trigger button won't have room. Swaps in over the main filters
-// view and hands back to it on close, rather than growing the dialog.
 function AssetPickerPanel({
   assets,
   selected,

@@ -1,15 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// YourPositions — one row per vault the connected wallet currently holds a
-// position in, value/pnl/apy/health at a glance (usePortfolio(), real -
-// same source PortfolioSummary's headline reads), linking through to that
-// vault's detail page. Distinct from MyProtocols: that panel is a single
-// vault's internal allocation across protocols; this one is the wallet's
-// exposure across vaults, so a wallet with positions in more than one
-// vault sees all of them here.
-// ─────────────────────────────────────────────────────────────
-
 import type { ComponentType, ReactNode } from "react";
 import { PiVaultLight } from "react-icons/pi";
 import { TokenIcon } from "@/components/Vault/TokenIcon";

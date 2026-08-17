@@ -8,8 +8,4 @@ if (!clientId) {
   );
 }
 
-// null when unconfigured, rather than throwing - a missing client ID
-// shouldn't take down every page that transitively imports this (it was
-// crashing static prerendering). ConnectWallet.tsx renders a disabled
-// button instead of the real connect flow when this is null.
 export const thirdwebClient = clientId ? createThirdwebClient({ clientId }) : null;

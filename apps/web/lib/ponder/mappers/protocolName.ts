@@ -1,7 +1,3 @@
-// HealthOracle's protocolId is a bytes32 that's just the protocol's slug,
-// ASCII-encoded and right-padded with zero bytes (e.g. "kodiak" ->
-// 0x6b6f6469616b0000...0000) - decoding it back to text needs no registry,
-// unlike category/target-weight (see AllocationRow's still-unwired gap).
 export function decodeProtocolName(protocolId: string): string {
   const hex = protocolId.startsWith("0x") ? protocolId.slice(2) : protocolId;
   const bytes: number[] = [];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
 import { useActivity } from "@/hooks/useActivity";
 import { useActivityTable } from "@/hooks/useActivityTable";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -11,22 +12,30 @@ import { ActivityTimeline } from "@/components/Activity/ActivityTimeline";
 import { TransactionsHeader } from "@/components/Activity/TransactionsHeader";
 import { TransactionsList } from "@/components/Activity/TransactionsList";
 import { Tabs } from "@/components/ui/Tabs";
+import { WalletNotConnected } from "@/components/Wallet/WalletNotConnected";
 
 type View = "log" | "transactions";
 
 export default function ActivityPage() {
   const [view, setView] = useState<View>("log");
+  const account = useActiveAccount();
 
   const { data: activityData, isLoading: activityLoading } = useActivity();
   const { data: txData, isLoading: txLoading } = useTransactions();
+
+  const myTxEntries = useMemo(() => {
+    if (!account) return [];
+    const addr = account.address.toLowerCase();
+    return txData.entries.filter((e) => e.sender === addr);
+  }, [txData.entries, account]);
 
   const protocolIds = useMemo(
     () => Array.from(new Set(activityData.entries.map((e) => e.protocolId).filter((id): id is string => Boolean(id)))).sort(),
     [activityData.entries]
   );
   const chains = useMemo(
-    () => Array.from(new Set(txData.entries.map((e) => e.chain))).sort(),
-    [txData.entries]
+    () => Array.from(new Set(myTxEntries.map((e) => e.chain))).sort(),
+    [myTxEntries]
   );
 
   const {
@@ -39,7 +48,7 @@ export default function ActivityPage() {
     table: txTable, chainFilter, setChainFilter, typeFilter, setTypeFilter,
     dateRange, setDateRange, query, setQuery,
     visibleCount: txVisibleCount, totalCount: txTotalCount,
-  } = useTransactionsTable(txData.entries);
+  } = useTransactionsTable(myTxEntries);
   const visibleTxEntries = txTable.getRowModel().rows.map((r) => r.original);
 
   return (
@@ -76,6 +85,10 @@ export default function ActivityPage() {
             <ActivityTimeline table={activityTable} isLoading={activityLoading} />
           </div>
         </>
+      ) : !account ? (
+        <div className="border border-hairline">
+          <WalletNotConnected message="Connect a wallet to see your deposits and withdrawals." />
+        </div>
       ) : (
         <>
           <TransactionsHeader

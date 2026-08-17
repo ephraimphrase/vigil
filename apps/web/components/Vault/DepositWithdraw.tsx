@@ -1,19 +1,5 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// DepositWithdraw — the action panel. Tabbed deposit / withdraw, quick-pick
-// percent pills + amount, live preview. Amount math is pure (shared/vault),
-// mirroring ERC4626 previewDeposit/previewRedeem. Submit is a stub - wire
-// to approve+deposit / redeem later. Amount field is the coss InputGroup,
-// restyled to our hairline/mono tokens (rounded-none, no shadow/ring)
-// instead of its shadcn defaults - see the `!` overrides below.
-//
-// The USD-equivalent line under the amount comes from useTokenPrices()
-// (lib/tokenPrices.ts, CoinGecko-backed) - "-" when this asset has no
-// verified price mapping (lib/tokenPriceIds.ts) rather than guessing a
-// 1:1 rate, since most vault assets here aren't stablecoins.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";

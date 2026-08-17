@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-// useProtocolsTable — builds the headless table instance.
-// Owns sort defaults, global search filter. Returns the instance so both
-// the toolbar (counts) and table (rows) read one source of truth.
-// ─────────────────────────────────────────────────────────────
-
 import { useMemo, useState } from "react";
 import {
   useReactTable,
@@ -18,9 +12,6 @@ import type { ProtocolRow } from "../types";
 import { buildColumns } from "../components/Protocol/Columns";
 import { useDebouncedValue } from "./useDebouncedValue";
 
-// ─── CONSTANTS ───
-// Worst-first: the entire value prop of a risk monitor is surfacing the
-// collapse before you'd think to look for it.
 const DEFAULT_SORT: SortingState = [{ id: "score", desc: false }];
 
 // ─── UTILS ───
