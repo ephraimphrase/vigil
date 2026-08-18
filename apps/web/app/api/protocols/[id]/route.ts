@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { protocols, healthScores, triggers } from "@/db/schema";
 
@@ -20,14 +20,19 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     dependencies, askSuggestions,
   } = row;
 
-  const rawHistory = await db
-    .select({ timestamp: healthScores.timestamp, score: healthScores.score })
-    .from(healthScores)
-    .where(eq(healthScores.protocol, id))
-    .orderBy(desc(healthScores.timestamp))
-    .limit(14);
-  const history = rawHistory
-    .map((h) => ({ timestamp: h.timestamp, score: h.score ?? 0 }))
+  // health_scores gets a row every ~15 min (KeeperHub's ingest sweep) - a
+  // plain `.limit(14)` on raw rows is 14 rows of the same day, not 14
+  // days. One row per calendar day so this stays a real daily trend, and
+  // delta24h/delta7d below (which index into this same array) stay correct.
+  const dayHistory = await db.execute<{ timestamp: string; score: number | null }>(sql`
+    SELECT DISTINCT ON (date_trunc('day', timestamp)) timestamp, score
+    FROM health_scores
+    WHERE protocol = ${id}
+    ORDER BY date_trunc('day', timestamp) DESC, timestamp DESC
+    LIMIT 14
+  `);
+  const history = dayHistory.rows
+    .map((h) => ({ timestamp: new Date(h.timestamp), score: h.score ?? 0 }))
     .reverse();
   const scoreHistory = history.map((h, i) => {
     const window = history.slice(Math.max(0, i - 1), i + 1);
